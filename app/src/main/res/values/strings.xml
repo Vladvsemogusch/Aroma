@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Aromateque</string>
+    <string name="title_activity_product_info">ProductInfo</string>
+    <string name="fragrance_notes">Ноты аромата</string>
+    <string name="top_notes">ВЕРХНИЕ НОТЫ</string>
+    <string name="middle_notes">НОТЫ СЕРДЦА</string>
+    <string name="base_notes">БАЗОВЫЕ НОТЫ</string>
+    <string name="description_title">Описание %1$s</string>
+    <string name="reviews_count">%1$s %2$s</string>
+    <string name="brand_name">%1$s %2$s</string>
+    <string name="country_year">%1$s, %2$s</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+</resources>
