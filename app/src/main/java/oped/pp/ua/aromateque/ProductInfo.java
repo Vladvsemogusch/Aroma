@@ -7,38 +7,34 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.PagerAdapter;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.viewpagerindicator.CirclePageIndicator;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import oped.pp.ua.aromateque.product.fragments.ProductDescriptionFragment;
+import oped.pp.ua.aromateque.product.fragments.ProductGeneralFragment;
+import oped.pp.ua.aromateque.product.fragments.ProductReviewsFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +42,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductInfo extends CalligraphyActivity {
-    final static String BASE_URL = "http://10.0.1.50/";
+    public static final String BASE_URL = "http://10.0.1.50/";
+    public static final int TAB_GENERAL = 0;
+    public static final int TAB_DESCRIPTION = 1;
+    public static final int TAB_REVIEW = 2;
     final int CATEGORY_ALL = 2;
     Toolbar toolbar;
     Call<LongProduct> callGetProduct;
@@ -54,10 +53,13 @@ public class ProductInfo extends CalligraphyActivity {
     LongProduct product;
     Category categoryAll;
     Category curCategory;
-    private ArrayAdapter<String> mAdapter;
     boolean isAnimationRunning;
     ActionBarDrawerToggle drawerToggle;
     DrawerLayout drawerLayout;
+
+    public enum Tab {
+        General, Description, Reviews
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +80,12 @@ public class ProductInfo extends CalligraphyActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api = retrofit.create(MagentoRestService.class);
-        final int productId = 4344;
+        final int productId = 177;
         callGetProduct = api.getProduct(productId);
         class LongProductRecursiveCallback<T> implements Callback<T> {
             public void onResponse(Call<T> call, Response<T> response) {
                 try {
                     product = (LongProduct) response.body();
-                    //Log.d("imageUrls","DGGDSGSDG"+product.getImageUrls().get(0));
-                    //productImgList.addAll(product.getImageUrls());
-
                 } catch (Exception e) {
                     Log.d("ERROR2", e.toString());
                 }
@@ -239,12 +238,65 @@ public class ProductInfo extends CalligraphyActivity {
 
 
     void fillProductInfo() {
-        Resources res = getResources();
-        NestedScrollView productScrollviewMain = (NestedScrollView) findViewById(R.id.product_scrollview_main);
-        productScrollviewMain.setForegroundGravity(Gravity.END);
-        HashMap<String, String> attributes = product.getAttributes();
-        HashMap<String, String> listAttrs = product.getListAttrs();
+        final HashMap<String, String> attributes = product.getAttributes();
+        final HashMap<String, String> listAttrs = product.getListAttrs();
+        final HashMap<String, String> notes = product.getNotes();
+        final ArrayList<String> imageUrls = product.getWrapper().getImageUrls();
+        final Resources res = getResources();
+        //Price transform
+        //Price transform
+        TextView productPrice = (TextView) findViewById(R.id.product_price);
+        String stringPrice = attributes.get("price");
+        stringPrice = stringPrice.substring(0, stringPrice.indexOf('.'));
+        String stringDiscount = attributes.get("discount");
+        stringDiscount = stringDiscount.substring(0, stringDiscount.indexOf('%'));
+        long longPrice = Math.round(Integer.parseInt(stringPrice) * 0.01 * (100 - Integer.parseInt(stringDiscount)));
+        productPrice.setText(String.valueOf(longPrice));
+
+        class ProductFragmentPagerAdapter extends FragmentPagerAdapter {
+            final int TAB_COUNT = 3;
+            private String tabTitles[] = new String[]{res.getString(R.string.product_general), res.getString(R.string.product_description), res.getString(R.string.product_reviews)};
+            private Context context;
+
+            public ProductFragmentPagerAdapter(FragmentManager fm, Context context) {
+                super(fm);
+                this.context = context;
+            }
+
+            @Override
+            public int getCount() {
+                return TAB_COUNT;
+            }
+
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return ProductGeneralFragment.newInstance(listAttrs, attributes, notes, imageUrls);
+                    case 1:
+                        return ProductDescriptionFragment.newInstance(attributes);
+                    case 2:
+                        return ProductReviewsFragment.newInstance(product.getWrapper().getReviews());
+                    default:
+                        return ProductGeneralFragment.newInstance(listAttrs, attributes, notes, imageUrls);
+                }
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return tabTitles[position];
+            }
+        }
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.product_content_tabs);
+        ViewPager productContentViewpager = (ViewPager) findViewById(R.id.product_content_viewpager);
+
+        productContentViewpager.setAdapter(new ProductFragmentPagerAdapter(getSupportFragmentManager(), this));
+        tabLayout.setupWithViewPager(productContentViewpager);
+        //productScrollviewMain.setForegroundGravity(Gravity.END);
+/*
+        ScrollView productScrollviewMain = (ScrollView) findViewById(R.id.product_scrollview_main);
         ViewPager productImgViewpager = (ViewPager) findViewById(R.id.product_img_viewpager);
+
         //ImageView imgProduct = (ImageView) findViewById(R.id.img_product);
         ImageView imgGender = (ImageView) findViewById(R.id.img_gender);
         TextView txtBrandProductName = (TextView) findViewById(R.id.txt_brand_product_name);
@@ -257,26 +309,29 @@ public class ProductInfo extends CalligraphyActivity {
         TextView txtMiddleNotesContent = (TextView) findViewById(R.id.txt_middle_notes_content);
         TextView txtBaseNotesContent = (TextView) findViewById(R.id.txt_base_notes_content);
         TextView txtFragranceNotes = (TextView) findViewById(R.id.txt_fragrance_notes);
+        TextView txtSku = (TextView) findViewById(R.id.txt_sku);
         LinearLayout containerAttrNameList = (LinearLayout) findViewById(R.id.container_attr_name_list);
         LinearLayout containerAttrValueList = (LinearLayout) findViewById(R.id.container_attr_value_list);
         LinearLayout containerTopNotesList = (LinearLayout) findViewById(R.id.container_top_notes_list);
         LinearLayout containerMiddleNotesList = (LinearLayout) findViewById(R.id.container_middle_notes_list);
         LinearLayout containerBaseNotesList = (LinearLayout) findViewById(R.id.container_base_notes_list);
+        LinearLayout containerNotes = (LinearLayout) findViewById(R.id.container_notes);
         RatingBar ratingBar = (RatingBar) findViewById(R.id.rating_bar);
+
         class ImgPagerAdapter extends PagerAdapter {
 
-            Context context;
-            LayoutInflater layoutInflater;
-            List<String> productImgList = product.getImageUrlsWrapper().getImageUrls();
+            private Context context;
+            private LayoutInflater layoutInflater;
 
-            public ImgPagerAdapter(Context context) {
+
+            private ImgPagerAdapter(Context context) {
                 this.context = context;
                 layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
 
             @Override
             public int getCount() {
-                return productImgList.size();
+                return imageUrls.size();
             }
 
             @Override
@@ -288,23 +343,19 @@ public class ProductInfo extends CalligraphyActivity {
             public Object instantiateItem(ViewGroup container, int position) {
                 View itemView = layoutInflater.inflate(R.layout.img_pager_item, container, false);
                 ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
-                new DownloadImageTask(imgView).execute(productImgList.get(position));
+                new DownloadImageTask(imgView).execute(imageUrls.get(position));
                 container.addView(itemView);
                 return itemView;
             }
 
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView((LinearLayout) object);
+                container.removeView((ImageView) object);
             }
         }
         productImgViewpager.setAdapter(new ImgPagerAdapter(this));
         CirclePageIndicator viewPagerIndicator = (CirclePageIndicator) findViewById(R.id.viewpager_indicator);
         viewPagerIndicator.setViewPager(productImgViewpager);
-        //viewPagerIndicator.setFillColor(R.color.colorAccent);
-        //viewPagerIndicator.setStrokeColor(R.color.colorAccent);
-        //viewPagerIndicator.setSnap(true);
-        //viewPagerIndicator.setPageColor(R.color.colorAccent);
         Spanned brandProductName = compatFromHtml(String.format(res.getString(R.string.brand_name), attributes.get("shopbybrand_brand"), "<b>" + attributes.get("name") + "</b>"));
         txtBrandProductName.setText(brandProductName);
         if (getSupportActionBar() != null) {
@@ -333,8 +384,7 @@ public class ProductInfo extends CalligraphyActivity {
         }
         txtReviewsCount.setText(String.format(res.getString(R.string.reviews_count), reviews, marks));
         txtGender.setText(attributes.get("gender").toUpperCase());
-        txtDescriptionTitle.setText(String.format(res.getString(R.string.description_title), attributes.get("name")));
-        txtDescription.setText(compatFromHtml(attributes.get("description")));
+
         switch (attributes.get("gender")) {
             case "для детей":
                 imgGender.setImageDrawable(ResourcesCompat.getDrawable(res, R.drawable.ico_child, null));
@@ -349,6 +399,8 @@ public class ProductInfo extends CalligraphyActivity {
                 imgGender.setImageDrawable(ResourcesCompat.getDrawable(res, R.drawable.ico_man_woman, null));
                 break;
         }
+
+        txtSku.setText(String.format(res.getString(R.string.sku), attributes.get("sku")));
         if (attributes.get("rating_summary") != null) {
             ratingBar.setRating(5.0f / 100 * Integer.parseInt(attributes.get("rating_summary")));
         } else {
@@ -389,27 +441,33 @@ public class ProductInfo extends CalligraphyActivity {
         }
         //fill notes
         String stringNotes;//reusable
-        Map<String, String> notes = product.getNotes();
+        int dontHaveNotes = 0; // if ==3 -> no notes for product
         if (!notes.get("topnotes").equals("false")) {
             stringNotes = checkAndCut(notes.get("topnotes"));
             txtTopNotesContent.setText(stringNotes);
         } else {
             containerTopNotesList.setVisibility(View.GONE);
+            dontHaveNotes++;
         }
         if (!notes.get("middlenotes").equals("false")) {
             stringNotes = checkAndCut(notes.get("middlenotes"));
             txtMiddleNotesContent.setText(stringNotes);
         } else {
             containerMiddleNotesList.setVisibility(View.GONE);
+            dontHaveNotes++;
         }
         if (!notes.get("basenotes").equals("false")) {
             stringNotes = checkAndCut(notes.get("basenotes"));
             txtBaseNotesContent.setText(stringNotes);
         } else {
             containerBaseNotesList.setVisibility(View.GONE);
+            dontHaveNotes++;
         }
-
-
+        if (dontHaveNotes == 3) {
+            txtFragranceNotes.setVisibility(View.GONE);
+            containerNotes.setVisibility(View.GONE);
+        }
+*/
     }
 
     public static Spanned compatFromHtml(String input) {
@@ -430,7 +488,7 @@ public class ProductInfo extends CalligraphyActivity {
     }
 
     // limit note length to 12 and split notes string by space
-    public String checkAndCut(String input) {
+    public static String checkAndCut(String input) {
         List<String> inputDivided = Arrays.asList(input.split(", "));
         String returnNotes = "";
         for (String note : inputDivided) {

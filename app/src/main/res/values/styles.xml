@@ -6,6 +6,15 @@
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/white</item>
+        <item name="vpiCirclePageIndicatorStyle">@style/CustomCirclePageIndicator</item>
+    </style>
+
+    <style name="CustomCirclePageIndicator">
+        <item name="fillColor">@color/colorAccent</item>
+        <item name="strokeColor">#000000</item>
+        <item name="strokeWidth">1.2dp</item>
+        <item name="radius">6dp</item>
+        <item name="centered">true</item>
     </style>
 
     <style name="customRatingBar" parent="android:style/Widget.Material.RatingBar.Small" />

@@ -4,42 +4,50 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class LongProduct {
+
     @SerializedName("list_attrs")
     private HashMap<String, String> listAttrs;
     private HashMap<String, String> attributes;
     private HashMap<String, String> notes;
-    @SerializedName("image_urls")
-    private ArrayList<String> imageUrls;
-    @SerializedName("image_urls_wrapper")
-    private ImageUrlWrapper imageUrlsWrapper;
+    //@SerializedName("image_urls")
+    //private ArrayList<String> imageUrls;
+    @SerializedName("wrapper")
+    private Wrapper wrapper;
 
-    public List<String> getImageUrls() {
-        return imageUrls;
+    public HashMap<String, String> getListAttrs() {
+        return listAttrs;
     }
 
-    public ImageUrlWrapper getImageUrlsWrapper() {
-        return imageUrlsWrapper;
-    }
-
-    public void setImageUrls(ArrayList<String> imageUrls) {
-        this.imageUrls = imageUrls;
+    public void setListAttrs(HashMap<String, String> listAttrs) {
+        this.listAttrs = listAttrs;
     }
 
     public HashMap<String, String> getAttributes() {
         return attributes;
     }
 
-
-    public HashMap<String, String> getListAttrs() {
-        return listAttrs;
+    public void setAttributes(HashMap<String, String> attributes) {
+        this.attributes = attributes;
     }
 
     public HashMap<String, String> getNotes() {
         return notes;
     }
+
+    public void setNotes(HashMap<String, String> notes) {
+        this.notes = notes;
+    }
+
+    public Wrapper getWrapper() {
+        return wrapper;
+    }
+
+    public void setWrapper(Wrapper wrapper) {
+        this.wrapper = wrapper;
+    }
+
 
    /*@SerializedName("entity_id")
    int entityId;
@@ -73,9 +81,10 @@ public class LongProduct {
 */
 }
 
-class ImageUrlWrapper {
+class Wrapper {
     @SerializedName("image_urls")
     private ArrayList<String> imageUrls;
+    private ArrayList<Review> reviews;
 
     public void setImageUrls(ArrayList<String> imageUrls) {
         this.imageUrls = imageUrls;
@@ -84,4 +93,13 @@ class ImageUrlWrapper {
     public ArrayList<String> getImageUrls() {
         return imageUrls;
     }
+
+    public ArrayList<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<Review> reviews) {
+        this.reviews = reviews;
+    }
 }
+

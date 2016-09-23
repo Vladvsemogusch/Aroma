@@ -11,4 +11,9 @@
     <string name="country_year">%1$s, %2$s</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="sku">АРТИКУЛ: %1$s</string>
+    <string name="product_general">О товаре</string>
+    <string name="product_description">Описание</string>
+    <string name="product_reviews">Отзывы</string>
+
 </resources>

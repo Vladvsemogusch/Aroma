@@ -7,6 +7,7 @@
     <color name="white">#ffffff</color>
     <color name="secondaryProgress">#DCC9A7</color>
     <color name="black">#000000</color>
+    <color name="review_date">#B8B1A5</color>
 
 
 </resources>
