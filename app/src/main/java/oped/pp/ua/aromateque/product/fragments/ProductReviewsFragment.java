@@ -2,6 +2,7 @@ package oped.pp.ua.aromateque.product.fragments;
 
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ public class ProductReviewsFragment extends Fragment {
                 reviews.add(review);
             }
         }
+
         //reviews = (ArrayList<Review>) getArguments().getSerializable("reviews");
 
     }
@@ -72,6 +75,10 @@ public class ProductReviewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.product_reviews, container, false);
         ListView reviewsListview = (ListView) view.findViewById(R.id.reviews_listview);
+        TextView noReviews = (TextView) view.findViewById(R.id.txt_no_reviews);
+        if (reviews.size() != 0) {
+            noReviews.setVisibility(View.GONE);
+        }
         reviewsListview.setAdapter(new ReviewArrayAdapter(getContext(), reviews));
         return view;
 
@@ -81,11 +88,13 @@ public class ProductReviewsFragment extends Fragment {
 class ReviewArrayAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final ArrayList<Review> reviews;
+    private final Resources res;
 
     public ReviewArrayAdapter(Context context, ArrayList<Review> reviews) {
         super(context, -1);
         this.context = context;
         this.reviews = reviews;
+        res = context.getResources();
     }
 
     @Override
@@ -99,6 +108,7 @@ class ReviewArrayAdapter extends ArrayAdapter<String> {
         TextView txtDate;
         TextView txtRating;
         TextView txtText;
+        RatingBar ratingBar;
     }
 
     @Override
@@ -113,18 +123,37 @@ class ReviewArrayAdapter extends ArrayAdapter<String> {
             viewHolder = new ViewHolder();
             viewHolder.txtNickname = (TextView) rowView.findViewById(R.id.review_nickname);
             viewHolder.txtDate = (TextView) rowView.findViewById(R.id.review_date);
-            viewHolder.txtRating = (TextView) rowView.findViewById(R.id.review_rating);
+            viewHolder.txtRating = (TextView) rowView.findViewById(R.id.review_text_rating);
             viewHolder.txtText = (TextView) rowView.findViewById(R.id.review_text);
+            viewHolder.ratingBar = (RatingBar) rowView.findViewById(R.id.rating_bar);
             rowView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) rowView.getTag();
         }
-        viewHolder.txtNickname.setText(reviews.get(position).getNickname().toUpperCase());
-        viewHolder.txtDate.setText(reviews.get(position).getDate());
-        viewHolder.txtRating.setText(reviews.get(position).getRating());
-        String text = reviews.get(position).getText();
+        Review curReview = reviews.get(position);
+        viewHolder.txtNickname.setText(curReview.getNickname().toUpperCase());
+        viewHolder.txtDate.setText(curReview.getDate());
+        switch (curReview.getRating()) {
+            case "20":
+                viewHolder.txtRating.setText(res.getString(R.string.rating_20));
+                break;
+            case "40":
+                viewHolder.txtRating.setText(res.getString(R.string.rating_40));
+                break;
+            case "60":
+                viewHolder.txtRating.setText(res.getString(R.string.rating_60));
+                break;
+            case "80":
+                viewHolder.txtRating.setText(res.getString(R.string.rating_80));
+                break;
+            case "100":
+                viewHolder.txtRating.setText(res.getString(R.string.rating_100));
+                break;
+        }
+        String text = curReview.getText();
         text = text.substring(0, 1).toUpperCase() + text.substring(1);
         viewHolder.txtText.setText(text);
+        viewHolder.ratingBar.setRating(5.0f / 100 * Integer.parseInt(curReview.getRating()));
 
         return rowView;
     }

@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
-
             android:textSize="15sp" />
 
         <TextView
@@ -26,5 +25,11 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:breakStrategy="high_quality"
             android:hyphenationFrequency="full" />
+
+        <ImageView
+            android:id="@+id/img_brand"
+            android:layout_width="250dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </ScrollView>

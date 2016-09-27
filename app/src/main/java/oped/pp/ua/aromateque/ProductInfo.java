@@ -3,7 +3,8 @@ package oped.pp.ua.aromateque;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,8 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,13 +23,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import oped.pp.ua.aromateque.product.fragments.ProductDescriptionFragment;
 import oped.pp.ua.aromateque.product.fragments.ProductGeneralFragment;
@@ -43,9 +40,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductInfo extends CalligraphyActivity {
     public static final String BASE_URL = "http://10.0.1.50/";
-    public static final int TAB_GENERAL = 0;
-    public static final int TAB_DESCRIPTION = 1;
-    public static final int TAB_REVIEW = 2;
     final int CATEGORY_ALL = 2;
     Toolbar toolbar;
     Call<LongProduct> callGetProduct;
@@ -56,31 +50,34 @@ public class ProductInfo extends CalligraphyActivity {
     boolean isAnimationRunning;
     ActionBarDrawerToggle drawerToggle;
     DrawerLayout drawerLayout;
+    Resources res;
 
-    public enum Tab {
-        General, Description, Reviews
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_product_info);
         setTheme(R.style.AromatequeTheme_NoActionBar);
+        res = getResources();
+        //Initialize utility with icon sheet
+        Utility.initialize(BitmapFactory.decodeResource(getResources(), R.drawable.icon_sheet));
+        //Preparing toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
         setupDrawerWithFancyButton();
+        setupFooter();
+
+        //Working with RestAPI
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api = retrofit.create(MagentoRestService.class);
-        final int productId = 177;
+        final int productId = 4344;
         callGetProduct = api.getProduct(productId);
         class LongProductRecursiveCallback<T> implements Callback<T> {
             public void onResponse(Call<T> call, Response<T> response) {
@@ -123,6 +120,32 @@ public class ProductInfo extends CalligraphyActivity {
 
 
     }
+
+    private void setupFooter() {
+        ImageButton btnToFavourites = (ImageButton) findViewById(R.id.to_favorites);
+        ImageButton btnToCart = (ImageButton) findViewById(R.id.to_cart);
+
+        final Bitmap emptyHeart = Utility.getBitmapFromSheet(128, 64, 45, 41);
+        final Bitmap filledHeart = Utility.getBitmapFromSheet(132, 108, 45, 41);
+        btnToFavourites.setImageBitmap(emptyHeart);
+        final boolean isHeartEmpty = true;
+        btnToFavourites.setTag(isHeartEmpty);
+        btnToFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ((boolean) view.getTag()) {
+                    ((ImageButton) view).setImageBitmap(filledHeart);
+                    view.setTag(false); //just fuck this shit
+                } else {
+                    ((ImageButton) view).setImageBitmap(emptyHeart);
+                    view.setTag(true);
+                }
+            }
+        });
+        btnToCart.setScaleType(ImageButton.ScaleType.FIT_CENTER);
+        btnToCart.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.cart));
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -171,7 +194,7 @@ public class ProductInfo extends CalligraphyActivity {
         final ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.drawer_scene_root);
         final ListView navListA = new ListView(this);//(ListView) findViewById(R.id.nav_list_a);
         sceneRoot.addView(navListA);
-        compatSetBackgroundColor(navListA, R.color.white);
+        Utility.compatSetBackgroundColor(res, navListA, R.color.white);
         /*sceneNavA = new Scene(sceneRoot, (View) navListA);
         sceneNavB = new Scene(sceneRoot, (View) navListB);
         transSetDrawer = new TransitionSet();
@@ -213,7 +236,7 @@ public class ProductInfo extends CalligraphyActivity {
         rightToCenter.setAnimationListener(new MiniAnimationListener());
         curCategory = categoryAll;
         navListA.setAdapter(curCategory.getAdapter(this));
-        compatSetBackgroundColor(navListA, R.color.white);
+        Utility.compatSetBackgroundColor(res, navListA, R.color.white);
         class RecursiveOnItemClickListener implements AdapterView.OnItemClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -221,7 +244,7 @@ public class ProductInfo extends CalligraphyActivity {
                     curCategory = curCategory.getChildren().get(position);
                     Log.d("LISTVIEW", curCategory.getChildrenIds());
                     ListView listViewFromRight = new ListView(ProductInfo.this);
-                    compatSetBackgroundColor(listViewFromRight, R.color.white);
+                    Utility.compatSetBackgroundColor(res, listViewFromRight, R.color.white);
                     listViewFromRight.setId(View.generateViewId());
                     listViewFromRight.setAdapter(curCategory.getAdapter(ProductInfo.this));
                     listViewFromRight.setTag(R.id.left_listview, parent.getId());
@@ -242,23 +265,22 @@ public class ProductInfo extends CalligraphyActivity {
         final HashMap<String, String> listAttrs = product.getListAttrs();
         final HashMap<String, String> notes = product.getNotes();
         final ArrayList<String> imageUrls = product.getWrapper().getImageUrls();
-        final Resources res = getResources();
+
         //Price transform
-        //Price transform
-        TextView productPrice = (TextView) findViewById(R.id.product_price);
+        //TextView productPrice = (TextView) findViewById(R.id.product_price);
         String stringPrice = attributes.get("price");
         stringPrice = stringPrice.substring(0, stringPrice.indexOf('.'));
         String stringDiscount = attributes.get("discount");
         stringDiscount = stringDiscount.substring(0, stringDiscount.indexOf('%'));
         long longPrice = Math.round(Integer.parseInt(stringPrice) * 0.01 * (100 - Integer.parseInt(stringDiscount)));
-        productPrice.setText(String.valueOf(longPrice));
+        //productPrice.setText(String.valueOf(longPrice));
 
         class ProductFragmentPagerAdapter extends FragmentPagerAdapter {
-            final int TAB_COUNT = 3;
+            private final int TAB_COUNT = 3;
             private String tabTitles[] = new String[]{res.getString(R.string.product_general), res.getString(R.string.product_description), res.getString(R.string.product_reviews)};
             private Context context;
 
-            public ProductFragmentPagerAdapter(FragmentManager fm, Context context) {
+            private ProductFragmentPagerAdapter(FragmentManager fm, Context context) {
                 super(fm);
                 this.context = context;
             }
@@ -468,40 +490,6 @@ public class ProductInfo extends CalligraphyActivity {
             containerNotes.setVisibility(View.GONE);
         }
 */
-    }
-
-    public static Spanned compatFromHtml(String input) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            return Html.fromHtml(input, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            return Html.fromHtml(input);
-        }
-    }
-
-    public void compatSetBackgroundColor(View view, int colorId) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.setBackgroundColor(getResources().getColor(colorId, null));
-        } else {
-            view.setBackgroundColor(getResources().getColor(colorId));
-        }
-
-    }
-
-    // limit note length to 12 and split notes string by space
-    public static String checkAndCut(String input) {
-        List<String> inputDivided = Arrays.asList(input.split(", "));
-        String returnNotes = "";
-        for (String note : inputDivided) {
-            if (note.length() > 12) {
-                returnNotes += note.replace(" ", "\n");
-            } else {
-                returnNotes += note;
-            }
-            if (inputDivided.indexOf(note) != (inputDivided.size() - 1)) {
-                returnNotes += ",\n";
-            }
-        }
-        return returnNotes;
     }
 
 }

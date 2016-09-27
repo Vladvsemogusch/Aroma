@@ -6,12 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
 
-import oped.pp.ua.aromateque.ProductInfo;
+import oped.pp.ua.aromateque.DownloadImageTask;
 import oped.pp.ua.aromateque.R;
+import oped.pp.ua.aromateque.Utility;
 
 public class ProductDescriptionFragment extends Fragment {
     HashMap<String, String> attributes;
@@ -38,8 +40,16 @@ public class ProductDescriptionFragment extends Fragment {
         root = inflater.inflate(R.layout.product_description, container, false);
         TextView txtDescriptionTitle = (TextView) root.findViewById(R.id.txt_description_title);
         TextView txtDescription = (TextView) root.findViewById(R.id.txt_description);
+        ImageView imgBrand = (ImageView) root.findViewById(R.id.img_brand);
+        imgBrand.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        new DownloadImageTask(imgBrand).execute(attributes.get("brand_img_url"));
         txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));
-        txtDescription.setText(ProductInfo.compatFromHtml(attributes.get("description")));
+        String description = attributes.get("description");
+        if (description.startsWith("<p style=\"text-align: justify;\">")) {
+            description = description.replace("<p style=\"text-align: justify;\">", "");
+            description = description.substring(0, description.length() - 4);
+        }
+        txtDescription.setText(Utility.compatFromHtml(description));
 
         return root;
 

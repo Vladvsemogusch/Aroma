@@ -15,5 +15,15 @@
     <string name="product_general">О товаре</string>
     <string name="product_description">Описание</string>
     <string name="product_reviews">Отзывы</string>
+    <string name="product_price">%1$s грн.</string>
+    <string name="short_description_title">Краткое описание</string>
+    <string name="buy">КУПИТЬ</string>
+    <string name="rating_20">НЕ ОЧЕНЬ</string>
+    <string name="rating_40">ТАК СЕБЕ</string>
+    <string name="rating_60">НЕ ПЛОХОЙ</string>
+    <string name="rating_80">ПОНРАВИЛСЯ</string>
+    <string name="rating_100">В ВОСТОРГЕ</string>
+    <string name="no_reviews">Отзывы отсутствуют.</string>
+    <string name="phone">067 611&#8211;89&#8211;41</string>
 
 </resources>

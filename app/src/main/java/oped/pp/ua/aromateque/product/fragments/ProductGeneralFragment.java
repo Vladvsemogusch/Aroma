@@ -3,6 +3,7 @@ package oped.pp.ua.aromateque.product.fragments;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
@@ -28,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import oped.pp.ua.aromateque.DownloadImageTask;
-import oped.pp.ua.aromateque.ProductInfo;
 import oped.pp.ua.aromateque.R;
+import oped.pp.ua.aromateque.Utility;
 
 public class ProductGeneralFragment extends Fragment {
 
@@ -81,6 +82,8 @@ public class ProductGeneralFragment extends Fragment {
         TextView txtFragranceNotes = (TextView) view.findViewById(R.id.txt_fragrance_notes);
         TextView txtSku = (TextView) view.findViewById(R.id.txt_sku);
         TextView txtShortDescription = (TextView) view.findViewById(R.id.txt_short_description);
+        TextView productFullPrice = (TextView) view.findViewById(R.id.product_full_price);
+        TextView productDiscountedPrice = (TextView) view.findViewById(R.id.product_discounted_price);
         LinearLayout containerAttrNameList = (LinearLayout) view.findViewById(R.id.container_attr_name_list);
         LinearLayout containerAttrValueList = (LinearLayout) view.findViewById(R.id.container_attr_value_list);
         LinearLayout containerTopNotesList = (LinearLayout) view.findViewById(R.id.container_top_notes_list);
@@ -89,14 +92,15 @@ public class ProductGeneralFragment extends Fragment {
         LinearLayout containerNotes = (LinearLayout) view.findViewById(R.id.container_notes);
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
 
-        TextView productPrice = (TextView) view.findViewById(R.id.product_price);
-        String stringPrice = attributes.get("price");
-        stringPrice = stringPrice.substring(0, stringPrice.indexOf('.'));
+        String stringFullPrice = attributes.get("price");
+        stringFullPrice = stringFullPrice.substring(0, stringFullPrice.indexOf('.'));
         String stringDiscount = attributes.get("discount");
         stringDiscount = stringDiscount.substring(0, stringDiscount.indexOf('%'));
-        long FullPrice = Integer.parseInt(stringPrice);
-        long discountedPrice = Math.round(Integer.parseInt(stringPrice) * 0.01 * (100 - Integer.parseInt(stringDiscount)));
-        productPrice.setText(String.valueOf(FullPrice));
+        long discountedPrice = Math.round(Integer.parseInt(stringFullPrice) * 0.01 * (100 - Integer.parseInt(stringDiscount)));
+
+        productFullPrice.setText(String.format(res.getString(R.string.product_price), stringFullPrice));
+        productFullPrice.setPaintFlags(productFullPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        productDiscountedPrice.setText(String.format(res.getString(R.string.product_price), String.valueOf(discountedPrice)));
 
         txtShortDescription.setText(attributes.get("short_description"));
         class ImgPagerAdapter extends PagerAdapter {
@@ -137,7 +141,7 @@ public class ProductGeneralFragment extends Fragment {
         productImgViewpager.setAdapter(new ImgPagerAdapter(getContext()));
         CirclePageIndicator viewPagerIndicator = (CirclePageIndicator) view.findViewById(R.id.viewpager_indicator);
         viewPagerIndicator.setViewPager(productImgViewpager);
-        Spanned brandProductName = ProductInfo.compatFromHtml(String.format(res.getString(R.string.brand_name), attributes.get("shopbybrand_brand"), "<b>" + attributes.get("name") + "</b>"));
+        Spanned brandProductName = Utility.compatFromHtml(String.format(res.getString(R.string.brand_name), attributes.get("shopbybrand_brand"), "<b>" + attributes.get("name") + "</b>"));
         txtBrandProductName.setText(brandProductName);
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(brandProductName);
@@ -223,21 +227,21 @@ public class ProductGeneralFragment extends Fragment {
         String stringNotes;//reusable
         int dontHaveNotes = 0; // if ==3 -> no notes for product
         if (!notes.get("topnotes").equals("false")) {
-            stringNotes = ProductInfo.checkAndCut(notes.get("topnotes"));
+            stringNotes = Utility.checkAndCut(notes.get("topnotes"));
             txtTopNotesContent.setText(stringNotes);
         } else {
             containerTopNotesList.setVisibility(View.GONE);
             dontHaveNotes++;
         }
         if (!notes.get("middlenotes").equals("false")) {
-            stringNotes = ProductInfo.checkAndCut(notes.get("middlenotes"));
+            stringNotes = Utility.checkAndCut(notes.get("middlenotes"));
             txtMiddleNotesContent.setText(stringNotes);
         } else {
             containerMiddleNotesList.setVisibility(View.GONE);
             dontHaveNotes++;
         }
         if (!notes.get("basenotes").equals("false")) {
-            stringNotes = ProductInfo.checkAndCut(notes.get("basenotes"));
+            stringNotes = Utility.checkAndCut(notes.get("basenotes"));
             txtBaseNotesContent.setText(stringNotes);
         } else {
             containerBaseNotesList.setVisibility(View.GONE);
