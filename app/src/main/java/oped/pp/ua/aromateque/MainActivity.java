@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import oped.pp.ua.aromateque.model.LongProduct;
+
 public class MainActivity extends CalligraphyActivity {
     final String BASE_URL = "http://10.0.1.50/";
     HashMap<Integer, ShortProduct> productsMap;

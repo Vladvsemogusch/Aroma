@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-import oped.pp.ua.aromateque.DownloadImageTask;
 import oped.pp.ua.aromateque.R;
-import oped.pp.ua.aromateque.Utility;
+import oped.pp.ua.aromateque.utility.DownloadImageTask;
+import oped.pp.ua.aromateque.utility.Utility;
 
 public class ProductDescriptionFragment extends Fragment {
     HashMap<String, String> attributes;

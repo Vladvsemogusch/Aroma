@@ -18,7 +18,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import oped.pp.ua.aromateque.R;
-import oped.pp.ua.aromateque.Review;
+import oped.pp.ua.aromateque.model.Review;
 
 public class ProductReviewsFragment extends Fragment {
     ArrayList<Review> reviews;

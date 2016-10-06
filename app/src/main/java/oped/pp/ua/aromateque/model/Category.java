@@ -1,4 +1,4 @@
-package oped.pp.ua.aromateque;
+package oped.pp.ua.aromateque.model;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;

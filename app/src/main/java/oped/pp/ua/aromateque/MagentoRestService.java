@@ -2,6 +2,8 @@ package oped.pp.ua.aromateque;
 
 import java.util.HashMap;
 
+import oped.pp.ua.aromateque.model.Category;
+import oped.pp.ua.aromateque.model.RawLongProduct;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -14,7 +16,7 @@ public interface MagentoRestService {
 
     @Headers("Accept: application/json")
     @GET("api/rest/custom/products/{id}")
-    Call<LongProduct> getProduct(@Path("id") int productId);
+    Call<RawLongProduct> getProduct(@Path("id") int productId);
 
     @Headers("Accept: application/json")
     @GET("api/rest/custom/categories/{id}")

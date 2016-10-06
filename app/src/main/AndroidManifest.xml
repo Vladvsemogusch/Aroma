@@ -3,7 +3,7 @@
     package="oped.pp.ua.aromateque">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name=".AromatequeApplication"
         android:allowBackup="true"
@@ -26,6 +26,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="oped.pp.ua.aromateque.MainActivity" />
         </activity>
+        <activity android:name=".MainPageActivity" />
     </application>
 
 </manifest>

@@ -23,28 +23,23 @@ import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import oped.pp.ua.aromateque.DownloadImageTask;
 import oped.pp.ua.aromateque.R;
-import oped.pp.ua.aromateque.Utility;
+import oped.pp.ua.aromateque.db.DatabaseHelper;
+import oped.pp.ua.aromateque.model.LongProduct;
+import oped.pp.ua.aromateque.utility.DownloadImageTask;
+import oped.pp.ua.aromateque.utility.Utility;
 
 public class ProductGeneralFragment extends Fragment {
 
-    private Map<String, String> listAttrs;
     private Map<String, String> attributes;
-    private Map<String, String> notes;
-    private List imageUrls;
+    private List<String> imageUrls;
 
-    public static ProductGeneralFragment newInstance(HashMap<String, String> listAttrs, HashMap<String, String> attributes, HashMap<String, String> notes, ArrayList<String> imageUrls) {
+    public static ProductGeneralFragment newInstance(int productId) {
         Bundle args = new Bundle();
-        args.putSerializable("listAttrs", listAttrs);
-        args.putSerializable("attributes", attributes);
-        args.putSerializable("notes", notes);
-        args.putSerializable("imageUrls", imageUrls);
+        args.putInt("id", productId);
         ProductGeneralFragment fragment = new ProductGeneralFragment();
         fragment.setArguments(args);
         return fragment;
@@ -53,10 +48,10 @@ public class ProductGeneralFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        listAttrs = (HashMap<String, String>) getArguments().getSerializable("listAttrs");
-        attributes = (HashMap<String, String>) getArguments().getSerializable("attributes");
-        notes = (HashMap<String, String>) getArguments().getSerializable("notes");
-        imageUrls = (ArrayList<String>) getArguments().getSerializable("imageUrls");
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        LongProduct product = dbHelper.deserializeProduct(getArguments().getInt("id"));
+        attributes = product.getAttributes();
+        imageUrls = product.getImageUrls();
     }
 
     @Override
@@ -69,7 +64,7 @@ public class ProductGeneralFragment extends Fragment {
         ScrollView productScrollviewMain = (ScrollView) view.findViewById(R.id.product_scrollview_main);
         productScrollviewMain.setForegroundGravity(Gravity.END);
         //HashMap<String, String> attributes = product.getAttributes();
-        //HashMap<String, String> listAttrs = product.getListAttrs();
+        //HashMap<String, String> attributes = product.getListAttrs();
         ViewPager productImgViewpager = (ViewPager) view.findViewById(R.id.product_img_viewpager);
         ImageView imgGender = (ImageView) view.findViewById(R.id.img_gender);
         TextView txtBrandProductName = (TextView) view.findViewById(R.id.txt_brand_product_name);
@@ -111,7 +106,7 @@ public class ProductGeneralFragment extends Fragment {
 
             private ImgPagerAdapter(Context context) {
                 this.context = context;
-                layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
 
             @Override
@@ -126,9 +121,9 @@ public class ProductGeneralFragment extends Fragment {
 
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                View itemView = layoutInflater.inflate(R.layout.img_pager_item, container, false);
-                ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
-                new DownloadImageTask(imgView).execute(productImgList.get(position));
+                ImageView itemView = (ImageView) layoutInflater.inflate(R.layout.img_pager_item, container, false);
+                //ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
+                new DownloadImageTask(itemView).execute(productImgList.get(position));
                 container.addView(itemView);
                 return itemView;
             }
@@ -141,14 +136,14 @@ public class ProductGeneralFragment extends Fragment {
         productImgViewpager.setAdapter(new ImgPagerAdapter(getContext()));
         CirclePageIndicator viewPagerIndicator = (CirclePageIndicator) view.findViewById(R.id.viewpager_indicator);
         viewPagerIndicator.setViewPager(productImgViewpager);
-        Spanned brandProductName = Utility.compatFromHtml(String.format(res.getString(R.string.brand_name), attributes.get("shopbybrand_brand"), "<b>" + attributes.get("name") + "</b>"));
+        Spanned brandProductName = Utility.compatFromHtml(String.format(res.getString(R.string.brand_name), attributes.get("brand"), "<b>" + attributes.get("name") + "</b>"));
         txtBrandProductName.setText(brandProductName);
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(brandProductName);
         }
-        txtProductType.setText(attributes.get("typeofproduct").toLowerCase());
+        txtProductType.setText(attributes.get("type_of_product").toLowerCase());
         String marks = "";
-        String reviews = attributes.get("total_reviews_count");
+        String reviews = attributes.get("reviews_count");
         int lastDigit = Integer.parseInt(reviews.substring(reviews.length() - 1));
         switch (lastDigit) {
             case 1:
@@ -193,21 +188,21 @@ public class ProductGeneralFragment extends Fragment {
         //fill first attribute list
         TextView attrNameView;  //reusable
         TextView attrValueView; //reusable
-        if (!listAttrs.get("volume").equals("No")) {
+        if (!attributes.get("volume").equals("No")) {
             attrNameView = new TextView(getContext());
             attrNameView.setText("Объем");
             containerAttrNameList.addView(attrNameView);
             attrValueView = new TextView(getContext());
-            attrValueView.setText(listAttrs.get("volume"));
+            attrValueView.setText(attributes.get("volume"));
             containerAttrValueList.addView(attrValueView);
         }
-        if (listAttrs.get("perfumer") != null) {
-            if (listAttrs.get("perfumer") != null || !listAttrs.get("perfumer").equals("No")) {
+        if (attributes.get("perfumer") != null) {
+            if (attributes.get("perfumer") != null || !attributes.get("perfumer").equals("No")) {
                 attrNameView = new TextView(getContext());
                 attrNameView.setText("Парфюмер");
                 containerAttrNameList.addView(attrNameView);
                 attrValueView = new TextView(getContext());
-                attrValueView.setText(listAttrs.get("perfumer"));
+                attrValueView.setText(attributes.get("perfumer"));
                 containerAttrValueList.addView(attrValueView);
             }
         }
@@ -223,32 +218,32 @@ public class ProductGeneralFragment extends Fragment {
             }
             containerAttrValueList.addView(attrValueView);
         }
-        //fill notes
+        //fill attributes
         String stringNotes;//reusable
-        int dontHaveNotes = 0; // if ==3 -> no notes for product
-        if (!notes.get("topnotes").equals("false")) {
-            stringNotes = Utility.checkAndCut(notes.get("topnotes"));
+        int dontHaveNotes = 0; // if == 3 -> no attributes for product
+        if (!attributes.get("top_notes").equals("false")) {
+            stringNotes = Utility.checkAndCut(attributes.get("top_notes"));
             txtTopNotesContent.setText(stringNotes);
         } else {
             containerTopNotesList.setVisibility(View.GONE);
             dontHaveNotes++;
         }
-        if (!notes.get("middlenotes").equals("false")) {
-            stringNotes = Utility.checkAndCut(notes.get("middlenotes"));
+        if (!attributes.get("middle_notes").equals("false")) {
+            stringNotes = Utility.checkAndCut(attributes.get("middle_notes"));
             txtMiddleNotesContent.setText(stringNotes);
         } else {
             containerMiddleNotesList.setVisibility(View.GONE);
             dontHaveNotes++;
         }
-        if (!notes.get("basenotes").equals("false")) {
-            stringNotes = Utility.checkAndCut(notes.get("basenotes"));
+        if (!attributes.get("base_notes").equals("false")) {
+            stringNotes = Utility.checkAndCut(attributes.get("base_notes"));
             txtBaseNotesContent.setText(stringNotes);
         } else {
             containerBaseNotesList.setVisibility(View.GONE);
             dontHaveNotes++;
         }
         if (dontHaveNotes == 3) {
-            txtFragranceNotes.setVisibility(View.GONE);
+            txtFragranceNotes.setVisibility(View.GONE);     //TODO in case 2 or 1 notes are specified
             containerNotes.setVisibility(View.GONE);
         }
 

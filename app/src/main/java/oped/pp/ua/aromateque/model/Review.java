@@ -1,4 +1,4 @@
-package oped.pp.ua.aromateque;
+package oped.pp.ua.aromateque.model;
 
 public class Review {
     private String text;

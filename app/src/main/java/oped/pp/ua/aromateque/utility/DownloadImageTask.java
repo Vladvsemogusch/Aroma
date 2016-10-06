@@ -1,4 +1,4 @@
-package oped.pp.ua.aromateque;
+package oped.pp.ua.aromateque.utility;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.InputStream;
+
+import oped.pp.ua.aromateque.ProductInfo;
 
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
