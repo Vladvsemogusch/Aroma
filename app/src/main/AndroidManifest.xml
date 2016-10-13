@@ -3,7 +3,9 @@
     package="oped.pp.ua.aromateque">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
     <application
         android:name=".AromatequeApplication"
         android:allowBackup="true"
@@ -11,13 +13,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AromatequeTheme.NoActionBar">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".MainActivity" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".ProductInfo"
             android:label="@string/title_activity_product_info"
@@ -26,7 +23,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="oped.pp.ua.aromateque.MainActivity" />
         </activity>
-        <activity android:name=".MainPageActivity" />
+        <activity android:name=".MainPageActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

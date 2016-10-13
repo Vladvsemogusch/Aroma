@@ -8,6 +8,10 @@
     <color name="secondaryProgress">#DCC9A7</color>
     <color name="black">#000000</color>
     <color name="review_date">#B8B1A5</color>
+    <color name="dark_brown">#524739</color>
+    <color name="creme">#F5ECDD</color>
+    <color name="shortproduct_name">#A97B2A</color>
+    <color name="shortproduct_oldprice">#9C856C</color>
 
 
 </resources>

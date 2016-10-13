@@ -21,6 +21,8 @@ import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class ProductGeneralFragment extends Fragment {
 
     private Map<String, String> attributes;
     private List<String> imageUrls;
+    ImageLoader imgLoader;
 
     public static ProductGeneralFragment newInstance(int productId) {
         Bundle args = new Bundle();
@@ -59,7 +62,11 @@ public class ProductGeneralFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.product_general, container, false);
-
+        imgLoader = ImageLoader.getInstance();
+        final DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
         Resources res = getResources();
         ScrollView productScrollviewMain = (ScrollView) view.findViewById(R.id.product_scrollview_main);
         productScrollviewMain.setForegroundGravity(Gravity.END);
@@ -124,6 +131,7 @@ public class ProductGeneralFragment extends Fragment {
                 ImageView itemView = (ImageView) layoutInflater.inflate(R.layout.img_pager_item, container, false);
                 //ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
                 new DownloadImageTask(itemView).execute(productImgList.get(position));
+                imgLoader.displayImage(productImgList.get(position), itemView, options);
                 container.addView(itemView);
                 return itemView;
             }

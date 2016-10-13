@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import oped.pp.ua.aromateque.R;
+
 public class Category {
     @SerializedName("category_id")
     private int id;
@@ -66,7 +68,7 @@ public class Category {
             childrenNames.add(cat.getName());
             //Log.d("asd",cat.getName());
         }
-        return new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, childrenNames);
+        return new ArrayAdapter<>(context, R.layout.list_item_category, R.id.txt_category, childrenNames);
     }
 
 }

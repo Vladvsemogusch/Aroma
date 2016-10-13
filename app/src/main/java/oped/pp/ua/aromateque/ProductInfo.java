@@ -35,6 +35,8 @@ import oped.pp.ua.aromateque.model.RawLongProduct;
 import oped.pp.ua.aromateque.product.fragments.ProductDescriptionFragment;
 import oped.pp.ua.aromateque.product.fragments.ProductGeneralFragment;
 import oped.pp.ua.aromateque.product.fragments.ProductReviewsFragment;
+import oped.pp.ua.aromateque.utility.Constants;
+import oped.pp.ua.aromateque.utility.IconSheet;
 import oped.pp.ua.aromateque.utility.Utility;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,9 +45,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductInfo extends CalligraphyActivity {
-    public static final String BASE_URL = "http://10.0.1.50/";
     final int productId = 177;
-    final int CATEGORY_ALL = 2;
     Toolbar toolbar;
     MagentoRestService api;
     LongProduct product;
@@ -65,8 +65,8 @@ public class ProductInfo extends CalligraphyActivity {
         setTheme(R.style.AromatequeTheme_NoActionBar);
         res = getResources();
         dbHelper = new DatabaseHelper(this);
-        //Initialize utility with icon sheet
-        Utility.initialize(BitmapFactory.decodeResource(getResources(), R.drawable.icon_sheet));
+        //Initialize IconSheet
+        IconSheet.initialize(BitmapFactory.decodeResource(getResources(), R.drawable.icon_sheet));
         //Preparing toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,7 +79,7 @@ public class ProductInfo extends CalligraphyActivity {
 
         //Working with RestAPI
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api = retrofit.create(MagentoRestService.class);
@@ -124,10 +124,10 @@ public class ProductInfo extends CalligraphyActivity {
                 Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 t.printStackTrace();
-                api.getCategoryWithChildren(CATEGORY_ALL).enqueue(new CategoryRecursiveCallback<Category>());
+                api.getCategoryWithChildren(Constants.CATEGORY_ALL).enqueue(new CategoryRecursiveCallback<Category>());
             }
         }
-        api.getCategoryWithChildren(CATEGORY_ALL).enqueue(new CategoryRecursiveCallback<Category>());
+        api.getCategoryWithChildren(Constants.CATEGORY_ALL).enqueue(new CategoryRecursiveCallback<Category>());
 
 
     }
@@ -136,8 +136,8 @@ public class ProductInfo extends CalligraphyActivity {
         ImageButton btnToFavourites = (ImageButton) findViewById(R.id.to_favorites);
         ImageButton btnToCart = (ImageButton) findViewById(R.id.to_cart);
 
-        final Bitmap emptyHeart = Utility.getBitmapFromSheet(128, 64, 45, 41);
-        final Bitmap filledHeart = Utility.getBitmapFromSheet(132, 108, 45, 41);
+        final Bitmap emptyHeart = IconSheet.getBitmap(128, 64, 45, 41);
+        final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
         btnToFavourites.setImageBitmap(emptyHeart);
         final boolean isHeartEmpty = true;
         btnToFavourites.setTag(isHeartEmpty);
@@ -227,8 +227,8 @@ public class ProductInfo extends CalligraphyActivity {
         transSetDrawer.setInterpolator(new LinearInterpolator());
         transManager = new TransitionManager();
         transManager.setTransition(sceneNavA,sceneNavB,transSetDrawer);*/
-        final Animation rightToCenter = AnimationUtils.loadAnimation(ProductInfo.this, R.anim.right_to_center);
-        final Animation centerToLeft = AnimationUtils.loadAnimation(ProductInfo.this, R.anim.center_to_left);
+        final Animation rightToCenter = AnimationUtils.loadAnimation(this, R.anim.right_to_center);
+        final Animation centerToLeft = AnimationUtils.loadAnimation(this, R.anim.center_to_left);
         class MiniAnimationListener implements Animation.AnimationListener {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -273,19 +273,10 @@ public class ProductInfo extends CalligraphyActivity {
 
     void fillProductInfo() {
         final HashMap<String, String> attributes = product.getAttributes();
-        //Price transform
-        //TextView productPrice = (TextView) findViewById(R.id.product_price);
-        String stringPrice = attributes.get("price");
-        stringPrice = stringPrice.substring(0, stringPrice.indexOf('.'));
-        String stringDiscount = attributes.get("discount");
-        stringDiscount = stringDiscount.substring(0, stringDiscount.indexOf('%'));
-        long longPrice = Math.round(Integer.parseInt(stringPrice) * 0.01 * (100 - Integer.parseInt(stringDiscount)));
-        //productPrice.setText(String.valueOf(longPrice));
         class ProductFragmentPagerAdapter extends FragmentPagerAdapter {
             private final int TAB_COUNT = 3;
             private String tabTitles[] = new String[]{res.getString(R.string.product_general), res.getString(R.string.product_description), res.getString(R.string.product_reviews)};
             private Context context;
-
             private ProductFragmentPagerAdapter(FragmentManager fm, Context context) {
                 super(fm);
                 this.context = context;

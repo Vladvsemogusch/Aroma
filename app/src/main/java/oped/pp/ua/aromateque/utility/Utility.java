@@ -2,7 +2,6 @@ package oped.pp.ua.aromateque.utility;
 
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -12,11 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Utility {
-    static private Bitmap iconSheet;
 
-    public static void initialize(Bitmap iconSheet) {
-        Utility.iconSheet = iconSheet;
-    }
 
     public static Spanned compatFromHtml(String input) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -51,7 +46,4 @@ public class Utility {
         }
     }
 
-    public static Bitmap getBitmapFromSheet(int offsetX, int offsetY, int width, int height) {
-        return Bitmap.createBitmap(iconSheet, offsetX, offsetY, width, height);
-    }
 }

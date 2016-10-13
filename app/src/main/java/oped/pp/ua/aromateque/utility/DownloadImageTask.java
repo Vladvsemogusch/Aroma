@@ -8,8 +8,6 @@ import android.widget.ImageView;
 
 import java.io.InputStream;
 
-import oped.pp.ua.aromateque.ProductInfo;
-
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 
@@ -20,7 +18,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String... urls) {
         String urldisplay = urls[0];
         if (urldisplay.startsWith("http://localhost/")) {
-            urldisplay = urldisplay.replace("http://localhost/", ProductInfo.BASE_URL);
+            urldisplay = urldisplay.replace("http://localhost/", Constants.BASE_URL);
         }
         Bitmap mIcon11 = null;
         try {

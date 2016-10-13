@@ -25,5 +25,6 @@
     <string name="rating_100">В ВОСТОРГЕ</string>
     <string name="no_reviews">Отзывы отсутствуют.</string>
     <string name="phone">067 611&#8211;89&#8211;41</string>
+    <string name="catalog">Каталог товаров:</string>
 
 </resources>
