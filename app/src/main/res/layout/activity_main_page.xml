@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="oped.pp.ua.aromateque.MainPageActivity">
+    tools:context="ua.pp.oped.aromateque.MainPageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -23,11 +23,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ListView
-        android:id="@+id/listview_categories"
-            android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/categories_recycleview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

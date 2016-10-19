@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="oped.pp.ua.aromateque">
+    package="ua.pp.oped.aromateque">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature
@@ -16,12 +16,12 @@
         <activity android:name=".MainActivity" />
 
         <activity
-            android:name=".ProductInfo"
+            android:name=".ProductInfoActivity"
             android:label="@string/title_activity_product_info"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="oped.pp.ua.aromateque.MainActivity" />
+                android:value="ua.pp.oped.aromateque.MainActivity" />
         </activity>
         <activity android:name=".MainPageActivity">
             <intent-filter>
