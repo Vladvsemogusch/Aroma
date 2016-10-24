@@ -20,9 +20,9 @@ public class Category {
     @SerializedName("child_id")
     private ArrayList<Integer> childrenIds;
     @SerializedName("active")
-    boolean isActive;
+    private boolean isActive;
     @SerializedName("children_categories")
-    private List<Category> children;
+    private ArrayList<Category> children;
 
     public int getId() {
         return id;
@@ -56,11 +56,11 @@ public class Category {
         isActive = active;
     }
 
-    public List<Category> getChildren() {
+    public ArrayList<Category> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Category> children) {
+    public void setChildren(ArrayList<Category> children) {
         this.children = children;
     }
 

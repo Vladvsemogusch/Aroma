@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque;
+package ua.pp.oped.aromateque.activity;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -33,6 +33,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ua.pp.oped.aromateque.MagentoRestService;
+import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.LongProduct;
@@ -64,9 +66,7 @@ public class ProductInfoActivity extends CalligraphyActivity {
         setContentView(R.layout.activity_product_info);
         setTheme(R.style.AromatequeTheme_NoActionBar);
         res = getResources();
-        dbHelper = DatabaseHelper.getInstance(this);
-        //Initialize IconSheet
-        IconSheet.initialize(BitmapFactory.decodeResource(getResources(), R.drawable.icon_sheet));
+        dbHelper = DatabaseHelper.getInstance();
         //Preparing toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -125,10 +125,10 @@ public class ProductInfoActivity extends CalligraphyActivity {
                 Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 t.printStackTrace();
-                api.getCategoryWithChildren(Constants.CATEGORY_ALL).enqueue(new CategoryRecursiveCallback<Category>());
+                api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
             }
         }
-        api.getCategoryWithChildren(Constants.CATEGORY_ALL).enqueue(new CategoryRecursiveCallback<Category>());
+        api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
 
 
     }

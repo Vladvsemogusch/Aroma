@@ -51,7 +51,7 @@ public class ProductGeneralFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
         LongProduct product = dbHelper.deserializeProduct(getArguments().getInt("id"));
         attributes = product.getAttributes();
         imageUrls = product.getImageUrls();
@@ -123,7 +123,7 @@ public class ProductGeneralFragment extends Fragment {
 
             @Override
             public boolean isViewFromObject(View view, Object object) {
-                return view == ((ImageView) object);
+                return view == object;
             }
 
             @Override

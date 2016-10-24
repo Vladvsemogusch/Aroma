@@ -1,9 +1,10 @@
-package ua.pp.oped.aromateque;
+package ua.pp.oped.aromateque.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.model.LongProduct;
 
 public class MainActivity extends CalligraphyActivity {

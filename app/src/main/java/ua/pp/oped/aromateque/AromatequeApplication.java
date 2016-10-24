@@ -12,6 +12,7 @@ public final class AromatequeApplication extends android.app.Application {
                 .build()
         );
 
+
     }
 }
 

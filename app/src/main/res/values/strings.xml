@@ -26,5 +26,7 @@
     <string name="no_reviews">Отзывы отсутствуют.</string>
     <string name="phone">067 611&#8211;89&#8211;41</string>
     <string name="catalog">Каталог товаров:</string>
+    <string name="title_activity_category_level3">Aromateque</string>
+    <string name="subcategory_title">%1$s:</string>
 
 </resources>

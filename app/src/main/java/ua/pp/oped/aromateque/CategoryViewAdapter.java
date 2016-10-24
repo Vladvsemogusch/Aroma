@@ -1,6 +1,9 @@
 package ua.pp.oped.aromateque;
 
+import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v17.leanback.widget.HorizontalGridView;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,6 +25,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.pp.oped.aromateque.activity.CategoryLevel3Activity;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
@@ -45,9 +50,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int itemType) {
@@ -83,32 +85,56 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             //  Offset because of header
             final Category category = categories.get(position - 1);
             ((MainItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
-            ((MainItemViewHolder) viewHolder).txtCategoryName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!((MainItemViewHolder) viewHolder).isExtended) {
-                        if (category.getChildrenIds() != null) {
+            ((MainItemViewHolder) viewHolder).imgArrow.setImageDrawable(resources.getDrawable(R.drawable.arrow_right_black_24dp, null));
+            if (category.getChildren() != null) {
+
+                ((MainItemViewHolder) viewHolder).mainItemLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!((MainItemViewHolder) viewHolder).isExtended) {
                             for (Category childCategory :
                                     category.getChildren()) {
                                 categories.add(viewHolder.getAdapterPosition(), childCategory);
                             }
                             CategoryViewAdapter.this.notifyItemRangeInserted(viewHolder.getAdapterPosition() + 1, category.getChildrenIds().size());
+                            ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 0, 90f)
+                                    .setDuration(400)
+                                    .start();
                             ((MainItemViewHolder) viewHolder).isExtended = true;
+                        } else {
+                            int positionInAdapter = viewHolder.getAdapterPosition();
+                            categories.subList(positionInAdapter, positionInAdapter + category.getChildren().size()).clear();
+                            CategoryViewAdapter.this.notifyItemRangeRemoved(positionInAdapter + 1, category.getChildren().size());
+                            ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 90f, 0)
+                                    .setDuration(400)
+                                    .start();
+                            ((MainItemViewHolder) viewHolder).isExtended = false;
                         }
-                    } else {
-                        categories.subList(viewHolder.getAdapterPosition(), viewHolder.getAdapterPosition() + category.getChildren().size()).clear();
-                        CategoryViewAdapter.this.notifyItemRangeRemoved(viewHolder.getAdapterPosition() + 1, category.getChildren().size());
-                        ((MainItemViewHolder) viewHolder).isExtended = false;
                     }
-                }
-
-            });
-
+                });
+            } else {
+                ((ChildItemViewHolder) viewHolder).txtCategory.setOnClickListener(null);
+            }
         }
         if (viewHolder instanceof ChildItemViewHolder) {
+            //TODO for categories without subcategories go directly to activity for that category.
             final Category category = categories.get(position - 1);
             ((ChildItemViewHolder) viewHolder).category = category;
             ((ChildItemViewHolder) viewHolder).txtCategory.setText(category.getName());
+            if (((ChildItemViewHolder) viewHolder).category.getChildren() != null) {
+                ((ChildItemViewHolder) viewHolder).txtCategory.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, CategoryLevel3Activity.class);
+                        intent.putExtra("category_id", ((ChildItemViewHolder) viewHolder).category.getId());
+                        ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
+                        context.startActivity(intent, activityOptions.toBundle());
+                        //((Activity)context).overridePendingTransition();
+                    }
+                });
+            } else {
+                ((ChildItemViewHolder) viewHolder).txtCategory.setOnClickListener(null);
+            }
         }
     }
 
@@ -131,7 +157,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void fillHeader(HeaderViewHolder headerViewHolder) {
-        final ViewPager viewpagerBanners = (ViewPager) headerViewHolder.viewpager;
+        final ViewPager viewpagerBanners = headerViewHolder.viewpager;
         final DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -154,7 +180,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             @Override
             public boolean isViewFromObject(View view, Object object) {
-                return view == ((ImageView) object);
+                return view == object;
             }
 
             @Override
@@ -208,18 +234,21 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         bestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));
     }
 
-    class MainItemViewHolder extends RecyclerView.ViewHolder {
+    private class MainItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtCategoryName;
         ImageView imgArrow;
+        RelativeLayout mainItemLayout;
         boolean isExtended = false;
 
         MainItemViewHolder(View itemView) {
             super(itemView);
             txtCategoryName = (TextView) itemView.findViewById(R.id.txt_category);
+            imgArrow = (ImageView) itemView.findViewById(R.id.category_list_arrow);
+            mainItemLayout = (RelativeLayout) itemView.findViewById(R.id.category_mainitem_layout);
         }
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
         ViewPager viewpager;
         CirclePageIndicator circlePageIndicator;
         HorizontalGridView bestsellersView;
@@ -234,7 +263,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    class FooterViewHolder extends RecyclerView.ViewHolder {
+    private class FooterViewHolder extends RecyclerView.ViewHolder {
         View phone;
 
         FooterViewHolder(View itemView) {
@@ -243,12 +272,15 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    class ChildItemViewHolder extends RecyclerView.ViewHolder {
+    private class ChildItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtCategory;
+        //LinearLayout layout;
+        //TODO No need to supply full category object
         Category category;
 
         ChildItemViewHolder(View itemView) {
             super(itemView);
+            //layout = (LinearLayout) itemView.findViewById(R.id.category_list_child_item_layout);
             txtCategory = (TextView) itemView.findViewById(R.id.txt_category);
         }
     }

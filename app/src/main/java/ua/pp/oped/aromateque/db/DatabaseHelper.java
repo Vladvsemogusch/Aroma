@@ -12,24 +12,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.LongProduct;
 import ua.pp.oped.aromateque.model.Review;
 
+import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
+
 public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "aromateque.db";
-    static DatabaseHelper instance;
+    private static DatabaseHelper instance;
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         setForcedUpgrade();
     }
 
-    public static DatabaseHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new DatabaseHelper(context.getApplicationContext());
-        }
+    public static void initialize(Context context) {
+        instance = new DatabaseHelper(context);
+    }
+
+    public static DatabaseHelper getInstance() {
+
         return instance;
     }
 
@@ -141,6 +146,73 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         c.close();
         return exists;
 
+
+    }
+
+    //Once per app launch
+    public void serializeCategories(Category categoryAll) {
+        Log.d("LAUNCH", "Started serializing categories");
+        getWritableDatabase().beginTransaction();
+        serializeCategory(categoryAll);
+        getWritableDatabase().setTransactionSuccessful();
+        getWritableDatabase().endTransaction();
+
+
+    }
+
+    private void serializeCategory(Category category) {
+        ContentValues values = new ContentValues();
+        values.put("category_id", category.getId());
+        values.put("name", category.getName());
+        values.put("parent_id", category.getParentId());
+        if (category.getChildrenIds() != null) {
+            String childrenIds = "";
+            for (int id : category.getChildrenIds()) {
+                childrenIds += String.valueOf(id) + ",";
+            }
+            childrenIds = childrenIds.substring(0, childrenIds.length() - 1);
+            values.put("children_ids", childrenIds);
+            for (Category subCategory : category.getChildren()) {
+                serializeCategory(subCategory);
+            }
+        }
+        getWritableDatabase().insert("categories", null, values);
+    }
+
+    public Category deserializeCategory(int categoryId) {
+        Log.d("DB", "deserializing " + categoryId);
+        String[] args = {String.valueOf(categoryId)};
+        Cursor c = getReadableDatabase().query("categories", null, "category_id=?", args, null, null, null);
+        c.moveToNext();
+        Category category = new Category();
+        category.setId(c.getInt(0));
+        category.setName(c.getString(1));
+        category.setParentId(c.getInt(2));
+        String childrenIds = c.getString(3);
+        c.close();
+        ArrayList<Integer> childrenIdsList = null;
+        ArrayList<Category> childrenCategories = null;
+        if (childrenIds != null) {
+            childrenIdsList = new ArrayList<>();
+            for (String childId : childrenIds.split(",")) {
+                childrenIdsList.add(Integer.valueOf(childId));
+            }
+            childrenCategories = new ArrayList<>();
+            for (int child_id : childrenIdsList) {
+                childrenCategories.add(deserializeCategory(child_id));
+            }
+        }
+        category.setChildrenIds(childrenIdsList);
+        category.setChildren(childrenCategories);
+        return category;
+    }
+
+    public boolean categoriesSerialized() {
+        String[] args = {String.valueOf(CATEGORY_ALL_ID)};
+        Cursor c = getReadableDatabase().query("categories", null, "category_id=?", args, null, null, null);
+        Boolean isSerialized = c.getCount() > 0;
+        c.close();
+        return isSerialized;
 
     }
 }
