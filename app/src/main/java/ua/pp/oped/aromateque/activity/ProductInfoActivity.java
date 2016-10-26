@@ -206,7 +206,7 @@ public class ProductInfoActivity extends CalligraphyActivity {
         final ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.drawer_scene_root);
         final ListView navListA = new ListView(this);//(ListView) findViewById(R.id.nav_list_a);
         sceneRoot.addView(navListA);
-        Utility.compatSetBackgroundColor(res, navListA, R.color.white);
+        navListA.setBackgroundColor(Utility.compatGetColor(res, R.color.white));
         /*sceneNavA = new Scene(sceneRoot, (View) navListA);
         sceneNavB = new Scene(sceneRoot, (View) navListB);
         transSetDrawer = new TransitionSet();
@@ -248,14 +248,13 @@ public class ProductInfoActivity extends CalligraphyActivity {
         rightToCenter.setAnimationListener(new MiniAnimationListener());
         curCategory = categoryAll;
         navListA.setAdapter(curCategory.getAdapter(this));
-        Utility.compatSetBackgroundColor(res, navListA, R.color.white);
         class RecursiveOnItemClickListener implements AdapterView.OnItemClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!isAnimationRunning && curCategory.getChildren().get(position).getChildrenIds() != null) {
                     curCategory = curCategory.getChildren().get(position);
                     ListView listViewFromRight = new ListView(ProductInfoActivity.this);
-                    Utility.compatSetBackgroundColor(res, listViewFromRight, R.color.white);
+                    listViewFromRight.setBackgroundColor(Utility.compatGetColor(res, R.color.white));
                     listViewFromRight.setId(View.generateViewId());
                     listViewFromRight.setAdapter(curCategory.getAdapter(ProductInfoActivity.this));
                     listViewFromRight.setTag(R.id.left_listview, parent.getId());

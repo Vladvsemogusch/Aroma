@@ -30,6 +30,7 @@ import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
 import ua.pp.oped.aromateque.utility.IconSheet;
+import ua.pp.oped.aromateque.utility.Utility;
 
 public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
@@ -85,7 +86,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             //  Offset because of header
             final Category category = categories.get(position - 1);
             ((MainItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
-            ((MainItemViewHolder) viewHolder).imgArrow.setImageDrawable(resources.getDrawable(R.drawable.arrow_right_black_24dp, null));
+            ((MainItemViewHolder) viewHolder).imgArrow.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.arrow_right_black_24dp));
             if (category.getChildren() != null) {
 
                 ((MainItemViewHolder) viewHolder).mainItemLayout.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +211,8 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ArrayList<ShortProduct> bestsellersList = new ArrayList<>();
         final ShortProduct prod = new ShortProduct();
         prod.setBrand("SASDA");
-        prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+        prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
         prod.setName("asda");
         prod.setOldPrice("1321");
         prod.setPrice("1231");

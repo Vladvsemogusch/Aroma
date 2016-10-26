@@ -32,14 +32,22 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private LayoutInflater layoutInflater;
     private Context context;
     private Category parentCategory;
+    private boolean withFooter;
+    private int offset;
 
-    public SubCategoryViewAdapter(Context context, Category parentCategory, Resources resources, ImageLoader imgLoader) {
+    public SubCategoryViewAdapter(Context context, Category parentCategory, ImageLoader imgLoader, boolean withFooter) {
         this.categories = parentCategory.getChildren();
-        this.resources = resources;
+        this.resources = context.getResources();
         this.imgLoader = imgLoader;
         this.context = context;
         this.parentCategory = parentCategory;
         layoutInflater = LayoutInflater.from(context);
+        this.withFooter = withFooter;
+        if (withFooter) {
+            offset = 1;
+        } else {
+            offset = 0;
+        }
         Log.d("ADAPTER", "Subcategory Adapter created");
     }
 
@@ -87,14 +95,15 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return categories.size() + 2;
+        return categories.size() + 1 + offset;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (position == 0)
             return TYPE_HEADER;
-        if (position == categories.size() + 1) {
+
+        if (position == categories.size() + 1 && withFooter) {
             return TYPE_FOOTER;
         }
         return TYPE_ITEM;

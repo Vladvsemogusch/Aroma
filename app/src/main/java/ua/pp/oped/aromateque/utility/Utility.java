@@ -2,6 +2,7 @@ package ua.pp.oped.aromateque.utility;
 
 
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -43,6 +44,22 @@ public class Utility {
             view.setBackgroundColor(res.getColor(colorId, null));
         } else {
             view.setBackgroundColor(res.getColor(colorId));
+        }
+    }
+
+    public static int compatGetColor(Resources res, int colorId) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return res.getColor(colorId, null);
+        } else {
+            return res.getColor(colorId);
+        }
+    }
+
+    public static Drawable compatGetDrawable(Resources res, int drawableId) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return res.getDrawable(drawableId, null);
+        } else {
+            return res.getDrawable(drawableId);
         }
     }
 
