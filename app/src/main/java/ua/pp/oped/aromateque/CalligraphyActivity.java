@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.activity;
+package ua.pp.oped.aromateque;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;

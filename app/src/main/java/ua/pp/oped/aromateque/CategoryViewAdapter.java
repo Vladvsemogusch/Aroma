@@ -1,11 +1,8 @@
 package ua.pp.oped.aromateque;
 
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,11 +23,9 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.pp.oped.aromateque.activity.CategoryLevel3Activity;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
-import ua.pp.oped.aromateque.utility.IconSheet;
 import ua.pp.oped.aromateque.utility.Utility;
 
 public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,13 +38,15 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private ImageLoader imgLoader;
     private LayoutInflater layoutInflater;
     private Context context;
+    private RecyclerView recyclerView;
 
-    public CategoryViewAdapter(Context context, List<Category> categories, Resources resources, ImageLoader imgLoader) {
+    public CategoryViewAdapter(Context context, List<Category> categories, ImageLoader imgLoader, RecyclerView recyclerView) {
         this.categories = categories;
-        this.resources = resources;
+        resources = context.getResources();
         this.imgLoader = imgLoader;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
+        this.recyclerView = recyclerView;
     }
 
 
@@ -80,7 +78,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             fillHeader((HeaderViewHolder) viewHolder);
         }
         if (viewHolder instanceof FooterViewHolder) {
-            //  Nothing to do
+            //  Nothing to do yet
         }
         if (viewHolder instanceof MainItemViewHolder) {
             //  Offset because of header
@@ -88,7 +86,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((MainItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
             ((MainItemViewHolder) viewHolder).imgArrow.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.arrow_right_black_24dp));
             if (category.getChildren() != null) {
-
                 ((MainItemViewHolder) viewHolder).mainItemLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -101,6 +98,14 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 0, 90f)
                                     .setDuration(400)
                                     .start();
+                            //Smooth scroll to last of just added child categories
+                            recyclerView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recyclerView.smoothScrollToPosition(viewHolder.getAdapterPosition() + category.getChildrenIds().size());
+                                }
+                            }, recyclerView.getItemAnimator().getRemoveDuration());
+                            //recyclerView.smoothScrollToPosition(viewHolder.getAdapterPosition() + category.getChildrenIds().size());
                             ((MainItemViewHolder) viewHolder).isExtended = true;
                         } else {
                             int positionInAdapter = viewHolder.getAdapterPosition();
@@ -113,28 +118,32 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         }
                     }
                 });
-            } else {
-                ((ChildItemViewHolder) viewHolder).txtCategory.setOnClickListener(null);
             }
         }
         if (viewHolder instanceof ChildItemViewHolder) {
             //TODO for categories without subcategories go directly to activity for that category.
+            // Important \\ Removed Clickable from Textview, because it took click event from layout.
+            // Now category name without clicklistener is NOT clickable
             final Category category = categories.get(position - 1);
             ((ChildItemViewHolder) viewHolder).category = category;
-            ((ChildItemViewHolder) viewHolder).txtCategory.setText(category.getName());
+            ((ChildItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
             if (((ChildItemViewHolder) viewHolder).category.getChildren() != null) {
-                ((ChildItemViewHolder) viewHolder).txtCategory.setOnClickListener(new View.OnClickListener() {
+                //Log.d("DEBUG", "Category HAVE children");
+                ((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        /*Log.d("DEBUG", "CLICKED on category with children");
                         Intent intent = new Intent(context, CategoryLevel3Activity.class);
                         intent.putExtra("category_id", ((ChildItemViewHolder) viewHolder).category.getId());
                         ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                         context.startActivity(intent, activityOptions.toBundle());
-                        //((Activity)context).overridePendingTransition();
+                        */
+
                     }
                 });
             } else {
-                ((ChildItemViewHolder) viewHolder).txtCategory.setOnClickListener(null);
+                // Log.d("DEBUG", "Category DON'T HAVE children");
+                //((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(null);
             }
         }
     }
@@ -168,10 +177,12 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             private ImgPagerAdapter() {
                 productImgUrlList = new ArrayList<>();
-                productImgUrlList.add("http://10.0.1.50/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d//r/b/rbr-1.jpg");
-                productImgUrlList.add("http://10.0.1.50/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d//r/b/rbr-1.jpg");
-                productImgUrlList.add("http://10.0.1.50/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d//r/b/rbr-1.jpg");
-                productImgUrlList.add("http://10.0.1.50/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d//r/b/rbr-1.jpg");
+                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/m/f/mfk.jpg");
+                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/e/t/etro_shanthung.jpg");
+                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/j/h/jhg1.jpg");
+                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/4/-/4-01.jpg");
+                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/m/h/mh_1.jpg");
+                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/f/i/file_5.jpg");
             }
 
             @Override
@@ -187,10 +198,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView imgView = (ImageView) layoutInflater.inflate(R.layout.banner_item, container, false);
-                //ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
-                //new DownloadImageTask(imgView).execute(productImgUrlList.get(position));
                 imgLoader.displayImage(productImgUrlList.get(position), imgView, options);
-                //imgView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ico_man_woman, null));
                 container.addView(imgView);
                 return imgView;
             }
@@ -210,33 +218,52 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         ArrayList<ShortProduct> bestsellersList = new ArrayList<>();
         final ShortProduct prod = new ShortProduct();
-        prod.setBrand("SASDA");
-        prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
-        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
-        prod.setName("asda");
-        prod.setOldPrice("1321");
-        prod.setPrice("1231");
+        prod.setBrand("Comme des Garcons Accessories");
+        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+        prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+        prod.setName("Silver Wallet");
+        //prod.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
+        prod.setOldPrice("13210");
+        prod.setPrice("12310");
+
+        final ShortProduct prod2 = new ShortProduct();
+        prod2.setBrand("Sensai");
+        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+        prod2.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+        prod2.setName("SILKY DESIGN ROUGE");
+        //prod2.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
+        prod2.setOldPrice("13210");
+        prod2.setPrice("12310");
         bestsellersList.add(prod);
+        bestsellersList.add(prod2);
         bestsellersList.add(prod);
+        bestsellersList.add(prod2);
         bestsellersList.add(prod);
+        bestsellersList.add(prod2);
         bestsellersList.add(prod);
+        bestsellersList.add(prod2);
         bestsellersList.add(prod);
+        bestsellersList.add(prod2);
         bestsellersList.add(prod);
+        bestsellersList.add(prod2);
         bestsellersList.add(prod);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod);
-        final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
-        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, resources, imgLoader);
+        final ShortProduct prod3 = new ShortProduct();
+        prod3.setBrand("Sensai");
+        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+        prod3.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+        prod3.setName("BODY FIRMING EMULSION CELLULAR PERFORMANCE");
+        prod3.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
+        prod3.setOldPrice("13210");
+        prod3.setPrice("12310");
+        bestsellersList.add(prod3);
+        //final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
+        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, resources, imgLoader, context);
         bestsellersView.setAdapter(adapter);
         bestsellersView.scrollToPosition(3);
         bestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));
     }
 
-    private class MainItemViewHolder extends RecyclerView.ViewHolder {
+    public class MainItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtCategoryName;
         ImageView imgArrow;
         RelativeLayout mainItemLayout;
@@ -275,15 +302,15 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private class ChildItemViewHolder extends RecyclerView.ViewHolder {
-        TextView txtCategory;
-        //LinearLayout layout;
+        TextView txtCategoryName;
+        LinearLayout childLayout;
         //TODO No need to supply full category object
         Category category;
 
         ChildItemViewHolder(View itemView) {
             super(itemView);
-            //layout = (LinearLayout) itemView.findViewById(R.id.category_list_child_item_layout);
-            txtCategory = (TextView) itemView.findViewById(R.id.txt_category);
+            childLayout = (LinearLayout) itemView.findViewById(R.id.child_layout);
+            txtCategoryName = (TextView) itemView.findViewById(R.id.txt_category);
         }
     }
 }

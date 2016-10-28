@@ -5,6 +5,7 @@ public class ShortProduct {
     private String imageUrl;
     private String brand;
     private String name;
+    private String typeAndVolume;
     private String price;
     private String oldPrice;
 
@@ -30,6 +31,14 @@ public class ShortProduct {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTypeAndVolume() {
+        return typeAndVolume;
+    }
+
+    public void setTypeAndVolume(String typeAndVolume) {
+        this.typeAndVolume = typeAndVolume;
     }
 
     public String getPrice() {

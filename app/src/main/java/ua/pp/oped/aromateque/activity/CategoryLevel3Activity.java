@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
+import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.SubCategoryViewAdapter;
 import ua.pp.oped.aromateque.db.DatabaseHelper;

@@ -12,6 +12,8 @@
     <color name="creme">#F5ECDD</color>
     <color name="shortproduct_name">#A97B2A</color>
     <color name="shortproduct_oldprice">#9C856C</color>
+    <color name="gray">#DCDCDC</color>
+    <color name="dark_gray">#A9A9A9</color>
 
 
 </resources>

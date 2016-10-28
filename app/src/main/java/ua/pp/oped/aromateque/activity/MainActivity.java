@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.model.LongProduct;
 
