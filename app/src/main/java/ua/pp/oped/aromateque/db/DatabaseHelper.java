@@ -15,6 +15,7 @@ import java.util.Map;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.LongProduct;
 import ua.pp.oped.aromateque.model.Review;
+import ua.pp.oped.aromateque.utility.Constants;
 
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
@@ -132,6 +133,18 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         }
         c.close();
         product.setReviews(reviews);
+        // Remove after moving to deployment domain
+        String brandImgUrl = product.getAttributes().get("brand_img_url");
+        brandImgUrl = brandImgUrl.replace("http://localhost/", Constants.BASE_URL);
+        product.getAttributes().put("brand_img_url", brandImgUrl);
+        for (String url :
+                product.getImageUrls()) {
+            int urlPosition = product.getImageUrls().indexOf(url);
+            url = url.replace("http://localhost/", Constants.BASE_URL);
+            product.getImageUrls().remove(urlPosition);
+            product.getImageUrls().add(urlPosition, url);
+
+        }
         return product;
     }
 

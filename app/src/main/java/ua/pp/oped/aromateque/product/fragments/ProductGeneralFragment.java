@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.List;
@@ -31,7 +32,6 @@ import java.util.Map;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.LongProduct;
-import ua.pp.oped.aromateque.utility.DownloadImageTask;
 import ua.pp.oped.aromateque.utility.Utility;
 
 public class ProductGeneralFragment extends Fragment {
@@ -63,9 +63,11 @@ public class ProductGeneralFragment extends Fragment {
         View view;
         view = inflater.inflate(R.layout.product_general, container, false);
         imgLoader = ImageLoader.getInstance();
-        final DisplayImageOptions options = new DisplayImageOptions.Builder()
+        final DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                .showImageOnLoading(R.drawable.loading)
                 .build();
         Resources res = getResources();
         ScrollView productScrollviewMain = (ScrollView) view.findViewById(R.id.product_scrollview_main);
@@ -130,8 +132,7 @@ public class ProductGeneralFragment extends Fragment {
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView itemView = (ImageView) layoutInflater.inflate(R.layout.img_pager_item, container, false);
                 //ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
-                new DownloadImageTask(itemView).execute(productImgList.get(position));
-                imgLoader.displayImage(productImgList.get(position), itemView, options);
+                imgLoader.displayImage(productImgList.get(position), itemView, displayImageOptions);
                 container.addView(itemView);
                 return itemView;
             }
@@ -150,17 +151,17 @@ public class ProductGeneralFragment extends Fragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(brandProductName);
         }
         txtProductType.setText(attributes.get("type_of_product").toLowerCase());
-        String marks = "";
+        String mark = "";
         String reviews = attributes.get("reviews_count");
         int lastDigit = Integer.parseInt(reviews.substring(reviews.length() - 1));
         switch (lastDigit) {
             case 1:
-                marks = "ОЦЕНКА";
+                mark = "ОЦЕНКА";
                 break;
             case 2:
             case 3:
             case 4:
-                marks = "ОЦЕНКИ";
+                mark = "ОЦЕНКИ";
                 break;
             case 5:
             case 6:
@@ -168,9 +169,9 @@ public class ProductGeneralFragment extends Fragment {
             case 8:
             case 9:
             case 0:
-                marks = "ОЦЕНОК";
+                mark = "ОЦЕНОК";
         }
-        txtReviewsCount.setText(String.format(res.getString(R.string.reviews_count), reviews, marks));
+        txtReviewsCount.setText(String.format(res.getString(R.string.reviews_count), reviews, mark));
         txtGender.setText(attributes.get("gender").toUpperCase());
         switch (attributes.get("gender")) {
             case "для детей":
