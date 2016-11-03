@@ -45,7 +45,7 @@ public class LaunchActivity extends CalligraphyActivity {
                     try {
                         DatabaseHelper.getInstance().serializeCategories((Category) response.body());
                         Log.d("INFO", "Categories serialized");
-                        startActivity(new Intent(LaunchActivity.this, MainPageActivity.class));
+                        startNextActivity();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -59,8 +59,12 @@ public class LaunchActivity extends CalligraphyActivity {
             api.getCategoryWithChildren(CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
         } else {
             Log.d("LAUNCH", "Categories already serialized");
-            startActivity(new Intent(LaunchActivity.this, MainPageActivity.class));
+            startNextActivity();
         }
+    }
+
+    private void startNextActivity() {
+        startActivity(new Intent(LaunchActivity.this, MainPageActivity.class));
     }
 
 }

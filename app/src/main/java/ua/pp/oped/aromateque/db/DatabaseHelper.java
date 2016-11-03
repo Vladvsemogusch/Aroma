@@ -95,9 +95,7 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
             getWritableDatabase().insert("reviews", null, values);
         }
         getWritableDatabase().setTransactionSuccessful();
-
         getWritableDatabase().endTransaction();
-        getWritableDatabase().close();
 
 
     }
@@ -108,7 +106,6 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         ArrayList<String> imageUrls = new ArrayList<>();
         ArrayList<Review> reviews = new ArrayList<>();
         String[] args = {String.valueOf(id)};
-        getWritableDatabase().beginTransaction();
         Cursor c = getReadableDatabase().query("products", null, "product_id=?", args, null, null, null);
         Log.d("DB", String.valueOf(c.getCount()));
         c.moveToNext();

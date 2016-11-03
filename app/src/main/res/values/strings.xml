@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Aromateque</string>
-    <string name="title_activity_product_info">ProductInfo</string>
     <string name="fragrance_notes">Ноты аромата</string>
     <string name="top_notes">ВЕРХНИЕ НОТЫ</string>
     <string name="middle_notes">НОТЫ СЕРДЦА</string>
@@ -15,7 +14,7 @@
     <string name="product_general">О товаре</string>
     <string name="product_description">Описание</string>
     <string name="product_reviews">Отзывы</string>
-    <string name="product_price">%1$s грн.</string>
+    <string name="product_price">%1$s грн</string>
     <string name="short_description_title">Краткое описание</string>
     <string name="buy">КУПИТЬ</string>
     <string name="rating_20">НЕ ОЧЕНЬ</string>
@@ -26,7 +25,10 @@
     <string name="no_reviews">Отзывы отсутствуют.</string>
     <string name="phone">067 611&#8211;89&#8211;41</string>
     <string name="catalog">Каталог товаров:</string>
-    <string name="title_activity_category_level3">Aromateque</string>
+    <string name="aromateque">Aromateque</string>
     <string name="subcategory_title">%1$s:</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

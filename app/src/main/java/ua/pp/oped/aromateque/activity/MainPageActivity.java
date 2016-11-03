@@ -57,8 +57,8 @@ public class MainPageActivity extends CalligraphyActivity {
         recyclerviewCategories.setItemViewCacheSize(30);
         //Get categories from DB and put to new adapter
         categoryAll = DatabaseHelper.getInstance().deserializeCategory(CATEGORY_ALL_ID);
-        recyclerviewCategories.setAdapter(new CategoryViewAdapter(this, categoryAll.getChildren(), imgLoader, recyclerviewCategories));
-        recyclerviewCategories.smoothScrollToPosition(5);
+        recyclerviewCategories.setAdapter(new CategoryViewAdapter(this, categoryAll.getChildren(), recyclerviewCategories));
+        //recyclerviewCategories.smoothScrollToPosition(5);
         //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, RecyclerView.VERTICAL);
         //dividerItemDecoration.setDrawable();
         //recyclerviewCategories.addItemDecoration(dividerItemDecoration);

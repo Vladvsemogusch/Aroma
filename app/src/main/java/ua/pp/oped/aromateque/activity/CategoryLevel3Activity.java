@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -42,12 +41,7 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerviewLevel3Categories.setAdapter(new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, imgLoader, true));
         recyclerviewLevel3Categories.setItemViewCacheSize(30);
-        recyclerviewLevel3Categories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("INFO", "CLICKED recyclerview");
-            }
-        });
+
         //  If recyclerview is shorter than mainLayout, then move footer from recyclerview to bottom of main layout.
         recyclerviewLevel3Categories.post(new Runnable() {
             @Override
@@ -57,12 +51,8 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
                 int filledSpace = actionbarHeight + recyclerviewLevel3Categories.getHeight();
                 RelativeLayout mainLayout = (RelativeLayout) CategoryLevel3Activity.this.findViewById(R.id.category_level3_layout);
                 int allSpace = mainLayout.getHeight();
-                Log.d("FOOTER", "RecyclerView " + recyclerviewLevel3Categories.getHeight() + " px");
-                Log.d("FOOTER", "Top " + actionbarHeight + " px");
-                Log.d("FOOTER", "Filled space " + filledSpace + " px");
-                Log.d("FOOTER", "All space " + allSpace + " px");
                 if (filledSpace < allSpace) {
-                    Log.d("FOOTER", "Relocating footer");
+                    //Log.d("FOOTER", "Relocating footer");
                     SubCategoryViewAdapter adapter =
                             new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, imgLoader, false);
                     recyclerviewLevel3Categories.swapAdapter(adapter, true);

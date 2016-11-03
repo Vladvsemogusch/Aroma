@@ -1,6 +1,8 @@
 package ua.pp.oped.aromateque;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v17.leanback.widget.HorizontalGridView;
@@ -17,6 +19,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
+import ua.pp.oped.aromateque.activity.ProductListActivity;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
@@ -87,7 +90,10 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((MainItemViewHolder) viewHolder).txtCategoryName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent intent = new Intent(context, ProductListActivity.class);
+                    intent.putExtra("category_id", ((MainItemViewHolder) viewHolder).category_id);
+                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
+                    context.startActivity(intent, activityOptions.toBundle());
                 }
             });
         }
@@ -139,7 +145,7 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         bestsellersList.add(prod);
         bestsellersList.add(prod);
         final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
-        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, resources, imgLoader);
+        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, context);
         subcategoryBestsellersView.setAdapter(adapter);
         subcategoryBestsellersView.scrollToPosition(3);
         subcategoryBestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));

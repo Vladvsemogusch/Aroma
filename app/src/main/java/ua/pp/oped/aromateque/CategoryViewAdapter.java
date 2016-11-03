@@ -1,7 +1,9 @@
 package ua.pp.oped.aromateque;
 
 import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.view.PagerAdapter;
@@ -23,6 +25,8 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.pp.oped.aromateque.activity.CategoryLevel3Activity;
+import ua.pp.oped.aromateque.activity.ProductListActivity;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
@@ -40,10 +44,10 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context context;
     private RecyclerView recyclerView;
 
-    public CategoryViewAdapter(Context context, List<Category> categories, ImageLoader imgLoader, RecyclerView recyclerView) {
+    public CategoryViewAdapter(Context context, List<Category> categories, RecyclerView recyclerView) {
         this.categories = categories;
         resources = context.getResources();
-        this.imgLoader = imgLoader;
+        this.imgLoader = ImageLoader.getInstance();
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
         this.recyclerView = recyclerView;
@@ -132,16 +136,22 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        /*Log.d("DEBUG", "CLICKED on category with children");
                         Intent intent = new Intent(context, CategoryLevel3Activity.class);
                         intent.putExtra("category_id", ((ChildItemViewHolder) viewHolder).category.getId());
                         ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                         context.startActivity(intent, activityOptions.toBundle());
-                        */
-
                     }
                 });
             } else {
+                ((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ProductListActivity.class);
+                        intent.putExtra("category_id", ((ChildItemViewHolder) viewHolder).category.getId());
+                        ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
+                        context.startActivity(intent, activityOptions.toBundle());
+                    }
+                });
                 // Log.d("DEBUG", "Category DON'T HAVE children");
                 //((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(null);
             }
@@ -234,19 +244,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         //prod2.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
         prod2.setOldPrice("13210");
         prod2.setPrice("12310");
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
         final ShortProduct prod3 = new ShortProduct();
         prod3.setBrand("Sensai");
         //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
@@ -255,15 +252,31 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         prod3.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
         prod3.setOldPrice("13210");
         prod3.setPrice("12310");
+        prod.setId(1425);
+        prod2.setId(3519);
+        prod3.setId(3518);
+        bestsellersList.add(prod);
+        bestsellersList.add(prod2);
+        bestsellersList.add(prod);
+        bestsellersList.add(prod2);
+        bestsellersList.add(prod);
+        bestsellersList.add(prod2);
+        bestsellersList.add(prod);
+        bestsellersList.add(prod2);
+        bestsellersList.add(prod);
+        bestsellersList.add(prod2);
+        bestsellersList.add(prod);
+        bestsellersList.add(prod2);
+        bestsellersList.add(prod);
         bestsellersList.add(prod3);
         //final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
-        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, resources, imgLoader, context);
+        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, context);
         bestsellersView.setAdapter(adapter);
         bestsellersView.scrollToPosition(3);
         bestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));
     }
 
-    public class MainItemViewHolder extends RecyclerView.ViewHolder {
+    private class MainItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtCategoryName;
         ImageView imgArrow;
         RelativeLayout mainItemLayout;

@@ -48,17 +48,17 @@ import ua.pp.oped.aromateque.utility.IconSheet;
 import ua.pp.oped.aromateque.utility.Utility;
 
 public class ProductInfoActivity extends CalligraphyActivity {
-    final int productId = 177;
-    Toolbar toolbar;
-    MagentoRestService api;
-    LongProduct product;
-    Category categoryAll;
-    Category curCategory;
-    boolean isAnimationRunning;
-    ActionBarDrawerToggle drawerToggle;
-    DrawerLayout drawerLayout;
-    Resources res;
-    DatabaseHelper dbHelper;
+    private int productId;
+    private Toolbar toolbar;
+    private MagentoRestService api;
+    private LongProduct product;
+    private Category categoryAll;
+    private Category curCategory;
+    private boolean isAnimationRunning;
+    private ActionBarDrawerToggle drawerToggle;
+    private DrawerLayout drawerLayout;
+    private Resources res;
+    private DatabaseHelper dbHelper;
 
 
     @Override
@@ -75,6 +75,7 @@ public class ProductInfoActivity extends CalligraphyActivity {
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        productId = getIntent().getIntExtra("product_id", -1);
         setupDrawerWithFancyButton();
         setupFooter();
 
@@ -312,6 +313,11 @@ public class ProductInfoActivity extends CalligraphyActivity {
         tabLayout.setupWithViewPager(productContentViewpager);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.left_to_center, R.anim.center_to_right);
+    }
 }
 
 

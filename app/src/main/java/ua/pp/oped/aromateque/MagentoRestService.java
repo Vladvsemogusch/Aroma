@@ -16,6 +16,10 @@ public interface MagentoRestService {
     Call<HashMap<Integer, ShortProduct>> getProducts();
 
     @Headers("Accept: application/json")
+    @GET("api/rest/products/?category")
+    Call<HashMap<Integer, String>> getProductsFromCategory();
+
+    @Headers("Accept: application/json")
     @GET("api/rest/custom/products/{id}")
     Call<RawLongProduct> getProduct(@Path("id") int productId);
 

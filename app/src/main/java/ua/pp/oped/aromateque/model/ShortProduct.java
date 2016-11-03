@@ -2,12 +2,21 @@ package ua.pp.oped.aromateque.model;
 
 
 public class ShortProduct {
+    private int id;
     private String imageUrl;
     private String brand;
     private String name;
     private String typeAndVolume;
     private String price;
     private String oldPrice;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getImageUrl() {
         return imageUrl;
