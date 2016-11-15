@@ -30,5 +30,18 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-
+    <string name="sort_title">Сортировка</string>
+    <string name="sort_title_2">Параметры сортировки</string>
+    <string name="sort_sorting">Сортировка:</string>
+    <string name="sort_list_type">Вид списка</string>
+    <string name="apply">применить</string>
+    <string name="close">закрыть</string>
+    <string name="cheaper_first">Сначала дешевле</string>
+    <string name="expensive_first">Сначала дороже</string>
+    <string name="latest">Новинки</string>
+    <string name="discount">Скидка</string>
+    <string name="not_selected">не выбран</string>
+    <string name="filter">Фильтр</string>
+    <string name="reset">сбросить</string>
+    <string name="filter_title_2">Подбор по параметрам</string>
 </resources>

@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
@@ -26,7 +25,9 @@ import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
+import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.IconSheet;
+import ua.pp.oped.aromateque.utility.Utility;
 
 import static ua.pp.oped.aromateque.utility.Constants.BASE_URL;
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
@@ -40,19 +41,20 @@ public class LaunchActivity extends CalligraphyActivity {
         setContentView(R.layout.activity_launch);
         // Initialize IconSheet
         IconSheet.initialize(BitmapFactory.decodeResource(getResources(), R.drawable.icon_sheet));
+        // Initialize Utility
+        Utility.initialize(getResources());
         // Initialize ImageLoader
         BaseImageDownloader imageDownloader = new BaseImageDownloader(this) {
             @Override
             protected InputStream getStreamFromNetwork(String imageUri, Object extra) throws IOException {
                 HttpURLConnection conn = createConnection(imageUri, extra);
-                // Test for refused connection. If connection refused, try until no exception.
+                // Test for refused connection. If connection refused, try again until no exception.
                 testConnection(conn, imageUri, extra);
                 int redirectCount = 0;
                 while (conn.getResponseCode() / 100 == 3 && redirectCount < MAX_REDIRECT_COUNT) {
                     conn = createConnection(conn.getHeaderField("Location"), extra);
                     redirectCount++;
                 }
-
                 InputStream imageStream;
                 try {
                     imageStream = conn.getInputStream();
@@ -89,7 +91,7 @@ public class LaunchActivity extends CalligraphyActivity {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .imageDownloader(imageDownloader)
                 .build();
-        ImageLoader.getInstance().init(config);
+        CustomImageLoader.getInstance().init(config);
 
         DatabaseHelper.initialize(getApplicationContext());
         if (!DatabaseHelper.getInstance().categoriesSerialized()) {
@@ -122,7 +124,7 @@ public class LaunchActivity extends CalligraphyActivity {
     }
 
     private void startNextActivity() {
-        startActivity(new Intent(LaunchActivity.this, MainPageActivity.class));
+        startActivity(new Intent(this, MainPageActivity.class));
     }
 
 }

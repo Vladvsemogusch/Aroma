@@ -143,7 +143,6 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
             url = url.replace("http://localhost/", Constants.BASE_URL);
             product.getImageUrls().remove(urlPosition);
             product.getImageUrls().add(urlPosition, url);
-
         }
         return product;
     }

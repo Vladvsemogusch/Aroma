@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.product.fragments;
+package ua.pp.oped.aromateque.fragments.product;
 
 
 import android.os.Bundle;
@@ -10,17 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.HashMap;
 
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.Utility;
 
 public class ProductDescriptionFragment extends Fragment {
     HashMap<String, String> attributes;
-    ImageLoader imgLoader;
 
     public static ProductDescriptionFragment newInstance(HashMap<String, String> attributes) {
         Bundle args = new Bundle();
@@ -35,7 +34,6 @@ public class ProductDescriptionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         attributes = (HashMap<String, String>) getArguments().getSerializable("attributes");
-        imgLoader = ImageLoader.getInstance();
 
     }
 
@@ -55,7 +53,7 @@ public class ProductDescriptionFragment extends Fragment {
                 .build();
         String brandImgUrl = attributes.get("brand_img_url");
         brandImgUrl = brandImgUrl.replace("\\", "/");
-        imgLoader.displayImage(brandImgUrl, imgBrand, displayImageOptions);
+        CustomImageLoader.getInstance().displayImage(brandImgUrl, imgBrand, displayImageOptions);
         txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));
         String description = attributes.get("description");
         if (description.startsWith("<p style=\"text-align: justify;\">")) {

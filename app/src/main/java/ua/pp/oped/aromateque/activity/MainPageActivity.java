@@ -9,8 +9,6 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.CategoryViewAdapter;
 import ua.pp.oped.aromateque.MagentoRestService;
@@ -24,7 +22,6 @@ import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 public class MainPageActivity extends CalligraphyActivity {
     Category categoryAll;
     MagentoRestService api;
-    private ImageLoader imgLoader;
     boolean isAnimationRunning;
     LayoutInflater layoutInflater;
     RecyclerView recyclerviewCategories;
@@ -33,7 +30,6 @@ public class MainPageActivity extends CalligraphyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-        imgLoader = ImageLoader.getInstance();
         layoutInflater = (LayoutInflater) this.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

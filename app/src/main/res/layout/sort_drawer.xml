@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="220dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <LinearLayout
+        android:id="@+id/top_panel"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="5dp"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/sort_title"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/sort_title_2"
+            android:textColor="@color/transparent_white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sort_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_panel"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:text="@string/sort_list_type"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+            <ImageView
+                android:id="@+id/grid"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:onClick="onListTypeClicked"
+                android:src="@drawable/list" />
+
+            <ImageView
+                android:id="@+id/wide"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:onClick="onListTypeClicked"
+                android:src="@drawable/list" />
+
+            <ImageView
+                android:id="@+id/list"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="onListTypeClicked"
+                android:src="@drawable/list" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_sorting" />
+
+        <ListView
+            android:id="@+id/sort_types"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/cheaper_first"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:onClick="onSortTypeClicked"
+                android:text="@string/cheaper_first"
+                android:textColor="@color/main" />
+
+            <RadioButton
+                android:id="@+id/expensive_first"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:onClick="onSortTypeClicked"
+                android:text="@string/expensive_first"
+                android:textColor="@color/main" />
+
+            <RadioButton
+                android:id="@+id/latest"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:onClick="onSortTypeClicked"
+                android:text="@string/latest"
+                android:textColor="@color/main"
+                app:paddingEnd="50dp" />
+
+
+            <RadioButton
+                android:id="@+id/discount"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:onClick="onSortTypeClicked"
+                android:text="@string/discount"
+                android:textColor="@color/main" />
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/close"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onCloseClicked"
+            android:text="@string/close"
+            android:textAllCaps="true" />
+
+        <TextView
+            android:id="@+id/apply"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onCloseClicked"
+            android:text="@string/apply"
+            android:textAllCaps="true" />
+    </LinearLayout>
+</RelativeLayout>

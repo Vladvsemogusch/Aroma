@@ -27,14 +27,14 @@
         android:textColor="@color/white" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:background="@color/colorAccent"
         android:gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/to_favorites"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             android:layout_weight="0.5"
             android:textColor="@color/white"
             android:textSize="25sp"
@@ -43,7 +43,7 @@
         <ImageButton
             android:id="@+id/to_cart"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             android:layout_weight="0.5"
             android:textColor="@color/white"
             android:textSize="25sp"
@@ -55,7 +55,7 @@
             android:layout_weight="1"
             android:text="@string/buy"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="24sp"
             android:background="?attr/selectableItemBackgroundBorderless" />
     </LinearLayout>
 </LinearLayout>

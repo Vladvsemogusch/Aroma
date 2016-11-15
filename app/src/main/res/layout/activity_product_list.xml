@@ -22,4 +22,12 @@
         app:headerLayout="@layout/nav_header_product_list"
         app:menu="@menu/activity_product_list_drawer" />
 
+    <LinearLayout
+        android:id="@+id/product_list_right_drawer"
+        android:orientation="vertical"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:clickable="true"
+        android:onClick="onCloseClicked" />
 </android.support.v4.widget.DrawerLayout>

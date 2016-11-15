@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import ua.pp.oped.aromateque.activity.CategoryLevel3Activity;
 import ua.pp.oped.aromateque.activity.ProductListActivity;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
+import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
 import ua.pp.oped.aromateque.utility.Utility;
 
@@ -39,7 +39,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int TYPE_CHILD_ITEM = 3;
     private List<Category> categories;
     private Resources resources;
-    private ImageLoader imgLoader;
     private LayoutInflater layoutInflater;
     private Context context;
     private RecyclerView recyclerView;
@@ -47,7 +46,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public CategoryViewAdapter(Context context, List<Category> categories, RecyclerView recyclerView) {
         this.categories = categories;
         resources = context.getResources();
-        this.imgLoader = ImageLoader.getInstance();
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
         this.recyclerView = recyclerView;
@@ -125,9 +123,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         }
         if (viewHolder instanceof ChildItemViewHolder) {
-            //TODO for categories without subcategories go directly to activity for that category.
-            // Important \\ Removed Clickable from Textview, because it took click event from layout.
-            // Now category name without clicklistener is NOT clickable
             final Category category = categories.get(position - 1);
             ((ChildItemViewHolder) viewHolder).category = category;
             ((ChildItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
@@ -153,6 +148,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 });
                 // Log.d("DEBUG", "Category DON'T HAVE children");
+                //TODO resolve next line
                 //((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(null);
             }
         }
@@ -208,7 +204,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView imgView = (ImageView) layoutInflater.inflate(R.layout.banner_item, container, false);
-                imgLoader.displayImage(productImgUrlList.get(position), imgView, options);
+                CustomImageLoader.getInstance().displayImage(productImgUrlList.get(position), imgView, options);
                 container.addView(imgView);
                 return imgView;
             }

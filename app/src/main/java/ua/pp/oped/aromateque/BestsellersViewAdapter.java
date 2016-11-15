@@ -15,12 +15,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.List;
 
 import ua.pp.oped.aromateque.activity.ProductInfoActivity;
 import ua.pp.oped.aromateque.model.ShortProduct;
+import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.IconSheet;
 
 public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersViewAdapter.ViewHolder> {
@@ -28,13 +27,11 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
     public List<ShortProduct> products;
     private Resources resources;
     private Context context;
-    private ImageLoader imgLoader;
 
     public BestsellersViewAdapter(List<ShortProduct> products, Context context) {
         this.products = products;
         this.resources = context.getResources();
         this.context = context;
-        this.imgLoader = ImageLoader.getInstance();
 
 
     }
@@ -59,7 +56,7 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
             viewHolder.oldPrice.setVisibility(View.GONE);
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
-        imgLoader.displayImage(product.getImageUrl(), viewHolder.image);
+        CustomImageLoader.getInstance().displayImage(product.getImageUrl(), viewHolder.image);
         viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
         viewHolder.buy.setOnClickListener(new View.OnClickListener() {
             @Override

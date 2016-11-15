@@ -15,7 +15,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AromatequeTheme.NoActionBar">
-        <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.ProductInfoActivity"
             android:label="@string/aromateque"
@@ -38,8 +37,7 @@
         <activity
             android:name=".activity.ProductListActivity"
             android:label="@string/aromateque"
-            android:parentActivityName=".activity.CategoryLevel3Activity"
-            android:theme="@style/AromatequeTheme.NoActionBar">
+            android:parentActivityName=".activity.CategoryLevel3Activity">
         </activity>
     </application>
 

@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 
 import ua.pp.oped.aromateque.CalligraphyActivity;
@@ -21,7 +19,6 @@ import ua.pp.oped.aromateque.model.Category;
 
 
 public class CategoryLevel3Activity extends CalligraphyActivity {
-    private ImageLoader imgLoader;
     RecyclerView recyclerviewLevel3Categories;
     ArrayList<Category> categories;
     Resources res;
@@ -36,10 +33,9 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        imgLoader = ImageLoader.getInstance();
         recyclerviewLevel3Categories = (RecyclerView) findViewById(R.id.subcategories_recyclerview);
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        recyclerviewLevel3Categories.setAdapter(new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, imgLoader, true));
+        recyclerviewLevel3Categories.setAdapter(new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, true));
         recyclerviewLevel3Categories.setItemViewCacheSize(30);
 
         //  If recyclerview is shorter than mainLayout, then move footer from recyclerview to bottom of main layout.
@@ -54,27 +50,13 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
                 if (filledSpace < allSpace) {
                     //Log.d("FOOTER", "Relocating footer");
                     SubCategoryViewAdapter adapter =
-                            new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, imgLoader, false);
+                            new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, false);
                     recyclerviewLevel3Categories.swapAdapter(adapter, true);
                     LayoutInflater layoutInflater = LayoutInflater.from(CategoryLevel3Activity.this);
                     layoutInflater.inflate(R.layout.phone, mainLayout, true);
                 }
             }
         });
-        /*ViewTreeObserver viewTreeObserver = recyclerviewLevel3Categories.getViewTreeObserver();
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    Window window = getWindow();
-                    int contentViewTop = window.findViewById(Window.ID_ANDROID_CONTENT).getTop();
-                    recyclerviewLevel3Categories.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    int recyclerviewHeight = recyclerviewLevel3Categories.getHeight();
-
-                }
-            });
-        }*/
-
     }
 
     @Override

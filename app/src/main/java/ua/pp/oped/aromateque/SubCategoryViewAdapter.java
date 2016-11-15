@@ -14,9 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 
 import ua.pp.oped.aromateque.activity.ProductListActivity;
@@ -31,17 +28,15 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_FOOTER = 2;
     private ArrayList<Category> categories;
     private Resources resources;
-    private ImageLoader imgLoader;
     private LayoutInflater layoutInflater;
     private Context context;
     private Category parentCategory;
     private boolean withFooter;
     private int offset;
 
-    public SubCategoryViewAdapter(Context context, Category parentCategory, ImageLoader imgLoader, boolean withFooter) {
+    public SubCategoryViewAdapter(Context context, Category parentCategory, boolean withFooter) {
         this.categories = parentCategory.getChildren();
         this.resources = context.getResources();
-        this.imgLoader = imgLoader;
         this.context = context;
         this.parentCategory = parentCategory;
         layoutInflater = LayoutInflater.from(context);
@@ -116,14 +111,9 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void fillHeader(HeaderViewHolder headerViewHolder) {
-        final DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
         HorizontalGridView subcategoryBestsellersView = headerViewHolder.subcategoryBestsellersView;
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         subcategoryBestsellersView.setLayoutManager(layoutManager);
-
         ArrayList<ShortProduct> bestsellersList = new ArrayList<>();
         final ShortProduct prod = new ShortProduct();
         prod.setBrand("SASDA");

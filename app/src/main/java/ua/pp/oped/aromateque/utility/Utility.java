@@ -6,13 +6,17 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
-import android.view.View;
+import android.util.TypedValue;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Utility {
+    private static Resources resources;
 
+    public static void initialize(Resources res) {
+        resources = res;
+    }
 
     public static Spanned compatFromHtml(String input) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -39,13 +43,6 @@ public class Utility {
         return returnNotes;
     }
 
-    public static void compatSetBackgroundColor(Resources res, View view, int colorId) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.setBackgroundColor(res.getColor(colorId, null));
-        } else {
-            view.setBackgroundColor(res.getColor(colorId));
-        }
-    }
 
     public static int compatGetColor(Resources res, int colorId) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -62,5 +59,11 @@ public class Utility {
             return res.getDrawable(drawableId);
         }
     }
+
+    public static int dpToPx(int dp) {
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+        return Math.round(px);
+    }
+
 
 }

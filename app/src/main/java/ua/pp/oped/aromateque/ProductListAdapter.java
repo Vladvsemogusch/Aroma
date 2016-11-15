@@ -14,19 +14,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.List;
 
 import ua.pp.oped.aromateque.activity.ProductInfoActivity;
 import ua.pp.oped.aromateque.model.ShortProduct;
+import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.IconSheet;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
 
     public List<ShortProduct> products;
     private Resources resources;
-    private ImageLoader imgLoader;
     private int itemLayoutId;
     private LayoutInflater layoutInflater;
     private Context context;
@@ -34,7 +32,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public ProductListAdapter(List<ShortProduct> products, Context context, int itemLayoutId) {
         this.products = products;
         this.resources = context.getResources();
-        this.imgLoader = ImageLoader.getInstance();
         this.itemLayoutId = itemLayoutId;
         this.context = context;
     }
@@ -42,7 +39,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public ProductListAdapter(List<ShortProduct> products, Resources resources) {
         this.products = products;
         this.resources = resources;
-        this.imgLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -67,7 +63,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             viewHolder.oldPrice.setVisibility(View.GONE);
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
-        imgLoader.displayImage(product.getImageUrl(), viewHolder.image);
+        CustomImageLoader.getInstance().displayImage(product.getImageUrl(), viewHolder.image);
         viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override

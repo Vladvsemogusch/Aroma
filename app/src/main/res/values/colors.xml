@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#B28A5A</color>
     <color name="white">#ffffff</color>
+    <color name="transparent_white">#AAffffff</color>
     <color name="secondaryProgress">#DCC9A7</color>
     <color name="black">#000000</color>
     <color name="review_date">#B8B1A5</color>
@@ -13,7 +14,8 @@
     <color name="shortproduct_name">#A97B2A</color>
     <color name="shortproduct_oldprice">#9C856C</color>
     <color name="gray">#DCDCDC</color>
-    <color name="dark_gray">#A9A9A9</color>
+    <color name="dark_gray">#858585</color>
+    <color name="main">#524739</color>
 
 
 </resources>
