@@ -34,4 +34,6 @@ dependencies {
     compile 'com.android.support:leanback-v17:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     testCompile 'junit:junit:4.12'
+    compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

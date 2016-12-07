@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/txt_category"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/child_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:paddingBottom="10dp"
-    android:paddingStart="20dp"
-    android:paddingTop="10dp"
-    android:textSize="17sp" />
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/dark_brown" />
+
+    <TextView
+        android:id="@+id/txt_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingStart="30dp"
+        android:paddingTop="10dp"
+        android:layout_alignParentStart="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/category_list_arrow"
+        android:layout_width="20dp"
+        android:layout_height="18dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="12dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/arrow_right_thin" />
+</RelativeLayout>
 

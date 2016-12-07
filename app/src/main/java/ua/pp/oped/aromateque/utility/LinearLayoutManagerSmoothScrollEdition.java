@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 
 
 public class LinearLayoutManagerSmoothScrollEdition extends LinearLayoutManager {
-    LinearSmoothScroller smoothScroller;
+    private LinearSmoothScroller smoothScroller;
 
     public LinearLayoutManagerSmoothScrollEdition(Context context) {
         super(context);

@@ -25,7 +25,7 @@
     <LinearLayout
         android:id="@+id/product_list_right_drawer"
         android:orientation="vertical"
-        android:layout_width="240dp"
+        android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:clickable="true"

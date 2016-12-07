@@ -1,7 +1,7 @@
 package ua.pp.oped.aromateque.activity;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -11,39 +11,71 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 
 import ua.pp.oped.aromateque.CalligraphyActivity;
+import ua.pp.oped.aromateque.FilterAdapter;
 import ua.pp.oped.aromateque.ProductListAdapter;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragments.productlist.FilterFragment;
 import ua.pp.oped.aromateque.fragments.productlist.SortFragment;
+import ua.pp.oped.aromateque.model.Category;
+import ua.pp.oped.aromateque.model.FilterParameterValue;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EmptyRecycleViewAdapter;
 
 public class ProductListActivity extends CalligraphyActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    final private String TAG = "ProductListActivity";
-    RecyclerView productListRecyclerView;
-    GridLayoutManager gridLayoutManager;
-    ArrayList<ShortProduct> bestsellersList;
-    DrawerLayout drawer;
-    TextView sortTypeSmall;
-    TextView filteredAmountSmall;
+    private static final String TAG = "ProductListActivity";
+    public static final int SORT_TYPE_EXPENSIVE_FIRST = 199;
+    public static final int SORT_TYPE_CHEAP_FIRST = 753;
+    public static final int SORT_TYPE_LATEST = 877;
+    public static final int SORT_TYPE_DISCOUNT = 825;
+    public static final int LIST_TYPE_WIDE = 169;
+    public static final int LIST_TYPE_BIG = 245;
+    public static final int LIST_TYPE_GRID = 70;
+    public static final int DEFAULT_SORT_TYPE = SORT_TYPE_LATEST;
+    private static final int DEFAULT_LIST_TYPE = LIST_TYPE_WIDE;
+    private RecyclerView productListRecyclerView;
+    private GridLayoutManager gridLayoutManager;
+    private ArrayList<ShortProduct> bestsellersList;
+    private DrawerLayout drawer;
+    private TextView sortTypeSmall;
+    private TextView filteredAmountSmall;
+    private SharedPreferences settings;
+    private SortFragment sortFragment;
+    private FilterFragment filterFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        int currentCategoryId = getIntent().getIntExtra("category_id", -1);
+        int currentCategoryId = getIntent().getIntExtra("category_id", 16); //TODO change after REST implemented
+        Category currentCategory = DatabaseHelper.getInstance().deserializeCategory(currentCategoryId);
+        settings = getPreferences(MODE_PRIVATE);
+        final int sortTypeSetting = settings.getInt("sort_type", DEFAULT_SORT_TYPE);
+        final int listTypeSetting = settings.getInt("list_type", DEFAULT_LIST_TYPE);
+        new android.os.Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                onSortTypeClicked(sortTypeSetting);
+                onListTypeClicked(listTypeSetting);
+            }
+        });
+
+        getSupportActionBar().setTitle(currentCategory.getName());
         // Drawer setup
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -54,7 +86,6 @@ public class ProductListActivity extends CalligraphyActivity
         navigationView.setNavigationItemSelectedListener(this);
         sortTypeSmall = (TextView) findViewById(R.id.txt_sort_type_small);
         filteredAmountSmall = (TextView) findViewById(R.id.txt_filtered_amount_small);
-
         productListRecyclerView = (RecyclerView) findViewById(R.id.product_list_recycler_view);
         gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
         productListRecyclerView.setLayoutManager(gridLayoutManager);
@@ -65,8 +96,8 @@ public class ProductListActivity extends CalligraphyActivity
         bestsellersList = new ArrayList<>();
         fillProductList();
         final android.app.FragmentManager fragmentManager = getFragmentManager();
-        final Fragment sortFragment = new SortFragment();
-        final Fragment filterFragment = new FilterFragment();
+        sortFragment = new SortFragment();
+        filterFragment = new FilterFragment();
         sortByButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,9 +107,9 @@ public class ProductListActivity extends CalligraphyActivity
                 } else if (!sortFragment.isAdded()) {
                     transaction.add(R.id.product_list_right_drawer, sortFragment);
                 }
+                transaction.addToBackStack(null);
                 transaction.commit();
                 drawer.openDrawer(GravityCompat.END);
-
             }
         });
         filterByButton.setOnClickListener(new View.OnClickListener() {
@@ -153,12 +184,6 @@ public class ProductListActivity extends CalligraphyActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.product_list, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -200,35 +225,53 @@ public class ProductListActivity extends CalligraphyActivity
 
 
     public void onListTypeClicked(View view) {
-        switch (view.getId()) {
-            case R.id.grid:
+        // Saving here because onListTypeClicked(int viewId) called on startup, don't need to save there
+        onListTypeClicked((Integer) view.getTag());
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putInt("list_type", (Integer) view.getTag());
+        settingsEditor.apply();
+    }
+
+    public void onListTypeClicked(int listType) {
+        switch (listType) {
+            case LIST_TYPE_GRID:
                 productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type));
                 gridLayoutManager.setSpanCount(2);
                 break;
-            case R.id.wide:
+            case LIST_TYPE_BIG:
                 gridLayoutManager.setSpanCount(1);
+                productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type_big));
+                break;
+            case LIST_TYPE_WIDE:
                 productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type_wide));
-                break;
-            case R.id.list:
-                productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type_horizontal));
                 gridLayoutManager.setSpanCount(1);
                 break;
+
         }
     }
 
     //TODO fetch new data based on sort type (or rearrange)
     public void onSortTypeClicked(View view) {
-        switch (view.getId()) {
-            case R.id.cheaper_first:
+        Log.d(TAG, String.valueOf(view.getTag()));
+        onSortTypeClicked((Integer) view.getTag());
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putInt("sort_type", (Integer) view.getTag());
+        settingsEditor.apply();
+    }
+
+    public void onSortTypeClicked(int sortType) {
+        switch (sortType) {
+            case SORT_TYPE_CHEAP_FIRST:
                 sortTypeSmall.setText(getResources().getString(R.string.cheaper_first));
                 break;
-            case R.id.expensive_first:
+            case SORT_TYPE_EXPENSIVE_FIRST:
                 sortTypeSmall.setText(getResources().getString(R.string.expensive_first));
                 break;
-            case R.id.latest:
+            default:
+            case SORT_TYPE_LATEST:
                 sortTypeSmall.setText(getResources().getString(R.string.latest));
                 break;
-            case R.id.discount:
+            case SORT_TYPE_DISCOUNT:
                 sortTypeSmall.setText(getResources().getString(R.string.discount));
                 break;
         }
@@ -236,5 +279,24 @@ public class ProductListActivity extends CalligraphyActivity
 
     public void onCloseClicked(View view) {
         drawer.closeDrawer(GravityCompat.END);
+    }
+
+    @Subscribe
+    public void onActiveFilterParametersChanged(FilterAdapter.ActiveParametersChanged event) {
+        ArrayList<FilterParameterValue> activeFilterParameters = event.activeFilterParameters;
+        Log.d(TAG, "onActiveFilterParametersChanged called");
+        //TODO REST-READY Update productlist based on new filter parameters
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

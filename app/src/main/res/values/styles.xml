@@ -29,6 +29,10 @@
         <item name="fontPath">fonts/Georgia-Italic.ttf</item>
     </style>
 
+    <style name="TextAppearance.ActionbarTitle" parent="android:TextAppearance">
+        <item name="android:textSize">17sp</item>
+    </style>
+
     <style name="TextViewCustomFont">
         <item name="fontPath">fonts/Georgia-Italic.ttf</item>
     </style>
@@ -36,4 +40,12 @@
     <style name="AromatequeTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AromatequeTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="FilterPriceText" parent="android:TextAppearance">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="FilterPriceEditText" parent="android:TextAppearance">
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

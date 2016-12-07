@@ -44,4 +44,9 @@
     <string name="filter">Фильтр</string>
     <string name="reset">сбросить</string>
     <string name="filter_title_2">Подбор по параметрам</string>
+    <string name="from">от</string>
+    <string name="to">до</string>
+    <string name="uah">грн</string>
+
+
 </resources>

@@ -33,6 +33,7 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(mainCategory.getName());
         recyclerviewLevel3Categories = (RecyclerView) findViewById(R.id.subcategories_recyclerview);
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerviewLevel3Categories.setAdapter(new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, true));
@@ -51,7 +52,7 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
                     //Log.d("FOOTER", "Relocating footer");
                     SubCategoryViewAdapter adapter =
                             new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, false);
-                    recyclerviewLevel3Categories.swapAdapter(adapter, true);
+                    recyclerviewLevel3Categories.setAdapter(adapter);
                     LayoutInflater layoutInflater = LayoutInflater.from(CategoryLevel3Activity.this);
                     layoutInflater.inflate(R.layout.phone, mainLayout, true);
                 }
@@ -64,5 +65,6 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.left_to_center, R.anim.center_to_right);
     }
+
 
 }

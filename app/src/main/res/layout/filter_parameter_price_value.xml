@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:rsb="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/child_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/price_top_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="-10dp">
+
+        <TextView
+            android:id="@+id/txt_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from"
+            android:textAppearance="@style/FilterPriceText" />
+
+        <EditText
+            android:id="@+id/et_price_from"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:textAppearance="@style/FilterPriceEditText" />
+
+        <TextView
+            android:id="@+id/txt_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to"
+            android:textAppearance="@style/FilterPriceText" />
+
+        <EditText
+            android:id="@+id/et_price_to"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:textAppearance="@style/FilterPriceEditText" />
+
+        <TextView
+            android:id="@+id/txt_uah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/uah"
+            android:textAppearance="@style/FilterPriceText" />
+    </LinearLayout>
+
+    <org.florescu.android.rangeseekbar.RangeSeekBar
+        android:id="@+id/price_range_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price_top_layout"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        rsb:absoluteMaxValue="150"
+        rsb:absoluteMinValue="10"
+        rsb:activeColor="@color/colorAccent"
+        rsb:showLabels="false"
+        rsb:valuesAboveThumbs="false" />
+</RelativeLayout>
+

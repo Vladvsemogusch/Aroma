@@ -34,9 +34,6 @@ public class MainPageActivity extends CalligraphyActivity {
                 (Context.LAYOUT_INFLATER_SERVICE);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
         //Initialize recycleview early with empty adapter to avoid errors about absent adapter.
         recyclerviewCategories = (RecyclerView) findViewById(R.id.categories_main_recyclerview);
         final LinearLayoutManagerSmoothScrollEdition layoutManager = new LinearLayoutManagerSmoothScrollEdition(this, RecyclerView.VERTICAL, false);

@@ -15,6 +15,11 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/main" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp">
@@ -24,26 +29,26 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/white"
             android:clickable="true"
-            android:padding="5dp"
-            android:background="@color/colorAccent">
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/sort_image"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/sort_button_white"
-                android:layout_centerInParent="true"
                 android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="3dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="3dp" />
+                android:src="@drawable/sort_button_accent" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/sort_image"
-                android:layout_centerVertical="true">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txt_sort_by"
@@ -59,40 +64,60 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textAllCaps="true"
                     android:text="@string/not_selected"
-                    android:textSize="10sp"
-                    android:textColor="@color/gray" />
+                    android:textAllCaps="true"
+                    android:textSize="10sp" />
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/main" />
+
+        <RelativeLayout
             android:id="@+id/filter_by_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/white"
             android:clickable="true"
-            android:orientation="vertical">
+            android:padding="5dp">
 
-            <TextView
-                android:id="@+id/filter_by"
+            <ImageView
+                android:id="@+id/filter_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/filter_button_accent" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/filter"
-                android:textAllCaps="true" />
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txt_filtered_amount_small"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textAllCaps="true"
-                android:text="@string/not_selected"
-                android:textSize="12sp" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/filter_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
+                    android:gravity="center"
+                    android:text="@string/filter"
+                    android:textAllCaps="true" />
 
+                <TextView
+                    android:id="@+id/txt_filtered_amount_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/not_selected"
+                    android:textAllCaps="true"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

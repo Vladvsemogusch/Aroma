@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,7 +29,6 @@ import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
-import ua.pp.oped.aromateque.utility.Utility;
 
 public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
@@ -86,7 +84,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             //  Offset because of header
             final Category category = categories.get(position - 1);
             ((MainItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
-            ((MainItemViewHolder) viewHolder).imgArrow.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.arrow_right_black_24dp));
             if (category.getChildren() != null) {
                 ((MainItemViewHolder) viewHolder).mainItemLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -97,7 +94,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 categories.add(viewHolder.getAdapterPosition(), childCategory);
                             }
                             CategoryViewAdapter.this.notifyItemRangeInserted(viewHolder.getAdapterPosition() + 1, category.getChildrenIds().size());
-                            ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 0, 90f)
+                            ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 0, 180f)
                                     .setDuration(400)
                                     .start();
                             //Smooth scroll to last of just added child categories
@@ -113,7 +110,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             int positionInAdapter = viewHolder.getAdapterPosition();
                             categories.subList(positionInAdapter, positionInAdapter + category.getChildren().size()).clear();
                             CategoryViewAdapter.this.notifyItemRangeRemoved(positionInAdapter + 1, category.getChildren().size());
-                            ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 90f, 0)
+                            ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 180f, 0)
                                     .setDuration(400)
                                     .start();
                             ((MainItemViewHolder) viewHolder).isExtended = false;
@@ -127,7 +124,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ChildItemViewHolder) viewHolder).category = category;
             ((ChildItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
             if (((ChildItemViewHolder) viewHolder).category.getChildren() != null) {
-                //Log.d("DEBUG", "Category HAVE children");
                 ((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -147,9 +143,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         context.startActivity(intent, activityOptions.toBundle());
                     }
                 });
-                // Log.d("DEBUG", "Category DON'T HAVE children");
-                //TODO resolve next line
-                //((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(null);
             }
         }
     }
@@ -221,7 +214,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         HorizontalGridView bestsellersView = headerViewHolder.bestsellersView;
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         bestsellersView.setLayoutManager(layoutManager);
-
         ArrayList<ShortProduct> bestsellersList = new ArrayList<>();
         final ShortProduct prod = new ShortProduct();
         prod.setBrand("Comme des Garcons Accessories");
@@ -231,7 +223,6 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         //prod.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
         prod.setOldPrice("13210");
         prod.setPrice("12310");
-
         final ShortProduct prod2 = new ShortProduct();
         prod2.setBrand("Sensai");
         //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
@@ -312,13 +303,13 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class ChildItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtCategoryName;
-        LinearLayout childLayout;
+        RelativeLayout childLayout;
         //TODO No need to supply full category object
         Category category;
 
         ChildItemViewHolder(View itemView) {
             super(itemView);
-            childLayout = (LinearLayout) itemView.findViewById(R.id.child_layout);
+            childLayout = (RelativeLayout) itemView.findViewById(R.id.child_layout);
             txtCategoryName = (TextView) itemView.findViewById(R.id.txt_category);
         }
     }

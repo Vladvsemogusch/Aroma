@@ -73,7 +73,6 @@ public class ProductInfoActivity extends CalligraphyActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         productId = getIntent().getIntExtra("product_id", -1);
         setupDrawerWithFancyButton();
@@ -163,7 +162,6 @@ public class ProductInfoActivity extends CalligraphyActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }

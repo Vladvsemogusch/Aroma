@@ -64,7 +64,7 @@
                 android:src="@drawable/list" />
 
             <ImageView
-                android:id="@+id/wide"
+                android:id="@+id/big"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
@@ -73,7 +73,7 @@
                 android:src="@drawable/list" />
 
             <ImageView
-                android:id="@+id/list"
+                android:id="@+id/wide"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -93,11 +93,12 @@
             android:layout_height="wrap_content" />
 
         <RadioGroup
+            android:id="@+id/sort_types_radiogroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <RadioButton
-                android:id="@+id/cheaper_first"
+                android:id="@+id/cheap_first"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:onClick="onSortTypeClicked"

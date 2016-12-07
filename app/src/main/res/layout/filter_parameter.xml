@@ -2,21 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/category_mainitem_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/shortproduct_name" />
 
     <TextView
         android:id="@+id/txt_category"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:background="?android:attr/selectableItemBackground"
         android:paddingBottom="10dp"
-        android:paddingStart="20dp"
+        android:layout_toStartOf="@+id/category_list_arrow"
+        android:paddingStart="15dp"
         android:paddingTop="10dp"
         android:textSize="16sp" />
 

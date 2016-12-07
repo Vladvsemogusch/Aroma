@@ -41,11 +41,6 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.parentCategory = parentCategory;
         layoutInflater = LayoutInflater.from(context);
         this.withFooter = withFooter;
-        if (withFooter) {
-            offset = 1;
-        } else {
-            offset = 0;
-        }
         Log.d("ADAPTER", "Subcategory Adapter created");
     }
 
@@ -60,21 +55,22 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             v = layoutInflater.inflate(R.layout.subcategory_list_header, viewGroup, false);
             return new HeaderViewHolder(v);
         }
-        if (itemType == TYPE_FOOTER) {
-            v = layoutInflater.inflate(R.layout.category_list_footer, viewGroup, false);
-            return new FooterViewHolder(v);
-        }
         if (itemType == TYPE_ITEM) {
             v = layoutInflater.inflate(R.layout.subcategory_list_item, viewGroup, false);
             return new MainItemViewHolder(v);
         }
-        return null;
+        if (itemType == TYPE_FOOTER && withFooter) {
+            v = layoutInflater.inflate(R.layout.category_list_footer, viewGroup, false);
+            return new FooterViewHolder(v);
+        } else {
+            v = layoutInflater.inflate(R.layout.divider_dark_brown, viewGroup, false);
+            return new FooterViewHolder(v);
+        }
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof HeaderViewHolder) {
-            ((HeaderViewHolder) viewHolder).txtCatalog.setText(String.format(context.getString(R.string.subcategory_title), parentCategory.getName()));
             fillHeader((HeaderViewHolder) viewHolder);
         }
         if (viewHolder instanceof MainItemViewHolder) {
@@ -92,11 +88,12 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
             });
         }
+
     }
 
     @Override
     public int getItemCount() {
-        return categories.size() + 1 + offset;
+        return categories.size() + 2;
     }
 
     @Override
@@ -104,7 +101,7 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if (position == 0)
             return TYPE_HEADER;
 
-        if (position == categories.size() + 1 && withFooter) {
+        if (position == categories.size() + 1) {
             return TYPE_FOOTER;
         }
         return TYPE_ITEM;
