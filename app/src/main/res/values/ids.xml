@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item type="id" name="left_listview" />
+    <item type="id" name="row" />
+    <item type="id" name="position_in_row" />
 </resources>

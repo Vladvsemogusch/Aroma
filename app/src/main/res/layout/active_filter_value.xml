@@ -2,13 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/rounded_corners"
+    android:paddingStart="3dp"
+    android:paddingEnd="3dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:layout_margin="2dp">
 
     <TextView
         android:id="@+id/active_value_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:layout_margin="3dp" />
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="3dp" />
+
+    <ImageView
+        android:id="@+id/cancel_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/cancel"
+        android:layout_marginEnd="2dp" />
 
 </LinearLayout>

@@ -4,10 +4,10 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.transition.ChangeBounds;
 import android.support.transition.Fade;
-import android.support.transition.Scene;
 import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +35,11 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<EntityIdName> filterAdapterList;
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerView;
-    private ArrayList<FilterParameterValue> activeFilterParameters;
+    private ArrayList<FilterParameterValue> activeFilterParameterValues;
     private List<List<View>> activeValueViewRows;
     private RelativeLayout activeValuesLayout;
     final static private int headerOffset = 1;
+    private ParameterValueViewOnClickListener parameterValueViewOnClickListener;
     private Context context;
 
     public FilterAdapter(Context context, List<FilterParameter> filterParameters, RecyclerView recyclerView) {
@@ -46,10 +47,11 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.recyclerView = recyclerView;
         filterAdapterList = new ArrayList<>();
         filterAdapterList.addAll(filterParameters);
-        activeFilterParameters = new ArrayList<>();
+        activeFilterParameterValues = new ArrayList<>();
         this.context = context;
         activeValueViewRows = new ArrayList<>();
         activeValueViewRows.add(new ArrayList<View>());
+        parameterValueViewOnClickListener = new ParameterValueViewOnClickListener();
     }
 
 
@@ -125,177 +127,10 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void fillFilterParameterValueViewHolder(final FilterParameterValueViewHolder viewHolder, final int position) {
         final FilterParameterValue filterParameterValue = (FilterParameterValue) filterAdapterList.get(position - headerOffset);
-        boolean isChecked = activeFilterParameters.contains(filterParameterValue);
+        boolean isChecked = activeFilterParameterValues.contains(filterParameterValue);
         viewHolder.chkbxParameterValueName.setChecked(isChecked);
         viewHolder.chkbxParameterValueName.setText(filterParameterValue.getName());
-        viewHolder.chkbxParameterValueName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FilterParameterValue pressedValue = (FilterParameterValue) filterAdapterList.get(viewHolder.getAdapterPosition() - headerOffset);
-                //Add new active value view to the list
-                // Check mark toggle occur before onClick so isChecked() is always like after the click
-                if (viewHolder.chkbxParameterValueName.isChecked()) {
-                    Scene startingScene = new Scene(activeValuesLayout);
-                    Fade fadeTransition = new Fade();
-                    fadeTransition.setDuration(200);
-                    TransitionManager.beginDelayedTransition(activeValuesLayout, fadeTransition);
-                    activeFilterParameters.add(pressedValue);
-                    addValueView(pressedValue);
-                    //Log.d(TAG, activeValueViewRows.size() + " rows");
-                    // Remove active value from list
-                } else {
-                    TransitionSet transition = new TransitionSet();
-                    Fade fadeTransition = new Fade();
-                    fadeTransition.setDuration(200);
-                    transition.addTransition(new Fade());
-                    transition.addTransition(new ChangeBounds());
-                    transition.setOrdering(TransitionSet.ORDERING_TOGETHER);
-                    TransitionManager.beginDelayedTransition(activeValuesLayout, transition);
-                    removeValue(pressedValue);
-
-                    //Log.d(TAG, activeValueViewRows.size() + " rows");
-                }
-                /*
-                for (List<View> row :
-                        activeValueViewRows) {
-                    String s = "";
-                    for (View value : row) {
-                        s += String.valueOf(((TextView) value.findViewById(R.id.active_value_name)).getText()) + " | ";
-
-                    }
-                    Log.d(TAG, s);
-                }
-                */
-            }
-
-            private void removeValue(FilterParameterValue pressedValue) {
-                int pressedValuePosition = activeFilterParameters.indexOf(pressedValue);
-                activeFilterParameters.remove(pressedValue);
-                //Convert position in active values list to position in views list
-                int positionCounter = 0;
-                int pressedValueViewRow = 0;
-                int pressedValueViewPosition = 0;
-                for (int i = 0; i < activeValueViewRows.size(); i++) {
-                    positionCounter += activeValueViewRows.get(i).size();
-                    if (positionCounter > pressedValuePosition) {
-                        pressedValueViewRow = i;
-                        //Log.d(TAG, String.valueOf(pressedValueViewRow));
-                        positionCounter -= activeValueViewRows.get(i).size();
-                        pressedValueViewPosition = pressedValuePosition - positionCounter;
-                        break;
-                    }
-                }
-                List<View> activeValueViewRowList = activeValueViewRows.get(pressedValueViewRow);
-                View activeValueView = activeValueViewRowList.get(pressedValueViewPosition);
-                //Log.d(TAG, pressedValueViewRow + " row");
-                //Log.d(TAG, pressedValueViewPosition + " position");
-                // Let's rearrange all views next and below removed one
-                ArrayList<View> viewsToRearrange = new ArrayList<>();
-                // Collecting views that we will rearrange to convenient collection
-                if (activeValueViewRowList.size() - 1 > pressedValueViewPosition) {
-                    viewsToRearrange.addAll(activeValueViewRowList.subList(pressedValueViewPosition + 1, activeValueViewRowList.size()));
-                }
-                for (int i = pressedValueViewRow + 1; i < activeValueViewRows.size(); i++) {
-                    viewsToRearrange.addAll(activeValueViewRows.get(i));
-                }
-                for (int i = activeValueViewRows.size() - 1; i > pressedValueViewRow; i--) {
-                    //Log.d(TAG, "Removed row: " + i);
-                    activeValueViewRows.remove(i);
-
-                }
-                activeValueViewRowList.subList(pressedValueViewPosition, activeValueViewRowList.size()).clear();
-                if (activeValueViewRowList.size() - 1 == pressedValuePosition) {
-                    activeValueViewRowList.remove(pressedValueViewPosition);
-                }
-                if (activeValueViewRowList.isEmpty() && activeValueViewRows.size() > 1) {
-                    activeValueViewRows.remove(pressedValueViewRow);
-                }
-                activeValuesLayout.removeView(activeValueView);
-                for (View valueView : viewsToRearrange) {
-                    activeValuesLayout.removeView(valueView);
-                }
-                for (View valueView : viewsToRearrange) {
-                    addValueView(valueView);
-                }
-            }
-
-            private void addValueView(View newActiveValueView) {
-                clearRules(newActiveValueView);
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) newActiveValueView.getLayoutParams();
-                int lastRow = getLastRow();
-                List<View> lastRowViews = activeValueViewRows.get(lastRow);
-                if (lastRowViews.isEmpty()) {
-                    //layoutParams.addRule(ALIGN_PARENT_START);
-                    if (activeValueViewRows.size() > 1) {
-                        // View above
-                        View viewAbove = activeValueViewRows.get(lastRow - 1).get(0);
-                        layoutParams.addRule(BELOW, viewAbove.getId());
-                    }
-                    lastRowViews.add(newActiveValueView);
-                } else {
-                    int previousViewId = lastRowViews.get(lastRowViews.size() - 1).getId();
-                    // check if there is enough space to place new value view
-                    int predictedOccupiedWidth = 0;
-                    for (View activeValueView :
-                            lastRowViews) {
-                        predictedOccupiedWidth += activeValueView.getWidth();
-                    }
-                    int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                    int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                    newActiveValueView.measure(widthMeasureSpec, heightMeasureSpec);
-                    predictedOccupiedWidth += newActiveValueView.getMeasuredWidth();
-                    //Log.d(TAG, "newActiveValueView.getWidth(): " + newActiveValueView.getMeasuredWidth());
-                    // Enough space
-                    if (recyclerView.getWidth() >= predictedOccupiedWidth) {
-                        //Log.d(TAG, "recyclerView.getWidth(): " + recyclerView.getWidth() + ", predictedOccupiedWidth: " + predictedOccupiedWidth);
-                        layoutParams.addRule(RIGHT_OF, previousViewId);
-                        if (activeValueViewRows.size() > 1) {
-                            // Same viewAbove as first
-                            View viewAbove = activeValueViewRows.get(lastRow - 1).get(0);
-                            layoutParams.addRule(BELOW, viewAbove.getId());
-                        }
-                        lastRowViews.add(newActiveValueView);
-                        // Not enough space
-                    } else {
-                        ArrayList<View> newRow = new ArrayList<>();
-                        activeValueViewRows.add(newRow);
-                        newRow.add(newActiveValueView);
-                        // calculate new lastRow
-                        lastRow = getLastRow();
-                        // Different viewAbove than other two
-                        View viewAbove = activeValueViewRows.get(lastRow - 1).get(0);
-                        layoutParams.addRule(BELOW, viewAbove.getId());
-                    }
-                }
-                activeValuesLayout.addView(newActiveValueView);
-            }
-
-
-            private View addValueView(FilterParameterValue pressedValue) {
-                View newActiveValueView = layoutInflater.inflate(R.layout.active_filter_value, activeValuesLayout, false);
-                newActiveValueView.setId(View.generateViewId());
-                TextView txtValueName = (TextView) newActiveValueView.findViewById(R.id.active_value_name);
-                txtValueName.setText(pressedValue.getName());
-                addValueView(newActiveValueView);
-                return newActiveValueView;
-            }
-
-            private void clearRules(View view) {
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                int[] rules = layoutParams.getRules();
-                for (int i = 0; i < rules.length; i++) {
-                    rules[i] = 0;
-                }
-            }
-
-            private int getLastRow() {
-                if (activeValueViewRows.size() > 0) {
-                    return activeValueViewRows.size() - 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
+        viewHolder.chkbxParameterValueName.setOnClickListener(parameterValueViewOnClickListener);
     }
 
     private void fillPriceViewHolder(final PriceViewHolder viewHolder, int position) {
@@ -315,7 +150,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void fillActiveParameterValuesViewHolder(final ActiveParameterValuesViewHolder viewHolder) {
         this.activeValuesLayout = viewHolder.activeValuesLayout;
 
-        //activeValueAdapter =new ActiveFilterValueAdapter(activeFilterParameters, layoutInflater);
+        //activeValueAdapter =new ActiveFilterValueAdapter(activeFilterParameterValues, layoutInflater);
         //viewHolder.activeValuesLayout.setLayoutManager(new FilterLayoutManager());
         //viewHolder.activeValuesLayout.setAdapter(activeValueAdapter);
     }
@@ -416,4 +251,225 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         }
     }
+
+    private class ParameterValueViewOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            FilterParameterValueViewHolder viewHolder = (FilterParameterValueViewHolder) recyclerView.getChildViewHolder(view);
+            int viewAdapterPosition = recyclerView.getChildAdapterPosition(view);
+            FilterParameterValue pressedValue = (FilterParameterValue) filterAdapterList.get(viewAdapterPosition - headerOffset);
+            //Add new active value view to the list
+            // Check mark toggle occur before onClick so isChecked() is always like after the click
+            if (viewHolder.chkbxParameterValueName.isChecked()) {
+                Fade fadeTransition = new Fade();
+                fadeTransition.setDuration(200);
+                TransitionManager.beginDelayedTransition(activeValuesLayout, fadeTransition);
+                activeFilterParameterValues.add(pressedValue);
+                addValueView(pressedValue);
+                // Remove active value from list
+            } else {
+                int pressedValuePosition = activeFilterParameterValues.indexOf(pressedValue);
+                activeFilterParameterValues.remove(pressedValue);
+                removeValue(getViewPosition(pressedValuePosition));
+            }
+            Log.d(TAG, activeValueViewRows.size() + " rows");
+            for (List<View> row :
+                    activeValueViewRows) {
+                String s = "";
+                for (View value : row) {
+                    s += String.valueOf(((TextView) value.findViewById(R.id.active_value_name)).getText()) + " | ";
+                }
+                Log.d(TAG, s);
+            }
+        }
+
+        private void removeValue(int[] pressedValueGridPosition) {
+            TransitionSet transition = new TransitionSet();
+            Fade fadeTransition = new Fade();
+            fadeTransition.setDuration(200);
+            transition.addTransition(new Fade());
+            transition.addTransition(new ChangeBounds());
+            transition.setOrdering(TransitionSet.ORDERING_TOGETHER);
+            TransitionManager.beginDelayedTransition(activeValuesLayout, transition);
+
+            int pressedValueViewRow = pressedValueGridPosition[0];
+            int pressedValueViewPosition = pressedValueGridPosition[1];
+
+            List<View> activeValueViewRowList = activeValueViewRows.get(pressedValueViewRow);
+            View activeValueView = activeValueViewRowList.get(pressedValueViewPosition);
+            //Log.d(TAG, pressedValueViewRow + " row");
+            //Log.d(TAG, pressedValueViewPosition + " position");
+            // Let's rearrange all views next and below removed one
+            ArrayList<View> viewsToRearrange = new ArrayList<>();
+            // Collecting views that we will rearrange to convenient collection
+            if (activeValueViewRowList.size() - 1 > pressedValueViewPosition) {
+                viewsToRearrange.addAll(activeValueViewRowList.subList(pressedValueViewPosition + 1, activeValueViewRowList.size()));
+            }
+            for (int i = pressedValueViewRow + 1; i < activeValueViewRows.size(); i++) {
+                viewsToRearrange.addAll(activeValueViewRows.get(i));
+            }
+            for (int i = activeValueViewRows.size() - 1; i > pressedValueViewRow; i--) {
+                //Log.d(TAG, "Removed row: " + i);
+                activeValueViewRows.remove(i);
+
+            }
+            activeValueViewRowList.subList(pressedValueViewPosition, activeValueViewRowList.size()).clear();
+            if (activeValueViewRowList.size() - 1 == pressedValueViewPosition) {
+                activeValueViewRowList.remove(pressedValueViewPosition);
+            }
+            if (activeValueViewRowList.isEmpty() && activeValueViewRows.size() > 1) {
+                activeValueViewRows.remove(pressedValueViewRow);
+            }
+            activeValuesLayout.removeView(activeValueView);
+            for (View valueView : viewsToRearrange) {
+                activeValuesLayout.removeView(valueView);
+            }
+            for (View valueView : viewsToRearrange) {
+                addValueView(valueView);
+            }
+        }
+
+
+        private void addValueView(FilterParameterValue pressedValue) {
+            View newActiveValueView = layoutInflater.inflate(R.layout.active_filter_value, activeValuesLayout, false);
+            newActiveValueView.setId(View.generateViewId());
+            TextView txtValueName = (TextView) newActiveValueView.findViewById(R.id.active_value_name);
+            txtValueName.setText(pressedValue.getName());
+            ImageView cancelButton = (ImageView) newActiveValueView.findViewById(R.id.cancel_button);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // super bad code
+                    // get parent of a button which is newActiveValueView
+                    int[] coords = ((int[]) ((View) view.getParent()).getTag());
+                    int positionInActiveValues = getPositionInActiveValues(coords);
+                    FilterParameterValue value = activeFilterParameterValues.get(positionInActiveValues);
+                    int positionInLayout = filterAdapterList.indexOf(value);
+                    if (positionInLayout != -1) {
+                        View viewInRecyclerView = recyclerView.getChildAt(positionInLayout + headerOffset);
+                        FilterParameterValueViewHolder viewHolder = (FilterParameterValueViewHolder) recyclerView.getChildViewHolder(viewInRecyclerView);
+                        viewHolder.chkbxParameterValueName.setChecked(false);
+                    }
+                    activeFilterParameterValues.remove(positionInActiveValues);
+                    removeValue(coords);
+                }
+            });
+            addValueView(newActiveValueView);
+        }
+
+        private int getPositionInActiveValues(int[] coords) {
+            int row = coords[0];
+            int positionInRow = coords[1];
+            int positionInActiveValues = 0;
+            for (int i = 0; i < row; i++) {
+                positionInActiveValues += activeValueViewRows.get(i).size();
+            }
+            positionInActiveValues += positionInRow;
+            Log.d(TAG, "positionInActiveValues " + positionInActiveValues);
+            return positionInActiveValues;
+        }
+
+        private void addValueView(View newActiveValueView) {
+            Fade fadeTransition = new Fade();
+            fadeTransition.setDuration(200);
+            TransitionManager.beginDelayedTransition(activeValuesLayout, fadeTransition);
+
+            int pressedValueViewRow;
+            int pressedValueViewPosition = 0;
+            clearRules(newActiveValueView);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) newActiveValueView.getLayoutParams();
+            int lastRow = getLastRow();
+            List<View> lastRowViews = activeValueViewRows.get(lastRow);
+            if (lastRowViews.isEmpty()) {
+                //layoutParams.addRule(ALIGN_PARENT_START);
+                if (activeValueViewRows.size() > 1) {
+                    // View above
+                    View viewAbove = activeValueViewRows.get(lastRow - 1).get(0);
+                    layoutParams.addRule(BELOW, viewAbove.getId());
+                }
+                lastRowViews.add(newActiveValueView);
+            } else {
+                int previousViewId = lastRowViews.get(lastRowViews.size() - 1).getId();
+                // check if there is enough space to place new value view
+                int predictedOccupiedWidth = 0;
+                for (View activeValueView :
+                        lastRowViews) {
+                    predictedOccupiedWidth += activeValueView.getWidth();
+                }
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                newActiveValueView.measure(widthMeasureSpec, heightMeasureSpec);
+                predictedOccupiedWidth += newActiveValueView.getMeasuredWidth();
+                //Log.d(TAG, "newActiveValueView.getWidth(): " + newActiveValueView.getMeasuredWidth());
+                // Enough space
+                if (recyclerView.getWidth() >= predictedOccupiedWidth) {
+                    //Log.d(TAG, "recyclerView.getWidth(): " + recyclerView.getWidth() + ", predictedOccupiedWidth: " + predictedOccupiedWidth);
+                    layoutParams.addRule(RIGHT_OF, previousViewId);
+                    if (activeValueViewRows.size() > 1) {
+                        // Same viewAbove as first
+                        View viewAbove = activeValueViewRows.get(lastRow - 1).get(0);
+                        layoutParams.addRule(BELOW, viewAbove.getId());
+                    }
+                    lastRowViews.add(newActiveValueView);
+                    pressedValueViewPosition = lastRowViews.size() - 1;
+                    // Not enough space
+                } else {
+                    ArrayList<View> newRow = new ArrayList<>();
+                    activeValueViewRows.add(newRow);
+                    newRow.add(newActiveValueView);
+                    // calculate new lastRow
+                    lastRow = getLastRow();
+                    // Different viewAbove than other two
+                    View viewAbove = activeValueViewRows.get(lastRow - 1).get(0);
+                    layoutParams.addRule(BELOW, viewAbove.getId());
+                }
+            }
+            activeValuesLayout.addView(newActiveValueView);
+            //position already assigned
+            pressedValueViewRow = lastRow;
+            int[] position = {pressedValueViewRow, pressedValueViewPosition};
+            newActiveValueView.setTag(position);
+        }
+
+
+        private void clearRules(View view) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            int[] rules = layoutParams.getRules();
+            for (int i = 0; i < rules.length; i++) {
+                rules[i] = 0;
+            }
+        }
+
+        private int getLastRow() {
+            if (activeValueViewRows.size() > 0) {
+                return activeValueViewRows.size() - 1;
+            } else {
+                return 0;
+            }
+        }
+
+        private int[] getViewPosition(int pressedValuePosition) {
+            int positionCounter = 0;
+            int pressedValueViewRow = 0;
+            int pressedValueViewPosition = 0;
+            for (int i = 0; i < activeValueViewRows.size(); i++) {
+                positionCounter += activeValueViewRows.get(i).size();
+                if (positionCounter > pressedValuePosition) {
+                    pressedValueViewRow = i;
+                    //Log.d(TAG, String.valueOf(pressedValueViewRow));
+                    positionCounter -= activeValueViewRows.get(i).size();
+                    pressedValueViewPosition = pressedValuePosition - positionCounter;
+                    break;
+                }
+            }
+            int[] valuePosition = new int[2];
+            valuePosition[0] = pressedValueViewRow;
+            valuePosition[1] = pressedValueViewPosition;
+            return valuePosition;
+        }
+
+
+    }
+
 }
