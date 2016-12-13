@@ -55,14 +55,14 @@ public class FilterFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RecyclerView parameterListView = (RecyclerView) getView().findViewById(R.id.parameter_list);
+        RecyclerView parameterRecyclerView = (RecyclerView) getView().findViewById(R.id.parameter_list);
         LinearLayoutManagerSmoothScrollEdition layoutManager = new LinearLayoutManagerSmoothScrollEdition(getActivity(), RecyclerView.VERTICAL, false);
-        parameterListView.setLayoutManager(layoutManager);
-        parameterListView.setItemViewCacheSize(30);
+        parameterRecyclerView.setLayoutManager(layoutManager);
+        parameterRecyclerView.setItemViewCacheSize(30);
         //parameterListView.setNestedScrollingEnabled(false);
         ArrayList<FilterParameter> parameters = new ArrayList<>();
         fillParameters(parameters);
-        parameterListView.setAdapter(new FilterAdapter(getActivity(), parameters, parameterListView));
+        parameterRecyclerView.setAdapter(new FilterAdapter(getActivity(), parameters, parameterRecyclerView));
         layoutManager.setSmoothScroller(new LinearSmoothScroller(getActivity()) {
             @Override
             protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {

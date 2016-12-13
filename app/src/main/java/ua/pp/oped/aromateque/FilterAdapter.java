@@ -8,16 +8,17 @@ import android.support.transition.TransitionManager;
 import android.support.transition.TransitionSet;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import ua.pp.oped.aromateque.model.EntityIdName;
 import ua.pp.oped.aromateque.model.FilterParameter;
 import ua.pp.oped.aromateque.model.FilterParameterValue;
 import ua.pp.oped.aromateque.model.PriceFilterParameterValue;
+import ua.pp.oped.aromateque.utility.AdvancedListenerRangeSeekBar;
 
 import static android.widget.RelativeLayout.BELOW;
 import static android.widget.RelativeLayout.RIGHT_OF;
@@ -127,32 +129,112 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void fillFilterParameterValueViewHolder(final FilterParameterValueViewHolder viewHolder, final int position) {
         final FilterParameterValue filterParameterValue = (FilterParameterValue) filterAdapterList.get(position - headerOffset);
+
         boolean isChecked = activeFilterParameterValues.contains(filterParameterValue);
+        //Log.d(TAG, filterParameterValue.getName() + " exist in activeFilterParameterValues: " + isChecked);
         viewHolder.chkbxParameterValueName.setChecked(isChecked);
         viewHolder.chkbxParameterValueName.setText(filterParameterValue.getName());
         viewHolder.chkbxParameterValueName.setOnClickListener(parameterValueViewOnClickListener);
     }
 
-    private void fillPriceViewHolder(final PriceViewHolder viewHolder, int position) {
-        int minPrice = ((PriceFilterParameterValue) filterAdapterList.get(position - headerOffset)).getMinPrice();
-        int maxPrice = ((PriceFilterParameterValue) filterAdapterList.get(position - headerOffset)).getMaxPrice();
+    private void fillPriceViewHolder(final PriceViewHolder viewHolder, final int position) {
+        final int minPrice = ((PriceFilterParameterValue) filterAdapterList.get(position - headerOffset)).getMinPrice();
+        final int maxPrice = ((PriceFilterParameterValue) filterAdapterList.get(position - headerOffset)).getMaxPrice();
+        viewHolder.etFrom.setText(String.valueOf(minPrice));
+        viewHolder.etTo.setText(String.valueOf(maxPrice));
         viewHolder.priceRangeBar.setRangeValues(minPrice, maxPrice);
         viewHolder.priceRangeBar.setNotifyWhileDragging(true);
-        viewHolder.priceRangeBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
+        final AdvancedListenerRangeSeekBar.OnRangeSeekBarChangeListener<Integer> onRangeSeekBarChangeListener = new AdvancedListenerRangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
             @Override
-            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
+            public void onRangeSeekBarValuesChanged(AdvancedListenerRangeSeekBar<?> bar, Integer minValue, Integer maxValue, boolean isDragging) {
                 viewHolder.etFrom.setText(String.valueOf(minValue));
                 viewHolder.etTo.setText(String.valueOf(maxValue));
+                if (!isDragging) {
+                    for (int i = 0; i < activeFilterParameterValues.size(); i++) {
+                        if (activeFilterParameterValues.get(i) instanceof PriceFilterParameterValue) {
+                            int[] valueViewCoords = parameterValueViewOnClickListener.getViewPosition(i);
+                            activeFilterParameterValues.remove(i);
+                            parameterValueViewOnClickListener.removeValue(valueViewCoords);
+                        }
+                    }
+                    int selectedFromPrice = viewHolder.priceRangeBar.getSelectedMinValue();
+                    int selectedToPrice = viewHolder.priceRangeBar.getSelectedMaxValue();
+                    PriceFilterParameterValue activePriceValue = new PriceFilterParameterValue(0, selectedFromPrice, selectedToPrice);
+                    activePriceValue.setMinPrice(selectedFromPrice);
+                    activePriceValue.setMaxPrice(selectedToPrice);
+                    activeFilterParameterValues.add(activePriceValue);
+                    parameterValueViewOnClickListener.addValueView(activePriceValue);
+                }
             }
-        });
+        };
+        viewHolder.priceRangeBar.setOnRangeSeekBarChangeListener(onRangeSeekBarChangeListener);
+        TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                boolean handled = false;
+                String fromPrice;
+                String toPrice;
+                int enteredFromPrice = (int) Float.parseFloat(viewHolder.etFrom.getText().toString());
+                int enteredToPrice = (int) Float.parseFloat(viewHolder.etTo.getText().toString());
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if (enteredFromPrice < minPrice) {
+                        enteredFromPrice = minPrice;
+                    } else if (enteredFromPrice > maxPrice) {
+                        enteredFromPrice = maxPrice;
+                    }
+                }
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (enteredToPrice > maxPrice) {
+                        enteredToPrice = maxPrice;
+                    } else if (enteredToPrice < minPrice) {
+                        enteredToPrice = minPrice;
+                    }
+                    fromPrice = String.valueOf(enteredFromPrice);
+                    toPrice = String.valueOf(enteredToPrice);
+                    //Log.d(TAG, String.valueOf(selectedMaxPrice + " " + selectedMinPrice));
+                    viewHolder.priceRangeBar.setSelectedMinValue(enteredFromPrice);
+                    viewHolder.priceRangeBar.setSelectedMaxValue(enteredToPrice);
+                    textView.clearFocus();
+                    InputMethodManager inputManager =
+                            (InputMethodManager) context.
+                                    getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(
+                            textView.getWindowToken(),
+                            0);
+                    viewHolder.etFrom.setText(fromPrice);
+                    viewHolder.etTo.setText(toPrice);
+                    onRangeSeekBarChangeListener.onRangeSeekBarValuesChanged(viewHolder.priceRangeBar, enteredFromPrice, enteredToPrice, false);
+                    handled = true;
+                }
+
+                return handled;
+            }
+        };
+        viewHolder.etFrom.setOnEditorActionListener(editorActionListener);
+        viewHolder.etTo.setOnEditorActionListener(editorActionListener);
+        View.OnFocusChangeListener onFocusChangeListener = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    ((EditText) view).setText("");
+                }
+            }
+        };
+        viewHolder.etFrom.setOnFocusChangeListener(onFocusChangeListener);
+        viewHolder.etTo.setOnFocusChangeListener(onFocusChangeListener);
+
+    }
+
+    private void removePriceActiveValue() {
+        for (FilterParameterValue value : activeFilterParameterValues) {
+            if (value instanceof PriceFilterParameterValue) {
+                //parameterValueViewOnClickListener.getViewPosition(p)
+            }
+        }
     }
 
     private void fillActiveParameterValuesViewHolder(final ActiveParameterValuesViewHolder viewHolder) {
         this.activeValuesLayout = viewHolder.activeValuesLayout;
-
-        //activeValueAdapter =new ActiveFilterValueAdapter(activeFilterParameterValues, layoutInflater);
-        //viewHolder.activeValuesLayout.setLayoutManager(new FilterLayoutManager());
-        //viewHolder.activeValuesLayout.setAdapter(activeValueAdapter);
     }
 
     @Override
@@ -200,7 +282,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView uah;
         EditText etFrom;
         EditText etTo;
-        RangeSeekBar<Integer> priceRangeBar;
+        AdvancedListenerRangeSeekBar<Integer> priceRangeBar;
 
         PriceViewHolder(View itemView) {
             super(itemView);
@@ -209,7 +291,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             uah = (TextView) itemView.findViewById(R.id.txt_uah);
             etTo = (EditText) itemView.findViewById(R.id.et_price_to);
             etFrom = (EditText) itemView.findViewById(R.id.et_price_from);
-            priceRangeBar = (RangeSeekBar<Integer>) itemView.findViewById(R.id.price_range_bar);
+            priceRangeBar = (AdvancedListenerRangeSeekBar<Integer>) itemView.findViewById(R.id.price_range_bar);
         }
     }
 
@@ -286,11 +368,16 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         private void removeValue(int[] pressedValueGridPosition) {
             TransitionSet transition = new TransitionSet();
-            Fade fadeTransition = new Fade();
-            fadeTransition.setDuration(200);
-            transition.addTransition(new Fade());
-            transition.addTransition(new ChangeBounds());
-            transition.setOrdering(TransitionSet.ORDERING_TOGETHER);
+            Fade fadeOutTransition = new Fade(Fade.OUT);
+            fadeOutTransition.setDuration(200);
+            transition.addTransition(fadeOutTransition);
+            Fade fadeInTransition = new Fade(Fade.IN);
+            fadeInTransition.setDuration(200);
+            transition.addTransition(fadeInTransition);
+            ChangeBounds changeBounds = new ChangeBounds();
+            changeBounds.setDuration(200);
+            transition.addTransition(changeBounds);
+            transition.setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
             TransitionManager.beginDelayedTransition(activeValuesLayout, transition);
 
             int pressedValueViewRow = pressedValueGridPosition[0];
@@ -335,7 +422,13 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View newActiveValueView = layoutInflater.inflate(R.layout.active_filter_value, activeValuesLayout, false);
             newActiveValueView.setId(View.generateViewId());
             TextView txtValueName = (TextView) newActiveValueView.findViewById(R.id.active_value_name);
-            txtValueName.setText(pressedValue.getName());
+
+            if (pressedValue instanceof PriceFilterParameterValue) {
+                String text = ((PriceFilterParameterValue) pressedValue).getMinPrice() + " - " + ((PriceFilterParameterValue) pressedValue).getMaxPrice() + " грн";
+                txtValueName.setText(text);
+            } else {
+                txtValueName.setText(pressedValue.getName());
+            }
             ImageView cancelButton = (ImageView) newActiveValueView.findViewById(R.id.cancel_button);
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -343,13 +436,21 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     // super bad code
                     // get parent of a button which is newActiveValueView
                     int[] coords = ((int[]) ((View) view.getParent()).getTag());
+                    //Log.d(TAG, "coords =  " + coords[0] + "  " + coords[1]);
                     int positionInActiveValues = getPositionInActiveValues(coords);
                     FilterParameterValue value = activeFilterParameterValues.get(positionInActiveValues);
-                    int positionInLayout = filterAdapterList.indexOf(value);
-                    if (positionInLayout != -1) {
-                        View viewInRecyclerView = recyclerView.getChildAt(positionInLayout + headerOffset);
-                        FilterParameterValueViewHolder viewHolder = (FilterParameterValueViewHolder) recyclerView.getChildViewHolder(viewInRecyclerView);
-                        viewHolder.chkbxParameterValueName.setChecked(false);
+                    if (!(value instanceof PriceFilterParameterValue)) {
+                        int positionInLayout = filterAdapterList.indexOf(value);
+                        //Log.d(TAG, "filterAdapterList.indexOf(value) " + filterAdapterList.indexOf(value));
+                        if (positionInLayout != -1) {
+                            View viewInRecyclerView = recyclerView.getChildAt(positionInLayout + headerOffset);
+                            if (viewInRecyclerView != null) {
+                                FilterParameterValueViewHolder viewHolder = (FilterParameterValueViewHolder) recyclerView.getChildViewHolder(viewInRecyclerView);
+                                viewHolder.chkbxParameterValueName.setChecked(false);
+                            } else {
+                                FilterAdapter.this.notifyItemChanged(positionInLayout + headerOffset);
+                            }
+                        }
                     }
                     activeFilterParameterValues.remove(positionInActiveValues);
                     removeValue(coords);
@@ -395,15 +496,33 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 int predictedOccupiedWidth = 0;
                 for (View activeValueView :
                         lastRowViews) {
-                    predictedOccupiedWidth += activeValueView.getWidth();
+                    int viewWidth;
+                    if (activeValueView.getWidth() != 0) {
+                        viewWidth = activeValueView.getWidth();
+                        Log.d(TAG, "activeValueView.getWidth() " + activeValueView.getWidth());
+                    } else {
+                        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                        activeValueView.measure(widthMeasureSpec, heightMeasureSpec);
+                        viewWidth = activeValueView.getMeasuredWidth();
+                        Log.d(TAG, "activeValueView.getMeasuredWidth() " + activeValueView.getMeasuredWidth());
+                    }
+                    predictedOccupiedWidth += viewWidth;
+
                 }
-                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                newActiveValueView.measure(widthMeasureSpec, heightMeasureSpec);
-                predictedOccupiedWidth += newActiveValueView.getMeasuredWidth();
-                //Log.d(TAG, "newActiveValueView.getWidth(): " + newActiveValueView.getMeasuredWidth());
+                //wasn't layed out yet
+                if (newActiveValueView.getWidth() == 0) {
+                    int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    newActiveValueView.measure(widthMeasureSpec, heightMeasureSpec);
+                    predictedOccupiedWidth += newActiveValueView.getMeasuredWidth();
+                } else {
+                    predictedOccupiedWidth += newActiveValueView.getWidth();
+                }
+
+                Log.d(TAG, "newActiveValueView.getMeasuredWidth(): " + newActiveValueView.getMeasuredWidth());
                 // Enough space
-                if (recyclerView.getWidth() >= predictedOccupiedWidth) {
+                if (recyclerView.getWidth() > predictedOccupiedWidth) {
                     //Log.d(TAG, "recyclerView.getWidth(): " + recyclerView.getWidth() + ", predictedOccupiedWidth: " + predictedOccupiedWidth);
                     layoutParams.addRule(RIGHT_OF, previousViewId);
                     if (activeValueViewRows.size() > 1) {

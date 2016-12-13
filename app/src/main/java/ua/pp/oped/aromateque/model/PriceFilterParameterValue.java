@@ -20,4 +20,12 @@ public class PriceFilterParameterValue extends FilterParameterValue {
     public int getMaxPrice() {
         return maxPrice;
     }
+
+    public void setMinPrice(int minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public void setMaxPrice(int maxPrice) {
+        this.maxPrice = maxPrice;
+    }
 }
