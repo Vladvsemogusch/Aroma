@@ -34,7 +34,7 @@ import static android.widget.RelativeLayout.RIGHT_OF;
 
 public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "FILTER_ADAPTER";
-    private List<EntityIdName> filterAdapterList;
+    private ArrayList<EntityIdName> filterAdapterList;
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerView;
     private ArrayList<FilterParameterValue> activeFilterParameterValues;
@@ -44,7 +44,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ParameterValueViewOnClickListener parameterValueViewOnClickListener;
     private Context context;
 
-    public FilterAdapter(Context context, List<FilterParameter> filterParameters, RecyclerView recyclerView) {
+    public FilterAdapter(Context context, List<EntityIdName> filterParameters, RecyclerView recyclerView) {
         layoutInflater = LayoutInflater.from(context);
         this.recyclerView = recyclerView;
         filterAdapterList = new ArrayList<>();
@@ -94,14 +94,14 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private void fillFilterParameterViewHolder(final FilterParameterViewHolder viewHolder, int position) {
+    private void fillFilterParameterViewHolder(final FilterParameterViewHolder viewHolder, final int position) {
         final FilterParameter filterParameter = (FilterParameter) filterAdapterList.get(position - headerOffset);
         viewHolder.txtCategoryName.setText(filterParameter.getName());
         viewHolder.mainItemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final int positionInAdapter = viewHolder.getAdapterPosition();
-                if (!viewHolder.isExtended) {
+                if (!filterParameter.isExtended()) {
                     filterAdapterList.addAll(positionInAdapter + 1 - headerOffset, filterParameter.getValues());
                     FilterAdapter.this.notifyItemRangeInserted(positionInAdapter + 1, filterParameter.getValues().size());
                     ObjectAnimator.ofFloat(viewHolder.imgArrow, "rotation", 0, 180f)
@@ -114,14 +114,14 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             recyclerView.smoothScrollToPosition(positionInAdapter + filterParameter.getValues().size());
                         }
                     }, recyclerView.getItemAnimator().getRemoveDuration());
-                    viewHolder.isExtended = true;
+                    filterParameter.setExtended(true);
                 } else {
                     filterAdapterList.subList(positionInAdapter + 1 - headerOffset, positionInAdapter + 1 - headerOffset + filterParameter.getValues().size()).clear();
                     FilterAdapter.this.notifyItemRangeRemoved(positionInAdapter + 1, filterParameter.getValues().size());
                     ObjectAnimator.ofFloat(viewHolder.imgArrow, "rotation", 180f, 0)
                             .setDuration(400)
                             .start();
-                    viewHolder.isExtended = false;
+                    filterParameter.setExtended(false);
                 }
             }
         });
@@ -235,6 +235,9 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void fillActiveParameterValuesViewHolder(final ActiveParameterValuesViewHolder viewHolder) {
         this.activeValuesLayout = viewHolder.activeValuesLayout;
+        if (!activeFilterParameterValues.isEmpty()) {
+            placeActiveValueViews();
+        }
     }
 
     @Override
@@ -587,8 +590,33 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             valuePosition[1] = pressedValueViewPosition;
             return valuePosition;
         }
+    }
 
+    public void placeActiveValueViews() {
+        for (List<View> viewsRow :
+                activeValueViewRows) {
+            for (View view :
+                    viewsRow) {
 
+                activeValuesLayout.addView(view);
+            }
+        }
+    }
+
+    public void clearActiveValuesLayout() {
+        activeValuesLayout.removeAllViews();
+    }
+
+    public ArrayList<FilterParameterValue> getActiveFilterParameterValues() {
+        return activeFilterParameterValues;
+    }
+
+    public ArrayList<EntityIdName> getFilterAdapterList() {
+        return filterAdapterList;
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 
 }

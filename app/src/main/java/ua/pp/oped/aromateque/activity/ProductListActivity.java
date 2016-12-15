@@ -103,12 +103,21 @@ public class ProductListActivity extends CalligraphyActivity
             public void onClick(View view) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 if (filterFragment.isAdded()) {
-                    transaction.replace(R.id.product_list_right_drawer, sortFragment);
+                    //Log.d(TAG,"fragmentManager.getBackStackEntryCount() "+fragmentManager.getBackStackEntryCount());
+                    filterFragment.prepareForRemoval();
+                    if (fragmentManager.getBackStackEntryCount() > 0) {
+                        fragmentManager.popBackStack();
+                        //Log.d(TAG,"fragmentManager.popBackStack(); SORT");
+                    } else {
+                        transaction.replace(R.id.product_list_right_drawer, sortFragment);
+                        transaction.addToBackStack(null);
+                    }
                 } else if (!sortFragment.isAdded()) {
                     transaction.add(R.id.product_list_right_drawer, sortFragment);
                 }
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if (!transaction.isEmpty()) {
+                    transaction.commit();
+                }
                 drawer.openDrawer(GravityCompat.END);
             }
         });
@@ -117,12 +126,21 @@ public class ProductListActivity extends CalligraphyActivity
             public void onClick(View view) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 if (sortFragment.isAdded()) {
-                    transaction.replace(R.id.product_list_right_drawer, filterFragment);
+                    if (fragmentManager.getBackStackEntryCount() > 0) {
+                        fragmentManager.popBackStack();
+                        //Log.d(TAG,"fragmentManager.popBackStack(); FILTER");
+                    } else {
+                        transaction.replace(R.id.product_list_right_drawer, filterFragment);
+                        transaction.addToBackStack(null);
+                    }
                 } else if (!filterFragment.isAdded()) {
                     transaction.add(R.id.product_list_right_drawer, filterFragment);
                 }
-                transaction.commit();
+                if (!transaction.isEmpty()) {
+                    transaction.commit();
+                }
                 drawer.openDrawer(GravityCompat.END);
+
             }
         });
     }

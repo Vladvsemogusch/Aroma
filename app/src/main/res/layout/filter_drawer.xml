@@ -54,35 +54,41 @@
     </LinearLayout>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/bottom_panel"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
-        android:elevation="4dp"
-        android:gravity="end">
+        android:elevation="4dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/main"
+            android:layout_alignParentTop="true" />
 
         <TextView
             android:id="@+id/close"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_toStartOf="@+id/apply"
             android:layout_marginEnd="20dp"
-            android:gravity="center"
+            android:gravity="center_vertical|end"
             android:onClick="onCloseClicked"
             android:text="@string/reset"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textColor="@color/dark_gray" />
 
         <TextView
             android:id="@+id/apply"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:gravity="center"
             android:onClick="onCloseClicked"
             android:text="@string/apply"
-            android:textAllCaps="true" />
-    </LinearLayout>
+            android:textAllCaps="true"
+            android:textColor="@color/main" />
+    </RelativeLayout>
 </RelativeLayout>

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
-        android:paddingStart="30dp"
+        android:paddingStart="40dp"
         android:paddingTop="10dp"
         android:layout_alignParentStart="true"
         android:background="?android:attr/selectableItemBackground"
@@ -23,7 +23,7 @@
     <ImageView
         android:id="@+id/category_list_arrow"
         android:layout_width="20dp"
-        android:layout_height="18dp"
+        android:layout_height="15dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="12dp"
         android:layout_centerVertical="true"
