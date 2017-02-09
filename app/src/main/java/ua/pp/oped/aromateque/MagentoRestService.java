@@ -24,7 +24,7 @@ public interface MagentoRestService {
     Call<RawLongProduct> getProduct(@Path("id") int productId);
 
     @Headers("Accept: application/json")
-    @GET("api/rest/custom/categories/{id}")
+    @GET("api/rest/custom/category/{id}")
     Call<Category> getCategoryWithChildren(@Path("id") int id);
 }
 

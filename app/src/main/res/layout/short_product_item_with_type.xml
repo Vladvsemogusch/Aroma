@@ -72,14 +72,16 @@
         android:layout_marginTop="5dp"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/buy"
-            android:layout_width="80dp"
+        <ImageButton
+            android:id="@+id/toCart"
+            android:layout_width="35dp"
             android:layout_height="match_parent"
-            android:background="@color/dark_brown"
-            android:gravity="center"
-            android:text="@string/buy"
-            android:textColor="@color/creme" />
+            android:layout_weight="1"
+            android:src="@drawable/icon_cart"
+            android:background="@android:color/transparent"
+            android:tint="@color/black"
+            android:scaleType="fitCenter"
+            android:onClick="onAddToCartClicked" />
 
         <ImageButton
             android:id="@+id/to_favorites"

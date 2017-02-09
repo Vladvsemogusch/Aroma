@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import ua.pp.oped.aromateque.model.FilterParameterValue;
 
 
-public class ActiveFilterValueAdapter extends RecyclerView.Adapter {
+public class AdapterActiveFilterValue extends RecyclerView.Adapter {
     private ArrayList<FilterParameterValue> activeFilterParameters;
     private LayoutInflater layoutInflater;
 
-    public ActiveFilterValueAdapter(ArrayList<FilterParameterValue> activeFilterParameters, LayoutInflater layoutInflater) {
+    public AdapterActiveFilterValue(ArrayList<FilterParameterValue> activeFilterParameters, LayoutInflater layoutInflater) {
         this.activeFilterParameters = activeFilterParameters;
         this.layoutInflater = layoutInflater;
     }

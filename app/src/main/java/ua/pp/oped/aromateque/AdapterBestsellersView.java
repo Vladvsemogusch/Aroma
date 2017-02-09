@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +16,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import ua.pp.oped.aromateque.activity.ProductInfoActivity;
+import ua.pp.oped.aromateque.activity.ActivityProductInfo;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.IconSheet;
 
-public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersViewAdapter.ViewHolder> {
+public class AdapterBestsellersView extends RecyclerView.Adapter<AdapterBestsellersView.ViewHolder> {
 
     public List<ShortProduct> products;
     private Resources resources;
     private Context context;
 
-    public BestsellersViewAdapter(List<ShortProduct> products, Context context) {
+    public AdapterBestsellersView(List<ShortProduct> products, Context context) {
         this.products = products;
         this.resources = context.getResources();
         this.context = context;
@@ -58,7 +57,7 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
         CustomImageLoader.getInstance().displayImage(product.getImageUrl(), viewHolder.image);
         viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
-        viewHolder.buy.setOnClickListener(new View.OnClickListener() {
+        /*viewHolder.buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 float scaledDensity = resources.getDisplayMetrics().scaledDensity;
@@ -66,7 +65,8 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
                 viewHolder.name.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.round(viewHolder.name.getTextSize() / scaledDensity) + 1);
                 viewHolder.buy.setText(String.valueOf(Math.round(viewHolder.brand.getTextSize() / scaledDensity)));
             }
-        });
+        });*/
+
         /*
         viewHolder.toFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,10 +82,10 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
             }
         });
         */
-        viewHolder.image.setOnClickListener(new View.OnClickListener() {
+        viewHolder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ProductInfoActivity.class);
+                Intent intent = new Intent(context, ActivityProductInfo.class);
                 intent.putExtra("product_id", product.getId());
                 ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                 context.startActivity(intent, activityOptions.toBundle());
@@ -108,6 +108,7 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
         private TextView price;
         private ImageButton toFavorites;
         private Button buy;
+        private View layout;
         //private TextView typeAndVolume;
 
         ViewHolder(View itemView) {
@@ -119,7 +120,8 @@ public class BestsellersViewAdapter extends RecyclerView.Adapter<BestsellersView
             oldPrice = (TextView) itemView.findViewById(R.id.product_old_price);
             price = (TextView) itemView.findViewById(R.id.product_price);
             toFavorites = (ImageButton) itemView.findViewById(R.id.to_favorites);
-            buy = (Button) itemView.findViewById(R.id.buy);
+            buy = (Button) itemView.findViewById(R.id.toCart);
+            layout = itemView.findViewById(R.id.bestseller_container_layout);
 
         }
     }

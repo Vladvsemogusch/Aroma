@@ -4,19 +4,19 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import ua.pp.oped.aromateque.BestsellersViewAdapter;
+import ua.pp.oped.aromateque.AdapterBestsellersView;
 
 public class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
     private int visibleThreshold = 3;
     private int previousTotalItemCount = 0;
     private boolean loading = true;
-    private BestsellersViewAdapter adapter;
+    private AdapterBestsellersView adapter;
     private LinearLayoutManager mLayoutManager;
     private int lastVisibleItemPosition;
     private int totalItemCount;
 
-    public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager, BestsellersViewAdapter adapter) {
+    public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager, AdapterBestsellersView adapter) {
         this.mLayoutManager = layoutManager;
         this.adapter = adapter;
         totalItemCount = mLayoutManager.getItemCount();

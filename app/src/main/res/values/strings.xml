@@ -47,6 +47,9 @@
     <string name="from">от</string>
     <string name="to">до</string>
     <string name="uah">грн</string>
+    <string name="in_total">Итого к оплате:</string>
+    <string name="to_checkout">ОФОРМИТЬ ЗАКАЗ</string>
+    <string name="cart">Корзина</string>
 
 
 </resources>

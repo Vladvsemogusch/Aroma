@@ -1,6 +1,7 @@
 package ua.pp.oped.aromateque.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 
+import ua.pp.oped.aromateque.AdapterCategoryView;
 import ua.pp.oped.aromateque.CalligraphyActivity;
-import ua.pp.oped.aromateque.CategoryViewAdapter;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.db.DatabaseHelper;
@@ -19,7 +21,7 @@ import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
-public class MainPageActivity extends CalligraphyActivity {
+public class ActivityMainPage extends CalligraphyActivity {
     Category categoryAll;
     MagentoRestService api;
     boolean isAnimationRunning;
@@ -50,7 +52,7 @@ public class MainPageActivity extends CalligraphyActivity {
         recyclerviewCategories.setItemViewCacheSize(30);
         //Get categories from DB and put to new adapter
         categoryAll = DatabaseHelper.getInstance().deserializeCategory(CATEGORY_ALL_ID);
-        recyclerviewCategories.setAdapter(new CategoryViewAdapter(this, categoryAll.getChildren(), recyclerviewCategories));
+        recyclerviewCategories.setAdapter(new AdapterCategoryView(this, categoryAll.getChildren(), recyclerviewCategories));
         //recyclerviewCategories.smoothScrollToPosition(5);
         //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, RecyclerView.VERTICAL);
         //dividerItemDecoration.setDrawable();
@@ -58,6 +60,11 @@ public class MainPageActivity extends CalligraphyActivity {
         //fillCategories();
 
 
+    }
+
+    public void onCartClicked(View v) {
+        Intent intent = new Intent(this, ActivityCart.class);
+        this.startActivity(intent);
     }
 
     void fillCategories() {
@@ -88,10 +95,10 @@ public class MainPageActivity extends CalligraphyActivity {
                 if (!isAnimationRunning && !curCategory.getChildren().get(position).getChildrenIds().equals("")) {
                     curCategory = curCategory.getChildren().get(position);
                     Log.d("LISTVIEW", curCategory.getChildrenIds());
-                    ListView listViewFromRight = new ListView(ProductInfoActivity.this);
+                    ListView listViewFromRight = new ListView(ActivityProductInfo.this);
                     Utility.compatSetBackgroundColor(res, listViewFromRight, R.color.white);
                     listViewFromRight.setId(View.generateViewId());
-                    listViewFromRight.setAdapter(curCategory.getAdapter(ProductInfoActivity.this));
+                    listViewFromRight.setAdapter(curCategory.getAdapter(ActivityProductInfo.this));
                     listViewFromRight.setTag(R.id.left_listview, parent.getId());
                     listViewFromRight.setOnItemClickListener(new RecursiveOnItemClickListener());
                     sceneRoot.addView(listViewFromRight);

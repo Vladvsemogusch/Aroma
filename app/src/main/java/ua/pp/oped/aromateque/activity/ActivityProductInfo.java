@@ -1,6 +1,7 @@
 package ua.pp.oped.aromateque.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -31,8 +32,7 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
@@ -45,9 +45,10 @@ import ua.pp.oped.aromateque.model.LongProduct;
 import ua.pp.oped.aromateque.model.RawLongProduct;
 import ua.pp.oped.aromateque.utility.Constants;
 import ua.pp.oped.aromateque.utility.IconSheet;
+import ua.pp.oped.aromateque.utility.RetryableCallback;
 import ua.pp.oped.aromateque.utility.Utility;
 
-public class ProductInfoActivity extends CalligraphyActivity {
+public class ActivityProductInfo extends CalligraphyActivity {
     private int productId;
     private Toolbar toolbar;
     private MagentoRestService api;
@@ -79,33 +80,26 @@ public class ProductInfoActivity extends CalligraphyActivity {
         setupFooter();
 
         //Working with RestAPI
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        api = retrofit.create(MagentoRestService.class);
+        api = AromatequeApplication.getApiMagento();
 
         if (!dbHelper.productExists(productId)) {
-            class LongProductRecursiveCallback<T> implements Callback<T> {
-                public void onResponse(Call<T> call, Response<T> response) {
+            api.getProduct(productId).enqueue(new RetryableCallback<RawLongProduct>() {
+                public void onFinalResponse(Call<RawLongProduct> call, Response<RawLongProduct> response) {
                     try {
-                        product = ((RawLongProduct) response.body()).convertToLongProduct();
+                        product = response.body().convertToLongProduct();
                         dbHelper.serializeProduct(product);
                         fillProductInfo();
                     } catch (Exception e) {
-                        Log.d("ERRORProduct", e.toString());
+                        Log.e("ERRORProduct", e.toString());
                         e.printStackTrace();
                     }
                 }
 
-                public void onFailure(Call<T> call, Throwable t) {
+                public void onFinalFailure(Call<RawLongProduct> call, Throwable t) {
                     Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    t.printStackTrace();
-                    api.getProduct(productId).enqueue(new LongProductRecursiveCallback<RawLongProduct>());
                 }
-            }
-            api.getProduct(productId).enqueue(new LongProductRecursiveCallback<RawLongProduct>());
+            });
         } else {
             product = dbHelper.deserializeProduct(productId);
             fillProductInfo();
@@ -126,10 +120,24 @@ public class ProductInfoActivity extends CalligraphyActivity {
                 Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 t.printStackTrace();
-                api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
             }
         }
-        api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
+        api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>() {
+            public void onResponse(Call<Category> call, Response<Category> response) {
+                try {
+                    categoryAll = response.body();
+                    Log.d("INFO", categoryAll.getChildren().get(1).getName());
+                    fillDrawer();
+                } catch (Exception e) {
+                    Log.e("ERRORCategory", e.toString());
+                }
+            }
+
+            public void onFailure(Call<Category> call, Throwable t) {
+                Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
 
     }
@@ -253,10 +261,10 @@ public class ProductInfoActivity extends CalligraphyActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!isAnimationRunning && curCategory.getChildren().get(position).getChildrenIds() != null) {
                     curCategory = curCategory.getChildren().get(position);
-                    ListView listViewFromRight = new ListView(ProductInfoActivity.this);
+                    ListView listViewFromRight = new ListView(ActivityProductInfo.this);
                     listViewFromRight.setBackgroundColor(Utility.compatGetColor(res, R.color.white));
                     listViewFromRight.setId(View.generateViewId());
-                    listViewFromRight.setAdapter(curCategory.getAdapter(ProductInfoActivity.this));
+                    listViewFromRight.setAdapter(curCategory.getAdapter(ActivityProductInfo.this));
                     listViewFromRight.setTag(R.id.left_listview, parent.getId());
                     listViewFromRight.setOnItemClickListener(new RecursiveOnItemClickListener());
                     sceneRoot.addView(listViewFromRight);
@@ -276,6 +284,7 @@ public class ProductInfoActivity extends CalligraphyActivity {
             private final int TAB_COUNT = 3;
             private String tabTitles[] = new String[]{res.getString(R.string.product_general), res.getString(R.string.product_description), res.getString(R.string.product_reviews)};
             private Context context;
+
             private ProductFragmentPagerAdapter(FragmentManager fm, Context context) {
                 super(fm);
                 this.context = context;
@@ -315,6 +324,11 @@ public class ProductInfoActivity extends CalligraphyActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.left_to_center, R.anim.center_to_right);
+    }
+
+    public void onCartClicked(View v) {
+        Intent intent = new Intent(this, ActivityCart.class);
+        this.startActivity(intent);
     }
 }
 

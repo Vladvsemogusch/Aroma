@@ -9,19 +9,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
-import ua.pp.oped.aromateque.activity.ProductInfoActivity;
+import ua.pp.oped.aromateque.activity.ActivityProductInfo;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.CustomImageLoader;
-import ua.pp.oped.aromateque.utility.IconSheet;
+import ua.pp.oped.aromateque.utility.Utility;
 
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
+public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.ViewHolder> {
 
     public List<ShortProduct> products;
     private Resources resources;
@@ -29,14 +28,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     private LayoutInflater layoutInflater;
     private Context context;
 
-    public ProductListAdapter(List<ShortProduct> products, Context context, int itemLayoutId) {
+    public AdapterProductList(List<ShortProduct> products, Context context, int itemLayoutId) {
         this.products = products;
         this.resources = context.getResources();
         this.itemLayoutId = itemLayoutId;
         this.context = context;
     }
 
-    public ProductListAdapter(List<ShortProduct> products, Resources resources) {
+    public AdapterProductList(List<ShortProduct> products, Resources resources) {
         this.products = products;
         this.resources = resources;
     }
@@ -64,16 +63,19 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
         CustomImageLoader.getInstance().displayImage(product.getImageUrl(), viewHolder.image);
-        viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
+        viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(context.getResources(), R.drawable.icon_heart));
+        //viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ProductInfoActivity.class);
+                Intent intent = new Intent(context, ActivityProductInfo.class);
                 intent.putExtra("product_id", product.getId());
                 ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                 context.startActivity(intent, activityOptions.toBundle());
             }
         });
+        //TODO switch icon if already in cart
+        viewHolder.toCart.setTag(product.getId());
     }
 
     @Override
@@ -89,7 +91,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         private TextView oldPrice;
         private TextView price;
         private ImageButton toFavorites;
-        private Button buy;
+        private ImageButton toCart;
         private TextView typeAndVolume;
 
         ViewHolder(View itemView) {
@@ -101,7 +103,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             oldPrice = (TextView) itemView.findViewById(R.id.product_old_price);
             price = (TextView) itemView.findViewById(R.id.product_price);
             toFavorites = (ImageButton) itemView.findViewById(R.id.to_favorites);
-            buy = (Button) itemView.findViewById(R.id.buy);
+            toCart = (ImageButton) itemView.findViewById(R.id.toCart);
 
         }
     }

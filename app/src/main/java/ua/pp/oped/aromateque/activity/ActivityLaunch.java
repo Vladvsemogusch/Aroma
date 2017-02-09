@@ -16,10 +16,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
@@ -27,13 +25,14 @@ import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.IconSheet;
+import ua.pp.oped.aromateque.utility.RetryableCallback;
 import ua.pp.oped.aromateque.utility.Utility;
 
-import static ua.pp.oped.aromateque.utility.Constants.BASE_URL;
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
 
-public class LaunchActivity extends CalligraphyActivity {
+public class ActivityLaunch extends CalligraphyActivity {
+    private static final String TAG = "ActivityLaunch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +78,7 @@ public class LaunchActivity extends CalligraphyActivity {
                     Log.d("BaseImageDownloader", "URL: " + imageUri);
                     e.printStackTrace();
                     try {
-                        wait(500);
+                        wait(1000);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
@@ -95,15 +94,14 @@ public class LaunchActivity extends CalligraphyActivity {
 
         DatabaseHelper.initialize(getApplicationContext());
         if (!DatabaseHelper.getInstance().categoriesSerialized()) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            final MagentoRestService api = retrofit.create(MagentoRestService.class);
-            class CategoryRecursiveCallback<T> implements Callback<T> {
-                public void onResponse(Call<T> call, Response<T> response) {
+            final MagentoRestService api = AromatequeApplication.getApiMagento();
+            api.getCategoryWithChildren(CATEGORY_ALL_ID).enqueue(new RetryableCallback<Category>() {
+                public void onFinalResponse(Call<Category> call, Response<Category> response) {
                     try {
-                        DatabaseHelper.getInstance().serializeCategories((Category) response.body());
+                        if (response.body() == null) {
+                            Log.e(TAG, "response.body()==null)");
+                        }
+                        DatabaseHelper.getInstance().serializeCategories(response.body());
                         Log.d("INFO", "Categories serialized");
                         startNextActivity();
                     } catch (Exception e) {
@@ -111,12 +109,9 @@ public class LaunchActivity extends CalligraphyActivity {
                     }
                 }
 
-                public void onFailure(Call<T> call, Throwable t) {
-                    t.printStackTrace();
-                    api.getCategoryWithChildren(CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
+                public void onFinalFailure(Call<Category> call, Throwable t) {
                 }
-            }
-            api.getCategoryWithChildren(CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>());
+            });
         } else {
             Log.d("LAUNCH", "Categories already serialized");
             startNextActivity();
@@ -124,7 +119,7 @@ public class LaunchActivity extends CalligraphyActivity {
     }
 
     private void startNextActivity() {
-        startActivity(new Intent(this, ProductListActivity.class));
+        startActivity(new Intent(this, ActivityMainPage.class));
     }
 
 }

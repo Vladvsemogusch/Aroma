@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_below="@+id/appbar_layout"
     android:orientation="vertical"
-    tools:context="ua.pp.oped.aromateque.activity.ProductListActivity"
+    tools:context="ua.pp.oped.aromateque.activity.ActivityProductList"
     tools:showIn="@layout/app_bar_product_list">
 
     <android.support.v7.widget.RecyclerView
@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

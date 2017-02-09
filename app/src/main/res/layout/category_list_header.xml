@@ -35,14 +35,15 @@
         android:layout_marginTop="5dp">
 
         <ImageView
-            android:id="@+id/four_squares"
+            android:id="@+id/iv_menu_icon"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:layout_marginStart="10dp"
-            android:src="@drawable/four_squares" />
+            android:src="@drawable/menu_icon_white"
+            android:tint="@color/black" />
 
         <TextView
             android:id="@+id/txt_catalog"
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@string/catalog"
-            android:layout_toEndOf="@id/four_squares"
+            android:layout_toEndOf="@id/iv_menu_icon"
             android:textSize="16sp" />
     </RelativeLayout>
 </LinearLayout>

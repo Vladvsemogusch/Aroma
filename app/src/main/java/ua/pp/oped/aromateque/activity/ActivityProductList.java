@@ -1,6 +1,7 @@
 package ua.pp.oped.aromateque.activity;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,9 +23,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
+import ua.pp.oped.aromateque.AdapterProductList;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.FilterAdapter;
-import ua.pp.oped.aromateque.ProductListAdapter;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragments.productlist.FilterFragment;
@@ -34,9 +35,9 @@ import ua.pp.oped.aromateque.model.FilterParameterValue;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EmptyRecycleViewAdapter;
 
-public class ProductListActivity extends CalligraphyActivity
+public class ActivityProductList extends CalligraphyActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "ProductListActivity";
+    private static final String TAG = "ActivityProductList";
     public static final int SORT_TYPE_EXPENSIVE_FIRST = 199;
     public static final int SORT_TYPE_CHEAP_FIRST = 753;
     public static final int SORT_TYPE_LATEST = 877;
@@ -55,6 +56,7 @@ public class ProductListActivity extends CalligraphyActivity
     private SharedPreferences settings;
     private SortFragment sortFragment;
     private FilterFragment filterFragment;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +64,9 @@ public class ProductListActivity extends CalligraphyActivity
         setContentView(R.layout.activity_product_list);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        dbHelper = DatabaseHelper.getInstance();
         int currentCategoryId = getIntent().getIntExtra("category_id", 16); //TODO change after REST implemented
-        Category currentCategory = DatabaseHelper.getInstance().deserializeCategory(currentCategoryId);
+        Category currentCategory = dbHelper.deserializeCategory(currentCategoryId);
         settings = getPreferences(MODE_PRIVATE);
         final int sortTypeSetting = settings.getInt("sort_type", DEFAULT_SORT_TYPE);
         final int listTypeSetting = settings.getInt("list_type", DEFAULT_LIST_TYPE);
@@ -187,7 +190,7 @@ public class ProductListActivity extends CalligraphyActivity
         prod.setId(1425);
         prod2.setId(3519);
         prod3.setId(3518);
-        productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, this, R.layout.short_product_item_with_type));
+        //productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, this, R.layout.short_product_item_with_type));
 
     }
 
@@ -253,15 +256,15 @@ public class ProductListActivity extends CalligraphyActivity
     public void onListTypeClicked(int listType) {
         switch (listType) {
             case LIST_TYPE_GRID:
-                productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type));
+                productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, ActivityProductList.this, R.layout.short_product_item_with_type));
                 gridLayoutManager.setSpanCount(2);
                 break;
             case LIST_TYPE_BIG:
                 gridLayoutManager.setSpanCount(1);
-                productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type_big));
+                productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, ActivityProductList.this, R.layout.short_product_item_with_type_big));
                 break;
             case LIST_TYPE_WIDE:
-                productListRecyclerView.setAdapter(new ProductListAdapter(bestsellersList, ProductListActivity.this, R.layout.short_product_item_with_type_wide));
+                productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, ActivityProductList.this, R.layout.short_product_item_with_type_wide));
                 gridLayoutManager.setSpanCount(1);
                 break;
 
@@ -316,5 +319,21 @@ public class ProductListActivity extends CalligraphyActivity
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    public void onCartClicked(View v) {
+        Intent intent = new Intent(this, ActivityCart.class);
+        this.startActivity(intent);
+    }
+
+    public void onAddToCartClicked(View v) {
+        int productId = (int) v.getTag();
+        if (!dbHelper.isInCart(productId)) {
+            dbHelper.addToCart(productId);
+            Log.d(TAG, String.valueOf(DatabaseHelper.getInstance().getCart().size()));
+        } else {
+            Log.d(TAG, "Already in cart product id: " + productId);
+        }
+        //TODO Visuals
     }
 }

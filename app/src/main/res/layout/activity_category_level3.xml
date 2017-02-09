@@ -1,34 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/category_level3_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ua.pp.oped.aromateque.activity.CategoryLevel3Activity">
+    tools:context="ua.pp.oped.aromateque.activity.ActivityCategoryLevel3">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar_layout"
+    <include
+        layout="@layout/appbar_global"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AromatequeTheme.NoActionBar.AppBarOverlay"
-        android:layout_alignParentStart="true">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:titleTextAppearance="@style/TextAppearance.ActionbarTitle"
-            app:popupTheme="@style/AromatequeTheme.NoActionBar.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
+        android:layout_alignParentTop="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/subcategories_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appbar_layout" />
+        android:layout_below="@+id/appbar_layout" />
 
 </RelativeLayout>

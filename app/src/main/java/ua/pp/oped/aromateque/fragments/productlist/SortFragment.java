@@ -12,14 +12,14 @@ import android.widget.RadioButton;
 
 import ua.pp.oped.aromateque.R;
 
-import static ua.pp.oped.aromateque.activity.ProductListActivity.DEFAULT_SORT_TYPE;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.LIST_TYPE_BIG;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.LIST_TYPE_GRID;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.LIST_TYPE_WIDE;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.SORT_TYPE_CHEAP_FIRST;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.SORT_TYPE_DISCOUNT;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.SORT_TYPE_EXPENSIVE_FIRST;
-import static ua.pp.oped.aromateque.activity.ProductListActivity.SORT_TYPE_LATEST;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.DEFAULT_SORT_TYPE;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.LIST_TYPE_BIG;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.LIST_TYPE_GRID;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.LIST_TYPE_WIDE;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.SORT_TYPE_CHEAP_FIRST;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.SORT_TYPE_DISCOUNT;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.SORT_TYPE_EXPENSIVE_FIRST;
+import static ua.pp.oped.aromateque.activity.ActivityProductList.SORT_TYPE_LATEST;
 
 
 public class SortFragment extends Fragment {

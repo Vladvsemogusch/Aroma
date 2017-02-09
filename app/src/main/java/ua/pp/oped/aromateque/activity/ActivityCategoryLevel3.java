@@ -1,5 +1,6 @@
 package ua.pp.oped.aromateque.activity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,14 +12,15 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import ua.pp.oped.aromateque.AdapterSubCategoryView;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.SubCategoryViewAdapter;
 import ua.pp.oped.aromateque.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 
 
-public class CategoryLevel3Activity extends CalligraphyActivity {
+public class ActivityCategoryLevel3 extends CalligraphyActivity {
+    private static final String TAG = "ActivityCategoryLevel3";
     RecyclerView recyclerviewLevel3Categories;
     ArrayList<Category> categories;
     Resources res;
@@ -36,7 +38,7 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
         getSupportActionBar().setTitle(mainCategory.getName());
         recyclerviewLevel3Categories = (RecyclerView) findViewById(R.id.subcategories_recyclerview);
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        recyclerviewLevel3Categories.setAdapter(new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, true));
+        recyclerviewLevel3Categories.setAdapter(new AdapterSubCategoryView(ActivityCategoryLevel3.this, mainCategory, true));
         recyclerviewLevel3Categories.setItemViewCacheSize(30);
 
         //  If recyclerview is shorter than mainLayout, then move footer from recyclerview to bottom of main layout.
@@ -45,15 +47,18 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
             public void run() {
                 View appbarLayout = findViewById(R.id.appbar_layout);
                 int actionbarHeight = appbarLayout.getHeight();
+                //Log.d(TAG, "appbarLayout.getHeight() = " + appbarLayout.getHeight());
                 int filledSpace = actionbarHeight + recyclerviewLevel3Categories.getHeight();
-                RelativeLayout mainLayout = (RelativeLayout) CategoryLevel3Activity.this.findViewById(R.id.category_level3_layout);
+                //Log.d(TAG, "filledSpace = " + filledSpace);
+                RelativeLayout mainLayout = (RelativeLayout) ActivityCategoryLevel3.this.findViewById(R.id.category_level3_layout);
                 int allSpace = mainLayout.getHeight();
+                //Log.d(TAG, "allSpace = " + allSpace);
                 if (filledSpace < allSpace) {
                     //Log.d("FOOTER", "Relocating footer");
-                    SubCategoryViewAdapter adapter =
-                            new SubCategoryViewAdapter(CategoryLevel3Activity.this, mainCategory, false);
+                    AdapterSubCategoryView adapter =
+                            new AdapterSubCategoryView(ActivityCategoryLevel3.this, mainCategory, false);
                     recyclerviewLevel3Categories.setAdapter(adapter);
-                    LayoutInflater layoutInflater = LayoutInflater.from(CategoryLevel3Activity.this);
+                    LayoutInflater layoutInflater = LayoutInflater.from(ActivityCategoryLevel3.this);
                     layoutInflater.inflate(R.layout.phone, mainLayout, true);
                 }
             }
@@ -66,5 +71,9 @@ public class CategoryLevel3Activity extends CalligraphyActivity {
         overridePendingTransition(R.anim.left_to_center, R.anim.center_to_right);
     }
 
+    public void onCartClicked(View v) {
+        Intent intent = new Intent(this, ActivityCart.class);
+        this.startActivity(intent);
+    }
 
 }

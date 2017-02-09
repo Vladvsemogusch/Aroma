@@ -65,5 +65,10 @@ public class Utility {
         return Math.round(px);
     }
 
-
+    public static String getPriceWithDiscount(String fullPrice, String discount) {
+        fullPrice = fullPrice.substring(0, fullPrice.indexOf('.'));
+        discount = discount.substring(0, discount.indexOf('%'));
+        long discountedPrice = Math.round(Float.parseFloat(fullPrice) * (100 - Float.parseFloat(discount)) / 100);
+        return String.valueOf(discountedPrice);
+    }
 }

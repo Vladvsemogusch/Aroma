@@ -23,14 +23,14 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.pp.oped.aromateque.activity.CategoryLevel3Activity;
-import ua.pp.oped.aromateque.activity.ProductListActivity;
+import ua.pp.oped.aromateque.activity.ActivityCategoryLevel3;
+import ua.pp.oped.aromateque.activity.ActivityProductList;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
 
-public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_FOOTER = 2;
@@ -41,7 +41,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context context;
     private RecyclerView recyclerView;
 
-    public CategoryViewAdapter(Context context, List<Category> categories, RecyclerView recyclerView) {
+    public AdapterCategoryView(Context context, List<Category> categories, RecyclerView recyclerView) {
         this.categories = categories;
         resources = context.getResources();
         this.context = context;
@@ -93,7 +93,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                     category.getChildren()) {
                                 categories.add(viewHolder.getAdapterPosition(), childCategory);
                             }
-                            CategoryViewAdapter.this.notifyItemRangeInserted(viewHolder.getAdapterPosition() + 1, category.getChildrenIds().size());
+                            AdapterCategoryView.this.notifyItemRangeInserted(viewHolder.getAdapterPosition() + 1, category.getChildrenIds().size());
                             ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 0, 180f)
                                     .setDuration(400)
                                     .start();
@@ -109,7 +109,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         } else {
                             int positionInAdapter = viewHolder.getAdapterPosition();
                             categories.subList(positionInAdapter, positionInAdapter + category.getChildren().size()).clear();
-                            CategoryViewAdapter.this.notifyItemRangeRemoved(positionInAdapter + 1, category.getChildren().size());
+                            AdapterCategoryView.this.notifyItemRangeRemoved(positionInAdapter + 1, category.getChildren().size());
                             ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 180f, 0)
                                     .setDuration(400)
                                     .start();
@@ -127,7 +127,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(context, CategoryLevel3Activity.class);
+                        Intent intent = new Intent(context, ActivityCategoryLevel3.class);
                         intent.putExtra("category_id", ((ChildItemViewHolder) viewHolder).category.getId());
                         ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                         context.startActivity(intent, activityOptions.toBundle());
@@ -137,7 +137,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((ChildItemViewHolder) viewHolder).childLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(context, ProductListActivity.class);
+                        Intent intent = new Intent(context, ActivityProductList.class);
                         intent.putExtra("category_id", ((ChildItemViewHolder) viewHolder).category.getId());
                         ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                         context.startActivity(intent, activityOptions.toBundle());
@@ -257,7 +257,7 @@ public class CategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         bestsellersList.add(prod);
         bestsellersList.add(prod3);
         //final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
-        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, context);
+        final AdapterBestsellersView adapter = new AdapterBestsellersView(bestsellersList, context);
         bestsellersView.setAdapter(adapter);
         bestsellersView.scrollToPosition(3);
         bestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));

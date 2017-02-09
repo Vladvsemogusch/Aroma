@@ -12,16 +12,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ua.pp.oped.aromateque.model.CartItem;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.LongProduct;
 import ua.pp.oped.aromateque.model.Review;
+import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.Constants;
+import ua.pp.oped.aromateque.utility.Utility;
 
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
 public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
-
-    private static final int DATABASE_VERSION = 5;
+    private static final String TAG = "DATABASE_HELPER";
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "aromateque.db";
     private static DatabaseHelper instance;
 
@@ -35,7 +38,6 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
     }
 
     public static DatabaseHelper getInstance() {
-
         return instance;
     }
 
@@ -147,6 +149,29 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         return product;
     }
 
+    public ShortProduct deserializeShortProduct(int productId) {
+        ShortProduct product = new ShortProduct();
+        HashMap<String, String> attributes = new HashMap<>();
+        String[] columns = {"product_id", "brand", "name", "type_of_product", "price", "discount"};
+        String[] args = {String.valueOf(productId)};
+        Cursor c = getReadableDatabase().query("products", columns, "product_id=?", args, null, null, null);
+        Log.d("DB", String.valueOf(c.getCount()));
+        c.moveToNext();
+        product.setId(c.getInt(0));
+        product.setBrand(c.getString(1));
+        product.setName(c.getString(2));
+        product.setTypeAndVolume(c.getString(3));
+        String discountedPrice = Utility.getPriceWithDiscount(c.getString(4), c.getString(5));
+        product.setPrice(discountedPrice);
+        product.setOldPrice(c.getString(4));
+        c.close();
+        c = getReadableDatabase().query("img_urls", null, "product_id=?", args, null, null, null);
+        c.moveToNext();
+        product.setImageUrl(c.getString(2));
+        c.close();
+        return product;
+    }
+
     public boolean productExists(int id) {
         String[] args = {String.valueOf(id)};
         Cursor c = getReadableDatabase().query("products", null, "product_id=?", args, null, null, null);
@@ -159,10 +184,10 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
     }
 
     //Once per app launch
-    public void serializeCategories(Category categoryAll) {
+    public void serializeCategories(Category category) {
         Log.d("LAUNCH", "Started serializing categories");
         getWritableDatabase().beginTransaction();
-        serializeCategory(categoryAll);
+        serializeCategory(category);
         getWritableDatabase().setTransactionSuccessful();
         getWritableDatabase().endTransaction();
 
@@ -223,5 +248,67 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         c.close();
         return isSerialized;
 
+    }
+
+    public void addToCart(int id) {
+        addToCart(id, 1);
+    }
+
+    public void addToCart(int id, int qty) {
+        ContentValues values = new ContentValues();
+        values.put("product_id", id);
+        values.put("qty", qty);
+        getWritableDatabase().insert("cart", null, values);
+        Log.d(TAG, "Added to cart product id: " + id);
+    }
+
+    public void removeFromCart(int id) {
+        String[] args = {String.valueOf(id)};
+        getWritableDatabase().delete("cart", "product_id=?", args);
+        Log.d(TAG, "Removed from cart product id: " + id);
+    }
+
+    public void incrementQty(int productId) {
+        String[] values = {String.valueOf(productId)};
+        getWritableDatabase().rawQuery("UPDATE cart SET qty = qty + 1 WHERE product_id = ?", values);
+        Log.d(TAG, "Qty incremented product id: " + productId);
+    }
+
+    public void decrementQty(int productId) {
+        String[] values = {String.valueOf(productId)};
+        getWritableDatabase().rawQuery("UPDATE cart SET qty = qty - 1 WHERE product_id = ?", values);
+        Log.d(TAG, "Qty decremented product id: " + productId);
+        String[] columns = {"qty"};
+        String[] args = {String.valueOf(productId)};
+        Cursor c = getReadableDatabase().query("cart", columns, "product_id = ?", args, null, null, null);
+        c.moveToNext();
+        int qty = c.getInt(0);
+        if (qty == 0) {
+            removeFromCart(productId);
+            Log.d(TAG, "Qty is 0. Needs deletion from cart product id: " + productId);
+        }
+        c.close();
+    }
+
+    public ArrayList<CartItem> getCart() {
+        Cursor c = getReadableDatabase().query("cart", null, null, null, null, null, null);
+        if (c.getCount() == 0) {
+            Log.d(TAG, "getCart() cursor empty");
+        }
+        ArrayList<CartItem> cart = new ArrayList<>();
+        while (c.moveToNext()) {
+            // 0 - id, 1 - product_id, 2 - qty.
+            CartItem cartItem = new CartItem(c.getInt(0), c.getInt(1));
+            cart.add(cartItem);
+        }
+        c.close();
+        return cart;
+    }
+
+    public boolean isInCart(int productId) {
+        String[] columns = {"product_id"};
+        String[] args = {String.valueOf(productId)};
+        Cursor c = getReadableDatabase().query("cart", columns, "product_id = ?", args, null, null, null);
+        return c.getCount() != 0;
     }
 }

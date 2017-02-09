@@ -18,6 +18,8 @@ import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.Utility;
 
+import static ua.pp.oped.aromateque.utility.Constants.BASE_URL;
+
 public class ProductDescriptionFragment extends Fragment {
     HashMap<String, String> attributes;
 
@@ -53,6 +55,8 @@ public class ProductDescriptionFragment extends Fragment {
                 .build();
         String brandImgUrl = attributes.get("brand_img_url");
         brandImgUrl = brandImgUrl.replace("\\", "/");
+        // DEBUG
+        brandImgUrl = brandImgUrl.replace("http://localhost", BASE_URL);
         CustomImageLoader.getInstance().displayImage(brandImgUrl, imgBrand, displayImageOptions);
         txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));
         String description = attributes.get("description");

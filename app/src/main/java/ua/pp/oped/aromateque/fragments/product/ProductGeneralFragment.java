@@ -98,15 +98,12 @@ public class ProductGeneralFragment extends Fragment {
         LinearLayout containerNotes = (LinearLayout) view.findViewById(R.id.container_notes);
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
 
-        String stringFullPrice = attributes.get("price");
-        stringFullPrice = stringFullPrice.substring(0, stringFullPrice.indexOf('.'));
-        String stringDiscount = attributes.get("discount");
-        stringDiscount = stringDiscount.substring(0, stringDiscount.indexOf('%'));
-        long discountedPrice = Math.round(Integer.parseInt(stringFullPrice) * 0.01 * (100 - Integer.parseInt(stringDiscount)));
-
-        productFullPrice.setText(String.format(res.getString(R.string.product_price), stringFullPrice));
+        String fullPrice = attributes.get("price");
+        String discount = attributes.get("discount");
+        String discountedPrice = Utility.getPriceWithDiscount(fullPrice, discount);
+        productFullPrice.setText(String.format(res.getString(R.string.product_price), fullPrice));
         productFullPrice.setPaintFlags(productFullPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        productDiscountedPrice.setText(String.format(res.getString(R.string.product_price), String.valueOf(discountedPrice)));
+        productDiscountedPrice.setText(String.format(res.getString(R.string.product_price), discountedPrice));
 
         txtShortDescription.setText(attributes.get("short_description"));
         class ImgPagerAdapter extends PagerAdapter {

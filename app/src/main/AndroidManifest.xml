@@ -16,17 +16,22 @@
         android:supportsRtl="true"
         android:theme="@style/AromatequeTheme.NoActionBar">
         <activity
-            android:name=".activity.ProductInfoActivity"
-            android:label="@string/aromateque"
-            android:parentActivityName=".activity.ProductListActivity">
-        </activity>
-        <activity android:name=".activity.MainPageActivity" />
+            android:name=".activity.ActivityProductInfo"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CategoryLevel3Activity"
-            android:label="@string/aromateque"
-            android:theme="@style/AromatequeTheme.NoActionBar"
-            android:parentActivityName=".activity.MainPageActivity" />
-        <activity android:name=".activity.LaunchActivity">
+            android:name=".activity.ActivityMainPage"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ActivityCategoryLevel3"
+            android:configChanges="keyboardHidden|orientation"
+            android:parentActivityName=".activity.ActivityMainPage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ActivityLaunch"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,10 +40,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ProductListActivity"
+            android:name=".activity.ActivityProductList"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/aromateque"
-            android:parentActivityName=".activity.CategoryLevel3Activity">
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ActivityCart"
+            android:label="@string/cart"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

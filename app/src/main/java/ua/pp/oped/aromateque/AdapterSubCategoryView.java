@@ -16,13 +16,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import ua.pp.oped.aromateque.activity.ProductListActivity;
+import ua.pp.oped.aromateque.activity.ActivityProductList;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
 import ua.pp.oped.aromateque.utility.IconSheet;
 
-public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterSubCategoryView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_FOOTER = 2;
@@ -34,7 +34,7 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private boolean withFooter;
     private int offset;
 
-    public SubCategoryViewAdapter(Context context, Category parentCategory, boolean withFooter) {
+    public AdapterSubCategoryView(Context context, Category parentCategory, boolean withFooter) {
         this.categories = parentCategory.getChildren();
         this.resources = context.getResources();
         this.context = context;
@@ -81,7 +81,7 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((MainItemViewHolder) viewHolder).txtCategoryName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, ProductListActivity.class);
+                    Intent intent = new Intent(context, ActivityProductList.class);
                     intent.putExtra("category_id", ((MainItemViewHolder) viewHolder).category_id);
                     ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(context, R.anim.right_to_center, R.anim.center_to_left);
                     context.startActivity(intent, activityOptions.toBundle());
@@ -132,7 +132,7 @@ public class SubCategoryViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         bestsellersList.add(prod);
         bestsellersList.add(prod);
         final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
-        final BestsellersViewAdapter adapter = new BestsellersViewAdapter(bestsellersList, context);
+        final AdapterBestsellersView adapter = new AdapterBestsellersView(bestsellersList, context);
         subcategoryBestsellersView.setAdapter(adapter);
         subcategoryBestsellersView.scrollToPosition(3);
         subcategoryBestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));
