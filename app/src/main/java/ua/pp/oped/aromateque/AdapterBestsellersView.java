@@ -18,8 +18,8 @@ import java.util.List;
 
 import ua.pp.oped.aromateque.activity.ActivityProductInfo;
 import ua.pp.oped.aromateque.model.ShortProduct;
-import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.IconSheet;
+import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 
 public class AdapterBestsellersView extends RecyclerView.Adapter<AdapterBestsellersView.ViewHolder> {
 
@@ -55,7 +55,7 @@ public class AdapterBestsellersView extends RecyclerView.Adapter<AdapterBestsell
             viewHolder.oldPrice.setVisibility(View.GONE);
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
-        CustomImageLoader.getInstance().displayImage(product.getImageUrl(), viewHolder.image);
+        ImageLoaderWrapper.loadImage(context, viewHolder.image, product.getImageUrl());
         viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
         /*viewHolder.buy.setOnClickListener(new View.OnClickListener() {
             @Override

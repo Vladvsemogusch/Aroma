@@ -23,15 +23,10 @@ public abstract class RetryableCallback<T> implements Callback<T> {
     }
 
     @Override
-    public void onResponse(Call<T> call, Response<T> response) {
+    public synchronized void onResponse(Call<T> call, Response<T> response) {
         if (!response.isSuccessful()) {
             if (retryCount++ < maxRetries) {
                 Log.v(TAG, "Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
-                try {
-                    wait(WAIT_TIME);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 call.clone().enqueue(this);
             } else {
                 onFinalResponse(call, response);
@@ -42,15 +37,10 @@ public abstract class RetryableCallback<T> implements Callback<T> {
     }
 
     @Override
-    public void onFailure(Call<T> call, Throwable t) {
-        Log.e(TAG, t.getMessage());
+    public synchronized void onFailure(Call<T> call, Throwable t) {
+        t.printStackTrace();
         if (retryCount++ < maxRetries) {
             Log.v(TAG, "Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
-            try {
-                wait(WAIT_TIME);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             call.clone().enqueue(this);
         } else
             onFinalFailure(call, t);

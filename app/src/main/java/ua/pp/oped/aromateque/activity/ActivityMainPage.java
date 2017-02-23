@@ -10,12 +10,13 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import ua.pp.oped.aromateque.AdapterCategoryView;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.db.DatabaseHelper;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 
@@ -27,6 +28,7 @@ public class ActivityMainPage extends CalligraphyActivity {
     boolean isAnimationRunning;
     LayoutInflater layoutInflater;
     RecyclerView recyclerviewCategories;
+    TextView cartCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class ActivityMainPage extends CalligraphyActivity {
         layoutInflater = (LayoutInflater) this.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        cartCounter = (TextView) findViewById(R.id.cart_counter);
         setSupportActionBar(toolbar);
         //Initialize recycleview early with empty adapter to avoid errors about absent adapter.
         recyclerviewCategories = (RecyclerView) findViewById(R.id.categories_main_recyclerview);
@@ -51,7 +54,7 @@ public class ActivityMainPage extends CalligraphyActivity {
         // Because no heavy duty on this list disable removing offscreen views
         recyclerviewCategories.setItemViewCacheSize(30);
         //Get categories from DB and put to new adapter
-        categoryAll = DatabaseHelper.getInstance().deserializeCategory(CATEGORY_ALL_ID);
+        categoryAll = DatabaseHelper.getInstance(this).deserializeCategory(CATEGORY_ALL_ID);
         recyclerviewCategories.setAdapter(new AdapterCategoryView(this, categoryAll.getChildren(), recyclerviewCategories));
         //recyclerviewCategories.smoothScrollToPosition(5);
         //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, RecyclerView.VERTICAL);
@@ -62,12 +65,28 @@ public class ActivityMainPage extends CalligraphyActivity {
 
     }
 
+    private void setupCart() {
+        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
+        if (cartQty == 0) {
+            cartCounter.setVisibility(View.GONE);
+        } else {
+            cartCounter.setText(String.valueOf(cartQty));
+        }
+    }
+
     public void onCartClicked(View v) {
         Intent intent = new Intent(this, ActivityCart.class);
         this.startActivity(intent);
     }
 
-    void fillCategories() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupCart();
+    }
+
+
+    private void fillCategories() {
 
         /*
         final Animation rightToCenter = AnimationUtils.loadAnimation(this, R.anim.right_to_center);

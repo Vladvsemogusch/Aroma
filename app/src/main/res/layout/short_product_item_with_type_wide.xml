@@ -88,7 +88,6 @@
                     android:layout_width="0dp"
                     android:layout_height="35dp"
                     android:layout_weight="1"
-                    android:src="@drawable/icon_cart_3"
                     android:background="@android:color/transparent"
                     android:tint="@color/black"
                     android:scaleType="fitCenter"

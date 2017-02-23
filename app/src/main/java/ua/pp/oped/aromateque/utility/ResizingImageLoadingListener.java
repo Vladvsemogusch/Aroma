@@ -33,7 +33,7 @@ public class ResizingImageLoadingListener implements ImageLoadingListener {
         layoutParams = viewToResize.getLayoutParams();
         originalHeight = layoutParams.height;
         if (newHeight == 0) {
-            layoutParams.height = (int) Math.round(layoutParams.height * 0.3);
+            layoutParams.height = (int) Math.round(layoutParams.height * 1);
         } else {
             layoutParams.height = Utility.dpToPx(newHeight);
         }

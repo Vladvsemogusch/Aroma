@@ -52,25 +52,26 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:text="@string/in_total"
-            android:textSize="21sp"
-            android:layout_alignBottom="@+id/price_total" />
+            android:textSize="20sp"
+            android:layout_marginTop="3dp" />
 
         <TextView
             android:id="@+id/price_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="11211 грн"
-            android:textSize="25sp"
+            android:text="97869 грн"
+            android:textSize="24sp"
             android:layout_marginBottom="5dp" />
 
         <Button
             android:id="@+id/btn_to_checkout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_below="@+id/price_total"
             android:background="@color/colorAccent"
             android:text="@string/to_checkout"
+            android:textColor="@color/white"
             android:textSize="17sp"
             android:layout_marginBottom="6dp" />
 

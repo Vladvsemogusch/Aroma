@@ -26,17 +26,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.HashMap;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.db.DatabaseHelper;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragments.product.ProductDescriptionFragment;
 import ua.pp.oped.aromateque.fragments.product.ProductGeneralFragment;
 import ua.pp.oped.aromateque.fragments.product.ProductReviewsFragment;
@@ -60,7 +60,7 @@ public class ActivityProductInfo extends CalligraphyActivity {
     private DrawerLayout drawerLayout;
     private Resources res;
     private DatabaseHelper dbHelper;
-
+    TextView cartCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,7 @@ public class ActivityProductInfo extends CalligraphyActivity {
         setContentView(R.layout.activity_product_info);
         setTheme(R.style.AromatequeTheme_NoActionBar);
         res = getResources();
-        dbHelper = DatabaseHelper.getInstance();
+        dbHelper = DatabaseHelper.getInstance(this);
         //Preparing toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,7 +78,7 @@ public class ActivityProductInfo extends CalligraphyActivity {
         productId = getIntent().getIntExtra("product_id", -1);
         setupDrawerWithFancyButton();
         setupFooter();
-
+        cartCounter = (TextView) findViewById(R.id.cart_counter);
         //Working with RestAPI
         api = AromatequeApplication.getApiMagento();
 
@@ -105,25 +105,8 @@ public class ActivityProductInfo extends CalligraphyActivity {
             fillProductInfo();
         }
         dbHelper.close();
-        class CategoryRecursiveCallback<T> implements Callback<T> {
-            public void onResponse(Call<T> call, Response<T> response) {
-                try {
-                    categoryAll = (Category) response.body();
-                    Log.d("INFO", categoryAll.getChildren().get(1).getName());
-                    fillDrawer();
-                } catch (Exception e) {
-                    Log.d("ERRORCategory", e.toString());
-                }
-            }
-
-            public void onFailure(Call<T> call, Throwable t) {
-                Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                t.printStackTrace();
-            }
-        }
-        api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new CategoryRecursiveCallback<Category>() {
-            public void onResponse(Call<Category> call, Response<Category> response) {
+        api.getCategoryWithChildren(Constants.CATEGORY_ALL_ID).enqueue(new RetryableCallback<Category>() {
+            public void onFinalResponse(Call<Category> call, Response<Category> response) {
                 try {
                     categoryAll = response.body();
                     Log.d("INFO", categoryAll.getChildren().get(1).getName());
@@ -133,7 +116,7 @@ public class ActivityProductInfo extends CalligraphyActivity {
                 }
             }
 
-            public void onFailure(Call<Category> call, Throwable t) {
+            public void onFinalFailure(Call<Category> call, Throwable t) {
                 Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -329,6 +312,20 @@ public class ActivityProductInfo extends CalligraphyActivity {
     public void onCartClicked(View v) {
         Intent intent = new Intent(this, ActivityCart.class);
         this.startActivity(intent);
+    }
+
+    private void setupCart() {
+        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
+        if (cartQty == 0) {
+            cartCounter.setVisibility(View.GONE);
+        } else {
+            cartCounter.setText(String.valueOf(cartQty));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }
 

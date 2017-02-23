@@ -14,16 +14,34 @@
         app:popupTheme="@style/AromatequeTheme.NoActionBar.PopupOverlay"
         app:titleTextAppearance="@style/TextAppearance.ActionbarTitle">
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
         <ImageButton
+            android:id="@+id/go_to_cart"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+
             android:background="@android:color/transparent"
             android:onClick="onCartClicked"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_cart" />
+
+            <TextView
+                android:id="@+id/cart_counter"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:gravity="center"
+                android:textSize="8sp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/circle_shape"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/black" />
+        </FrameLayout>
     </android.support.v7.widget.Toolbar>
 
 </android.support.design.widget.AppBarLayout>

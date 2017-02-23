@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import ua.pp.oped.aromateque.FilterAdapter;
+import ua.pp.oped.aromateque.AdapterFilter;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.model.EntityIdName;
 import ua.pp.oped.aromateque.model.FilterParameter;
@@ -24,7 +24,7 @@ import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 public class FilterFragment extends Fragment {
     private static final String TAG = "FilterFragment";
     private RecyclerView parameterRecyclerView;
-    private FilterAdapter filterAdapter;
+    private AdapterFilter adapterFilter;
     LinearLayoutManagerSmoothScrollEdition layoutManager;
 
     public FilterFragment() {
@@ -63,13 +63,13 @@ public class FilterFragment extends Fragment {
         parameterRecyclerView.setLayoutManager(layoutManager);
         parameterRecyclerView.setItemViewCacheSize(30);
         //parameterListView.setNestedScrollingEnabled(false);
-        if (filterAdapter == null) {
-            filterAdapter = new FilterAdapter(getActivity(), parameters, parameterRecyclerView);
+        if (adapterFilter == null) {
+            adapterFilter = new AdapterFilter(getActivity(), parameters, parameterRecyclerView);
         } else {
-            filterAdapter.setRecyclerView(parameterRecyclerView);
+            adapterFilter.setRecyclerView(parameterRecyclerView);
         }
 
-        parameterRecyclerView.setAdapter(filterAdapter);
+        parameterRecyclerView.setAdapter(adapterFilter);
         layoutManager.setSmoothScroller(new LinearSmoothScroller(getActivity()) {
             @Override
             protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
@@ -107,14 +107,14 @@ public class FilterFragment extends Fragment {
     }
 
     public void prepareForRemoval() {
-        ((FilterAdapter) parameterRecyclerView.getAdapter()).clearActiveValuesLayout();
+        ((AdapterFilter) parameterRecyclerView.getAdapter()).clearActiveValuesLayout();
         parameterRecyclerView.setAdapter(null);
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState");
-        FilterAdapter adapter = (FilterAdapter) parameterRecyclerView.getAdapter();
+        AdapterFilter adapter = (AdapterFilter) parameterRecyclerView.getAdapter();
         outState.putParcelableArrayList("active_filter_parameter_values", adapter.getActiveFilterParameterValues());
         outState.putParcelableArrayList("filter_adapter_list", adapter.getFilterAdapterList());
 

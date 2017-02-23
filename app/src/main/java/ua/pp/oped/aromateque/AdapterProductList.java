@@ -13,11 +13,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.pp.oped.aromateque.activity.ActivityProductInfo;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
+import ua.pp.oped.aromateque.model.CartItem;
 import ua.pp.oped.aromateque.model.ShortProduct;
-import ua.pp.oped.aromateque.utility.CustomImageLoader;
+import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 import ua.pp.oped.aromateque.utility.Utility;
 
 public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.ViewHolder> {
@@ -27,18 +30,16 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
     private int itemLayoutId;
     private LayoutInflater layoutInflater;
     private Context context;
+    private ArrayList<CartItem> cartItems;
 
     public AdapterProductList(List<ShortProduct> products, Context context, int itemLayoutId) {
         this.products = products;
         this.resources = context.getResources();
         this.itemLayoutId = itemLayoutId;
         this.context = context;
+        updateCartItems();
     }
 
-    public AdapterProductList(List<ShortProduct> products, Resources resources) {
-        this.products = products;
-        this.resources = resources;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -62,7 +63,7 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
             viewHolder.oldPrice.setVisibility(View.GONE);
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
-        CustomImageLoader.getInstance().displayImage(product.getImageUrl(), viewHolder.image);
+        ImageLoaderWrapper.loadImage(context, viewHolder.image, product.getImageUrl());
         viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(context.getResources(), R.drawable.icon_heart));
         //viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +75,19 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
                 context.startActivity(intent, activityOptions.toBundle());
             }
         });
-        //TODO switch icon if already in cart
         viewHolder.toCart.setTag(product.getId());
+
+        boolean alreadyInCart = false;
+        for (CartItem cartItem : cartItems) {
+            if (product.getId() == cartItem.getProductId()) {
+                alreadyInCart = true;
+            }
+        }
+        if (alreadyInCart) {
+            viewHolder.toCart.setImageDrawable(Utility.compatGetDrawable(context.getResources(), R.drawable.icon_cart_black));
+        } else {
+            viewHolder.toCart.setImageDrawable(Utility.compatGetDrawable(context.getResources(), R.drawable.icon_cart_3));
+        }
     }
 
     @Override
@@ -107,4 +119,14 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
 
         }
     }
+
+    public void updateCartItems(int productId) {
+        cartItems.add(new CartItem(productId, 1));
+    }
+
+    public void updateCartItems() {
+        cartItems = DatabaseHelper.getInstance(context).getCart();
+    }
+
+
 }

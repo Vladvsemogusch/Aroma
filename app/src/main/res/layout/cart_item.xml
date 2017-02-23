@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="3dp"
@@ -9,84 +9,112 @@
     android:background="@color/white"
     android:elevation="5dp"
     android:gravity="center"
-    android:orientation="horizontal"
     android:padding="5dp">
 
     <ImageView
         android:id="@+id/product_image"
-        android:layout_width="50dp"
+        android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="fitCenter" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="5dp"
+        android:scaleType="centerInside" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/product_image"
+        android:layout_alignParentEnd="true"
+        android:orientation="vertical"
+        android:layout_below="@+id/remove_from_cart">
 
         <TextView
             android:id="@+id/product_brand"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="center"
+            android:layout_gravity="center"
             android:maxLines="2"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/product_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="center"
+            android:layout_gravity="center"
             android:maxLines="2"
             android:textColor="@color/shortproduct_name"
             android:textSize="14sp" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/price_and_qty_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/product_image"
+        android:orientation="horizontal">
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:gravity="bottom">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_weight="1">
-
-                <ImageButton
-                    android:id="@+id/add_qty"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:background="@android:color/transparent"
-                    android:onClick="onAddQtyClicked"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/add_qty"
-                    android:tint="@color/black" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/qty" />
-
-                <ImageButton
-                    android:id="@+id/reduce_qty"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:onClick="onReduceQtyClicked"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/reduce_qty"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter" />
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/reduce_qty"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@android:color/transparent"
+                android:onClick="onReduceQtyClicked"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reduce_qty"
+                android:tint="@color/black" />
 
             <TextView
-                android:id="@+id/cart_product_price"
-                android:layout_width="0dp"
+                android:id="@+id/qty"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:textSize="15sp" />
+
+            <ImageButton
+                android:id="@+id/add_qty"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@android:color/transparent"
+                android:onClick="onAddQtyClicked"
+                android:scaleType="fitCenter"
+                android:src="@drawable/add_qty" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/cart_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textSize="18sp" />
+
     </LinearLayout>
-</LinearLayout>
+
+    <ImageButton
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:padding="3dp"
+        android:id="@+id/remove_from_cart"
+        android:background="@android:color/transparent"
+        android:src="@drawable/cross"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="fitCenter" />
+</RelativeLayout>

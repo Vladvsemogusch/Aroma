@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,17 +24,19 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
+import ua.pp.oped.aromateque.AdapterFilter;
 import ua.pp.oped.aromateque.AdapterProductList;
 import ua.pp.oped.aromateque.CalligraphyActivity;
-import ua.pp.oped.aromateque.FilterAdapter;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.db.DatabaseHelper;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragments.productlist.FilterFragment;
 import ua.pp.oped.aromateque.fragments.productlist.SortFragment;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.FilterParameterValue;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EmptyRecycleViewAdapter;
+import ua.pp.oped.aromateque.utility.Utility;
 
 public class ActivityProductList extends CalligraphyActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +60,7 @@ public class ActivityProductList extends CalligraphyActivity
     private SortFragment sortFragment;
     private FilterFragment filterFragment;
     private DatabaseHelper dbHelper;
+    TextView cartCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,7 @@ public class ActivityProductList extends CalligraphyActivity
         setContentView(R.layout.activity_product_list);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        dbHelper = DatabaseHelper.getInstance();
+        dbHelper = DatabaseHelper.getInstance(this);
         int currentCategoryId = getIntent().getIntExtra("category_id", 16); //TODO change after REST implemented
         Category currentCategory = dbHelper.deserializeCategory(currentCategoryId);
         settings = getPreferences(MODE_PRIVATE);
@@ -87,12 +91,14 @@ public class ActivityProductList extends CalligraphyActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        cartCounter = (TextView) findViewById(R.id.cart_counter);
         sortTypeSmall = (TextView) findViewById(R.id.txt_sort_type_small);
         filteredAmountSmall = (TextView) findViewById(R.id.txt_filtered_amount_small);
         productListRecyclerView = (RecyclerView) findViewById(R.id.product_list_recycler_view);
         gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
         productListRecyclerView.setLayoutManager(gridLayoutManager);
         productListRecyclerView.setAdapter(new EmptyRecycleViewAdapter());
+        productListRecyclerView.setItemViewCacheSize(7);
         View sortByButton = findViewById(R.id.sort_by_button);
         final View filterByButton = findViewById(R.id.filter_by_button);
         final LinearLayout rightDrawerLayout = (LinearLayout) findViewById(R.id.product_list_right_drawer);
@@ -303,7 +309,7 @@ public class ActivityProductList extends CalligraphyActivity
     }
 
     @Subscribe
-    public void onActiveFilterParametersChanged(FilterAdapter.ActiveParametersChanged event) {
+    public void onActiveFilterParametersChanged(AdapterFilter.ActiveParametersChanged event) {
         ArrayList<FilterParameterValue> activeFilterParameters = event.activeFilterParameters;
         Log.d(TAG, "onActiveFilterParametersChanged called");
         //TODO REST-READY Update productlist based on new filter parameters
@@ -330,10 +336,34 @@ public class ActivityProductList extends CalligraphyActivity
         int productId = (int) v.getTag();
         if (!dbHelper.isInCart(productId)) {
             dbHelper.addToCart(productId);
-            Log.d(TAG, String.valueOf(DatabaseHelper.getInstance().getCart().size()));
+            setupCart();
+            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.icon_cart_black));
+            ((AdapterProductList) productListRecyclerView.getAdapter()).updateCartItems(productId);
+            Timber.d("Added to cart");
         } else {
+            Intent intent = new Intent(this, ActivityCart.class);
+            this.startActivity(intent);
             Log.d(TAG, "Already in cart product id: " + productId);
         }
         //TODO Visuals
+    }
+
+    private void setupCart() {
+        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
+        if (cartQty == 0) {
+            cartCounter.setVisibility(View.GONE);
+        } else {
+            cartCounter.setText(String.valueOf(cartQty));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupCart();
+        productListRecyclerView.getAdapter().notifyDataSetChanged();
+        if (productListRecyclerView.getAdapter() instanceof AdapterProductList) {
+            ((AdapterProductList) productListRecyclerView.getAdapter()).updateCartItems();
+        }
     }
 }

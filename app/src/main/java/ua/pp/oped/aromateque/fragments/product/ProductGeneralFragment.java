@@ -3,7 +3,6 @@ package ua.pp.oped.aromateque.fragments.product;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +21,16 @@ import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.List;
 import java.util.Map;
 
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.db.DatabaseHelper;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.LongProduct;
-import ua.pp.oped.aromateque.utility.CustomImageLoader;
+import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 import ua.pp.oped.aromateque.utility.Utility;
 
 public class ProductGeneralFragment extends Fragment {
@@ -54,7 +49,7 @@ public class ProductGeneralFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
         LongProduct product = dbHelper.deserializeProduct(getArguments().getInt("id"));
         attributes = product.getAttributes();
         imageUrls = product.getImageUrls();
@@ -65,12 +60,6 @@ public class ProductGeneralFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.product_general, container, false);
-        final DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-                .showImageOnLoading(R.drawable.loading)
-                .build();
         Resources res = getResources();
         ScrollView productScrollviewMain = (ScrollView) view.findViewById(R.id.product_scrollview_main);
         productScrollviewMain.setForegroundGravity(Gravity.END);
@@ -99,6 +88,7 @@ public class ProductGeneralFragment extends Fragment {
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
 
         String fullPrice = attributes.get("price");
+        fullPrice = fullPrice.substring(0, fullPrice.indexOf('.'));
         String discount = attributes.get("discount");
         String discountedPrice = Utility.getPriceWithDiscount(fullPrice, discount);
         productFullPrice.setText(String.format(res.getString(R.string.product_price), fullPrice));
@@ -131,34 +121,8 @@ public class ProductGeneralFragment extends Fragment {
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView itemView = (ImageView) layoutInflater.inflate(R.layout.img_pager_item, container, false);
                 //ImageView imgView = (ImageView) itemView.findViewById(R.id.img_view);
-                CustomImageLoader.getInstance().displayImage(productImgList.get(position), itemView, displayImageOptions,
-                        new ImageLoadingListener() {
-                            ViewGroup.LayoutParams layoutParams;
-                            int originalHeight;
-
-                            @Override
-                            public void onLoadingStarted(String imageUri, View view) {
-                                layoutParams = productImgViewpager.getLayoutParams();
-                                originalHeight = layoutParams.height;
-                                layoutParams.height = Utility.dpToPx(120);
-                                view.setLayoutParams(layoutParams);
-                                Log.d("IMAGEVIEW", "Reduced size of ImageView");
-                            }
-
-                            @Override
-                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                            }
-
-                            @Override
-                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                layoutParams.height = originalHeight;
-                                Log.d("IMAGEVIEW", "Restored size of ImageView");
-                            }
-
-                            @Override
-                            public void onLoadingCancelled(String imageUri, View view) {
-                            }
-                        });
+                Picasso.with(context).load(productImgList.get(position)).into(itemView);
+                ImageLoaderWrapper.loadImage(context, itemView, productImgList.get(position));
                 container.addView(itemView);
                 return itemView;
             }

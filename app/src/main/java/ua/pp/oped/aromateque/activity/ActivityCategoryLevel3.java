@@ -9,13 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ua.pp.oped.aromateque.AdapterSubCategoryView;
 import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.db.DatabaseHelper;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 
 
@@ -24,6 +25,7 @@ public class ActivityCategoryLevel3 extends CalligraphyActivity {
     RecyclerView recyclerviewLevel3Categories;
     ArrayList<Category> categories;
     Resources res;
+    TextView cartCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +33,17 @@ public class ActivityCategoryLevel3 extends CalligraphyActivity {
         setContentView(R.layout.activity_category_level3);
         res = getResources();
         int mainCategoryId = getIntent().getIntExtra("category_id", -1);
-        final Category mainCategory = DatabaseHelper.getInstance().deserializeCategory(mainCategoryId);
+        final Category mainCategory = DatabaseHelper.getInstance(this).deserializeCategory(mainCategoryId);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mainCategory.getName());
+        cartCounter = (TextView) findViewById(R.id.cart_counter);
         recyclerviewLevel3Categories = (RecyclerView) findViewById(R.id.subcategories_recyclerview);
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerviewLevel3Categories.setAdapter(new AdapterSubCategoryView(ActivityCategoryLevel3.this, mainCategory, true));
         recyclerviewLevel3Categories.setItemViewCacheSize(30);
+
 
         //  If recyclerview is shorter than mainLayout, then move footer from recyclerview to bottom of main layout.
         recyclerviewLevel3Categories.post(new Runnable() {
@@ -76,4 +80,18 @@ public class ActivityCategoryLevel3 extends CalligraphyActivity {
         this.startActivity(intent);
     }
 
+    private void setupCart() {
+        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
+        if (cartQty == 0) {
+            cartCounter.setVisibility(View.GONE);
+        } else {
+            cartCounter.setText(String.valueOf(cartQty));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupCart();
+    }
 }

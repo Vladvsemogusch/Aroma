@@ -53,12 +53,13 @@ public class Utility {
     }
 
     public static Drawable compatGetDrawable(Resources res, int drawableId) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return res.getDrawable(drawableId, null);
         } else {
             return res.getDrawable(drawableId);
         }
     }
+
 
     public static int dpToPx(int dp) {
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
@@ -66,7 +67,9 @@ public class Utility {
     }
 
     public static String getPriceWithDiscount(String fullPrice, String discount) {
-        fullPrice = fullPrice.substring(0, fullPrice.indexOf('.'));
+        if (fullPrice.contains(".")) {
+            fullPrice = fullPrice.substring(0, fullPrice.indexOf('.'));
+        }
         discount = discount.substring(0, discount.indexOf('%'));
         long discountedPrice = Math.round(Float.parseFloat(fullPrice) * (100 - Float.parseFloat(discount)) / 100);
         return String.valueOf(discountedPrice);

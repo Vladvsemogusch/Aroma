@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -27,8 +26,8 @@ import ua.pp.oped.aromateque.activity.ActivityCategoryLevel3;
 import ua.pp.oped.aromateque.activity.ActivityProductList;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.ShortProduct;
-import ua.pp.oped.aromateque.utility.CustomImageLoader;
 import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
+import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 
 public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
@@ -167,10 +166,6 @@ public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void fillHeader(HeaderViewHolder headerViewHolder) {
         final ViewPager viewpagerBanners = headerViewHolder.viewpager;
-        final DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
         class ImgPagerAdapter extends PagerAdapter {
             private List<String> productImgUrlList;
 
@@ -197,7 +192,7 @@ public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView imgView = (ImageView) layoutInflater.inflate(R.layout.banner_item, container, false);
-                CustomImageLoader.getInstance().displayImage(productImgUrlList.get(position), imgView, options);
+                ImageLoaderWrapper.loadImage(context, imgView, productImgUrlList.get(position));
                 container.addView(imgView);
                 return imgView;
             }

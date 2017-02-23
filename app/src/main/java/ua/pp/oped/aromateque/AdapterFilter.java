@@ -32,7 +32,7 @@ import ua.pp.oped.aromateque.utility.AdvancedListenerRangeSeekBar;
 import static android.widget.RelativeLayout.BELOW;
 import static android.widget.RelativeLayout.RIGHT_OF;
 
-public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterFilter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "FILTER_ADAPTER";
     private ArrayList<EntityIdName> filterAdapterList;
     private LayoutInflater layoutInflater;
@@ -44,7 +44,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ParameterValueViewOnClickListener parameterValueViewOnClickListener;
     private Context context;
 
-    public FilterAdapter(Context context, List<EntityIdName> filterParameters, RecyclerView recyclerView) {
+    public AdapterFilter(Context context, List<EntityIdName> filterParameters, RecyclerView recyclerView) {
         layoutInflater = LayoutInflater.from(context);
         this.recyclerView = recyclerView;
         filterAdapterList = new ArrayList<>();
@@ -103,7 +103,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 final int positionInAdapter = viewHolder.getAdapterPosition();
                 if (!filterParameter.isExtended()) {
                     filterAdapterList.addAll(positionInAdapter + 1 - headerOffset, filterParameter.getValues());
-                    FilterAdapter.this.notifyItemRangeInserted(positionInAdapter + 1, filterParameter.getValues().size());
+                    AdapterFilter.this.notifyItemRangeInserted(positionInAdapter + 1, filterParameter.getValues().size());
                     ObjectAnimator.ofFloat(viewHolder.imgArrow, "rotation", 0, 180f)
                             .setDuration(400)
                             .start();
@@ -117,7 +117,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     filterParameter.setExtended(true);
                 } else {
                     filterAdapterList.subList(positionInAdapter + 1 - headerOffset, positionInAdapter + 1 - headerOffset + filterParameter.getValues().size()).clear();
-                    FilterAdapter.this.notifyItemRangeRemoved(positionInAdapter + 1, filterParameter.getValues().size());
+                    AdapterFilter.this.notifyItemRangeRemoved(positionInAdapter + 1, filterParameter.getValues().size());
                     ObjectAnimator.ofFloat(viewHolder.imgArrow, "rotation", 180f, 0)
                             .setDuration(400)
                             .start();
@@ -451,7 +451,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 FilterParameterValueViewHolder viewHolder = (FilterParameterValueViewHolder) recyclerView.getChildViewHolder(viewInRecyclerView);
                                 viewHolder.chkbxParameterValueName.setChecked(false);
                             } else {
-                                FilterAdapter.this.notifyItemChanged(positionInLayout + headerOffset);
+                                AdapterFilter.this.notifyItemChanged(positionInLayout + headerOffset);
                             }
                         }
                     }

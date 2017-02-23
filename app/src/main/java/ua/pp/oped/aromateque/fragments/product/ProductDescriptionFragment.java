@@ -9,16 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
 import java.util.HashMap;
 
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.utility.CustomImageLoader;
+import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 import ua.pp.oped.aromateque.utility.Utility;
-
-import static ua.pp.oped.aromateque.utility.Constants.BASE_URL;
 
 public class ProductDescriptionFragment extends Fragment {
     HashMap<String, String> attributes;
@@ -47,17 +42,11 @@ public class ProductDescriptionFragment extends Fragment {
         TextView txtDescriptionTitle = (TextView) root.findViewById(R.id.txt_description_title);
         TextView txtDescription = (TextView) root.findViewById(R.id.txt_description);
         ImageView imgBrand = (ImageView) root.findViewById(R.id.img_brand);
-        final DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-                .showImageOnLoading(R.drawable.loading)
-                .build();
         String brandImgUrl = attributes.get("brand_img_url");
         brandImgUrl = brandImgUrl.replace("\\", "/");
         // DEBUG
-        brandImgUrl = brandImgUrl.replace("http://localhost", BASE_URL);
-        CustomImageLoader.getInstance().displayImage(brandImgUrl, imgBrand, displayImageOptions);
+//        brandImgUrl = brandImgUrl.replace("http://localhost", BASE_URL);
+        ImageLoaderWrapper.loadImage(getContext(), imgBrand, brandImgUrl);
         txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));
         String description = attributes.get("description");
         if (description.startsWith("<p style=\"text-align: justify;\">")) {

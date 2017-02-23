@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.db;
+package ua.pp.oped.aromateque.data.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,19 +12,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import timber.log.Timber;
 import ua.pp.oped.aromateque.model.CartItem;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.LongProduct;
 import ua.pp.oped.aromateque.model.Review;
 import ua.pp.oped.aromateque.model.ShortProduct;
-import ua.pp.oped.aromateque.utility.Constants;
 import ua.pp.oped.aromateque.utility.Utility;
 
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
 public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
     private static final String TAG = "DATABASE_HELPER";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "aromateque.db";
     private static DatabaseHelper instance;
 
@@ -33,11 +33,10 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         setForcedUpgrade();
     }
 
-    public static void initialize(Context context) {
-        instance = new DatabaseHelper(context);
-    }
-
-    public static DatabaseHelper getInstance() {
+    public static DatabaseHelper getInstance(Context context) {
+        if (instance == null) {
+            return new DatabaseHelper(context.getApplicationContext());
+        }
         return instance;
     }
 
@@ -137,12 +136,12 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         product.setReviews(reviews);
         // Remove after moving to deployment domain
         String brandImgUrl = product.getAttributes().get("brand_img_url");
-        brandImgUrl = brandImgUrl.replace("http://localhost/", Constants.BASE_URL);
+//        brandImgUrl = brandImgUrl.replace("http://localhost/", Constants.BASE_URL);
         product.getAttributes().put("brand_img_url", brandImgUrl);
         for (String url :
                 product.getImageUrls()) {
             int urlPosition = product.getImageUrls().indexOf(url);
-            url = url.replace("http://localhost/", Constants.BASE_URL);
+//            url = url.replace("http://localhost/", Constants.BASE_URL);
             product.getImageUrls().remove(urlPosition);
             product.getImageUrls().add(urlPosition, url);
         }
@@ -270,37 +269,47 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
 
     public void incrementQty(int productId) {
         String[] values = {String.valueOf(productId)};
-        getWritableDatabase().rawQuery("UPDATE cart SET qty = qty + 1 WHERE product_id = ?", values);
+        String[] columns = {"qty"};
+        Cursor c = getReadableDatabase().query("cart", columns, "product_id = ?", values, null, null, null);
+        c.moveToNext();
+        int qty = c.getInt(0);
+        c.close();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("qty", ++qty);
+        getWritableDatabase().update("cart", contentValues, "product_id = ?", values);
         Log.d(TAG, "Qty incremented product id: " + productId);
     }
 
     public void decrementQty(int productId) {
         String[] values = {String.valueOf(productId)};
-        getWritableDatabase().rawQuery("UPDATE cart SET qty = qty - 1 WHERE product_id = ?", values);
-        Log.d(TAG, "Qty decremented product id: " + productId);
         String[] columns = {"qty"};
-        String[] args = {String.valueOf(productId)};
-        Cursor c = getReadableDatabase().query("cart", columns, "product_id = ?", args, null, null, null);
+        Cursor c = getReadableDatabase().query("cart", columns, "product_id = ?", values, null, null, null);
         c.moveToNext();
         int qty = c.getInt(0);
+        c.close();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("qty", --qty);
+        getWritableDatabase().update("cart", contentValues, "product_id = ?", values);
+        Log.d(TAG, "Qty decremented product id: " + productId);
         if (qty == 0) {
             removeFromCart(productId);
             Log.d(TAG, "Qty is 0. Needs deletion from cart product id: " + productId);
         }
-        c.close();
     }
 
     public ArrayList<CartItem> getCart() {
-        Cursor c = getReadableDatabase().query("cart", null, null, null, null, null, null);
+        Cursor c = getReadableDatabase().query("cart", null, null, null, null, null, "id ASC");
         if (c.getCount() == 0) {
             Log.d(TAG, "getCart() cursor empty");
         }
         ArrayList<CartItem> cart = new ArrayList<>();
         while (c.moveToNext()) {
             // 0 - id, 1 - product_id, 2 - qty.
-            CartItem cartItem = new CartItem(c.getInt(0), c.getInt(1));
+            CartItem cartItem = new CartItem(c.getInt(1), c.getInt(2));
             cart.add(cartItem);
+            Log.d(TAG, "Retrieved cart item from db and put at position: " + (cart.indexOf(cartItem)) + " ;product id: " + c.getInt(1) + " ; qty: " + c.getInt(2));
         }
+        Timber.d("Cart size: " + String.valueOf(cart.size()));
         c.close();
         return cart;
     }
@@ -309,6 +318,30 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         String[] columns = {"product_id"};
         String[] args = {String.valueOf(productId)};
         Cursor c = getReadableDatabase().query("cart", columns, "product_id = ?", args, null, null, null);
-        return c.getCount() != 0;
+        boolean isInCart = c.getCount() != 0;
+        c.close();
+        return isInCart;
+    }
+
+    public int getCartItemQty(int productId) {
+        String[] columns = {"qty"};
+        String[] args = {String.valueOf(productId)};
+        Cursor c = getReadableDatabase().query("cart", columns, "product_id=?", args, null, null, null);
+        c.moveToNext();
+        int result = c.getInt(0);
+        c.close();
+        return result;
+    }
+
+    public int getCartQty() {
+        String[] columns = {"qty"};
+        Cursor c = getReadableDatabase().query("cart", columns, null, null, null, null, null);
+        int totalQty = 0;
+        while (c.moveToNext()) {
+            totalQty += c.getInt(0);
+            Timber.d("Qty part: " + totalQty);
+        }
+        c.close();
+        return totalQty;
     }
 }
