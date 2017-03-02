@@ -47,7 +47,8 @@ public class ProductDescriptionFragment extends Fragment {
         // DEBUG
 //        brandImgUrl = brandImgUrl.replace("http://localhost", BASE_URL);
         ImageLoaderWrapper.loadImage(getContext(), imgBrand, brandImgUrl);
-        txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));
+        txtDescriptionTitle.setText(attributes.get("name"));
+//        txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));
         String description = attributes.get("description");
         if (description.startsWith("<p style=\"text-align: justify;\">")) {
             description = description.replace("<p style=\"text-align: justify;\">", "");

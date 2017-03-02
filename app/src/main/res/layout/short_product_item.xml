@@ -67,9 +67,10 @@
             android:id="@+id/toCart"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:background="@color/dark_brown"
+            android:background="@color/beige"
             android:gravity="center"
             android:text="@string/buy"
+            android:onClick="onAddToCartClicked"
             android:textColor="@color/creme" />
 
         <ImageButton

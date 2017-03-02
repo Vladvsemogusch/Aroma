@@ -4,6 +4,9 @@
     android:id="@+id/activity_main_page_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="ua.pp.oped.aromateque.activity.ActivityMainPage">
 
@@ -12,6 +15,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/categories_main_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
 </LinearLayout>

@@ -80,13 +80,14 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <ImageButton
                     android:id="@+id/toCart"
                     android:layout_width="0dp"
-                    android:layout_height="35dp"
+                    android:layout_height="45dp"
+                    android:padding="5dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:tint="@color/black"
@@ -96,7 +97,8 @@
                 <ImageButton
                     android:id="@+id/to_favorites"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:padding="5dp"
