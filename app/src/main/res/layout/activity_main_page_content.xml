@@ -8,9 +8,10 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context="ua.pp.oped.aromateque.activity.ActivityMainPage">
 
-    <include layout="@layout/appbar_global" />
+    <include layout="@layout/global_appbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/categories_main_recyclerview"

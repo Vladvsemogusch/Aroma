@@ -14,9 +14,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import timber.log.Timber;
 import ua.pp.oped.aromateque.AromatequeApplication;
-import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.base_activities.CalligraphyActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.IconSheet;
@@ -51,7 +51,7 @@ public class ActivityLaunch extends CalligraphyActivity {
                 return modifiedRequest;
             }
         });
-        picassoBuilder.loggingEnabled(true);
+//        picassoBuilder.loggingEnabled(true);
         picassoBuilder.indicatorsEnabled(true);
         picassoBuilder.listener(new Picasso.Listener() {
             @Override
@@ -140,6 +140,7 @@ public class ActivityLaunch extends CalligraphyActivity {
 
     private void startNextActivity() {
         startActivity(new Intent(this, ActivityMainPage.class));
+        finish();
     }
 
 }

@@ -5,14 +5,17 @@
     android:id="@+id/activity_cart"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="ua.pp.oped.aromateque.activity.ActivityCart"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AromatequeTheme.NoActionBar.AppBarOverlay">
+        android:theme="@style/AromatequeTheme.NoActionBar.AppBarOverlay"
+        android:clickable="true"
+        android:focusableInTouchMode="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -20,20 +23,46 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AromatequeTheme.NoActionBar.PopupOverlay"
-            app:titleTextAppearance="@style/TextAppearance.ActionbarTitle" />
+            app:titleTextAppearance="@style/TextAppearance.ActionbarTitle">
+
+            <ImageButton
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:onClick="onSearchClicked"
+                android:paddingBottom="15dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="15dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/search_mobile"
+                android:tint="@color/white" />
+
+            <ua.pp.oped.aromateque.utility.EditTextBackEvent
+                android:id="@+id/edittext_search"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:visibility="gone" />
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cart_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/appbar_layout"
-        android:layout_above="@+id/divider" />
+        android:layout_above="@+id/divider"
+        android:layout_below="@+id/appbar_layout" />
 
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/divider"
         android:layout_above="@+id/to_checkout_layout"
         android:background="@color/black" />
 
@@ -42,38 +71,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingTop="6dp"
-        android:paddingStart="6dp"
+        android:background="@color/white"
         android:paddingEnd="6dp"
-        android:background="@color/white">
+        android:paddingStart="6dp"
+        android:paddingTop="6dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_marginTop="3dp"
             android:text="@string/in_total"
-            android:textSize="20sp"
-            android:layout_marginTop="3dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/price_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginBottom="5dp"
             android:text="97869 грн"
-            android:textSize="24sp"
-            android:layout_marginBottom="5dp" />
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/btn_to_checkout"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_below="@+id/price_total"
+            android:layout_marginBottom="6dp"
             android:background="@color/colorAccent"
             android:text="@string/to_checkout"
             android:textColor="@color/white"
-            android:textSize="17sp"
-            android:layout_marginBottom="6dp" />
+            android:textSize="17sp" />
 
     </RelativeLayout>
 

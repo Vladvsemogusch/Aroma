@@ -57,6 +57,7 @@ public class AdapterBestsellersView extends RecyclerView.Adapter<AdapterBestsell
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
         ImageLoaderWrapper.loadImage(context, viewHolder.image, product.getImageUrl());
         viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
+        viewHolder.buy.setTag(product.getId());
         /*viewHolder.buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

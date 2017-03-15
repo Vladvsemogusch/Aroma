@@ -1,6 +1,7 @@
 package ua.pp.oped.aromateque.utility;
 
 
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -8,6 +9,10 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.TypedValue;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -74,4 +79,35 @@ public class Utility {
         long discountedPrice = Math.round(Float.parseFloat(fullPrice) * (100 - Float.parseFloat(discount)) / 100);
         return String.valueOf(discountedPrice);
     }
+
+    public static String getStringFromRaw(Resources resources, int resourceId) {
+        try {
+            InputStream in_s = resources.openRawResource(resourceId);
+            byte[] buffer = new byte[in_s.available()];
+            in_s.read(buffer);
+            return new String(buffer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String readFromAssets(AssetManager assets, String filepath) {
+        StringBuilder stringBuilder = new StringBuilder();
+        InputStream inputStream;
+        try {
+            inputStream = assets.open(filepath);
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            String str;
+            while ((str = in.readLine()) != null) {
+                stringBuilder.append(str);
+            }
+
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
 }

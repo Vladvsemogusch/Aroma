@@ -1,7 +1,6 @@
 package ua.pp.oped.aromateque.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -10,36 +9,34 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
+import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterCategoryView;
-import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
-public class ActivityMainPage extends CalligraphyActivity {
-    Category categoryAll;
-    MagentoRestService api;
-    boolean isAnimationRunning;
-    LayoutInflater layoutInflater;
-    RecyclerView recyclerviewCategories;
-    TextView cartCounter;
+public class ActivityMainPage extends SearchAppbarActivity {
+    private Category categoryAll;
+    private MagentoRestService api;
+    private boolean isAnimationRunning;
+    private LayoutInflater layoutInflater;
+    private RecyclerView recyclerviewCategories;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_page);
         layoutInflater = (LayoutInflater) this.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        cartCounter = (TextView) findViewById(R.id.cart_counter);
         setSupportActionBar(toolbar);
-        //Initialize recycleview early with empty adapter to avoid errors about absent adapter.
+        //Initialize recycleview early with empty adapter to avoid errors About absent adapter.
         recyclerviewCategories = (RecyclerView) findViewById(R.id.categories_main_recyclerview);
         final LinearLayoutManagerSmoothScrollEdition layoutManager = new LinearLayoutManagerSmoothScrollEdition(this, RecyclerView.VERTICAL, false);
         layoutManager.setSmoothScroller(new LinearSmoothScroller(this) {
@@ -52,7 +49,7 @@ public class ActivityMainPage extends CalligraphyActivity {
         recyclerviewCategories.setLayoutManager(layoutManager);
         //recyclerviewCategories.setAdapter(new EmptyRecycleViewAdapter());
         // Because no heavy duty on this list disable removing offscreen views
-        recyclerviewCategories.setItemViewCacheSize(30);
+        recyclerviewCategories.setItemViewCacheSize(10);
         //Get categories from DB and put to new adapter
         categoryAll = DatabaseHelper.getInstance(this).deserializeCategory(CATEGORY_ALL_ID);
         recyclerviewCategories.setAdapter(new AdapterCategoryView(this, categoryAll.getChildren(), recyclerviewCategories));
@@ -65,26 +62,22 @@ public class ActivityMainPage extends CalligraphyActivity {
 
     }
 
-    private void setupCart() {
-        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
-        if (cartQty == 0) {
-            cartCounter.setVisibility(View.GONE);
-        } else {
-            cartCounter.setText(String.valueOf(cartQty));
-        }
-    }
-
-    public void onCartClicked(View v) {
-        Intent intent = new Intent(this, ActivityCart.class);
-        this.startActivity(intent);
-    }
-
     @Override
-    public void onResume() {
-        super.onResume();
-        setupCart();
+    protected int getLayoutId() {
+        return R.layout.activity_main_page_top_layout;
     }
 
+    public void onAddToCartClicked(View v) {
+        int productId = (int) v.getTag();
+        if (!DatabaseHelper.getInstance(this).isInCart(productId)) {
+            DatabaseHelper.getInstance(this).addToCart(productId);
+            super.updateCartCounter();
+            Timber.d("Added to cart");
+        } else {
+            Timber.d("Already in cart product id: " + productId);
+        }
+        onCartClicked(null);
+    }
 
     private void fillCategories() {
 

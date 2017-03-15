@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="ua.pp.oped.aromateque.activity.ActivityProductList">
 
-    <include layout="@layout/appbar_global" />
+    <include layout="@layout/global_appbar" />
 
     <include layout="@layout/content_product_list" />
 

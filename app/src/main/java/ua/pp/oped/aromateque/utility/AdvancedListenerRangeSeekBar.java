@@ -390,9 +390,9 @@ public class AdvancedListenerRangeSeekBar<T extends Number> extends ImageView {
     }
 
     /**
-     * Registers given listener callback to notify about changed selected values.
+     * Registers given listener callback to notify About changed selected values.
      *
-     * @param listener The listener to notify about changed selected values.
+     * @param listener The listener to notify About changed selected values.
      */
     @SuppressWarnings("unused")
     public void setOnRangeSeekBarChangeListener(OnRangeSeekBarChangeListener<T> listener) {
@@ -887,7 +887,7 @@ public class AdvancedListenerRangeSeekBar<T extends Number> extends ImageView {
     }
 
     /**
-     * Callback listener interface to notify about changed range values.
+     * Callback listener interface to notify About changed range values.
      *
      * @param <T> The Number type the RangeSeekBar has been declared with.
      * @author Stephan Tittel (stephan.tittel@kom.tu-darmstadt.de)

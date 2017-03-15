@@ -1,10 +1,8 @@
 package ua.pp.oped.aromateque.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,6 +16,7 @@ import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterCartList;
 import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.base_activities.GlobalDrawerActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.CartItem;
 import ua.pp.oped.aromateque.model.LongProduct;
@@ -25,15 +24,13 @@ import ua.pp.oped.aromateque.model.RawLongProduct;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.RetryableCallback;
 
-public class ActivityCart extends AppCompatActivity {
+public class ActivityCart extends GlobalDrawerActivity {
     private ArrayList<CartItem> cartItems;
     private TextView totalPrice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cart);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         totalPrice = (TextView) findViewById(R.id.price_total);
         final RecyclerView cartList = (RecyclerView) findViewById(R.id.cart_list);
@@ -83,6 +80,12 @@ public class ActivityCart extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_cart_top_layout;
+    }
+
     private boolean isDataReady(ArrayList<CartItem> cartItems) {
         for (int i = 0; i < cartItems.size(); i++) {
             if (cartItems.get(i).getProduct() == null) {
@@ -93,7 +96,6 @@ public class ActivityCart extends AppCompatActivity {
     }
 
     private void updateTotalPrice() {
-        //Recalc total price
         int updatedTotalPrice = 0;
         for (CartItem cartItem : cartItems) {
             updatedTotalPrice += Integer.parseInt(cartItem.getCartPrice());
@@ -120,4 +122,7 @@ public class ActivityCart extends AppCompatActivity {
         updateTotalPrice();
     }
 
+
 }
+
+

@@ -50,6 +50,20 @@
     <string name="in_total">Итого к оплате:</string>
     <string name="to_checkout">ОФОРМИТЬ ЗАКАЗ</string>
     <string name="cart">Корзина</string>
+    <string name="main_page">Главная</string>
+    <string name="callback">Обратная связь</string>
+    <string name="info">Информация</string>
+    <string name="title_activity_info">Информация</string>
+    <string name="title_activity_callback">Обратная связь</string>
+    <string name="about">О компании</string>
+    <string name="our_stores">Наши магазины</string>
+    <string name="payment_and_delivery">Оплата и доставка</string>
+    <string name="q_a">Вопрос - ответ</string>
+    <string name="call">Позвонить</string>
+    <string name="send_email">Отправить письмо</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

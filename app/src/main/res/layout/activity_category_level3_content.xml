@@ -8,7 +8,7 @@
     tools:context="ua.pp.oped.aromateque.activity.ActivityCategoryLevel3">
 
     <include
-        layout="@layout/appbar_global"
+        layout="@layout/global_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />

@@ -1,44 +1,37 @@
 package ua.pp.oped.aromateque.activity;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterSubCategoryView;
-import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 
 
-public class ActivityCategoryLevel3 extends CalligraphyActivity {
+public class ActivityCategoryLevel3 extends SearchAppbarActivity {
     private static final String TAG = "ActivityCategoryLevel3";
-    RecyclerView recyclerviewLevel3Categories;
-    ArrayList<Category> categories;
-    Resources res;
-    TextView cartCounter;
+    private RecyclerView recyclerviewLevel3Categories;
+    private ArrayList<Category> categories;
+    private Resources res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category_level3);
         res = getResources();
         int mainCategoryId = getIntent().getIntExtra("category_id", -1);
         final Category mainCategory = DatabaseHelper.getInstance(this).deserializeCategory(mainCategoryId);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mainCategory.getName());
-        cartCounter = (TextView) findViewById(R.id.cart_counter);
         recyclerviewLevel3Categories = (RecyclerView) findViewById(R.id.subcategories_recyclerview);
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerviewLevel3Categories.setAdapter(new AdapterSubCategoryView(ActivityCategoryLevel3.this, mainCategory, true));
@@ -70,28 +63,28 @@ public class ActivityCategoryLevel3 extends CalligraphyActivity {
     }
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_category_level3_top_layout;
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.left_to_center, R.anim.center_to_right);
     }
 
-    public void onCartClicked(View v) {
-        Intent intent = new Intent(this, ActivityCart.class);
-        this.startActivity(intent);
-    }
 
-    private void setupCart() {
-        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
-        if (cartQty == 0) {
-            cartCounter.setVisibility(View.GONE);
+    public void onAddToCartClicked(View v) {
+        int productId = (int) v.getTag();
+        if (!DatabaseHelper.getInstance(this).isInCart(productId)) {
+            DatabaseHelper.getInstance(this).addToCart(productId);
+            updateCartCounter();
+            Timber.d("Added to cart");
         } else {
-            cartCounter.setText(String.valueOf(cartQty));
+            Timber.d("Already in cart product id: " + productId);
         }
+        onCartClicked(null);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setupCart();
-    }
+
 }

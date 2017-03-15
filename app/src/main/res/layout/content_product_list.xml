@@ -7,7 +7,7 @@
     android:layout_below="@+id/appbar_layout"
     android:orientation="vertical"
     tools:context="ua.pp.oped.aromateque.activity.ActivityProductList"
-    tools:showIn="@layout/app_bar_product_list">
+    tools:showIn="@layout/activity_product_list_content">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list_recycler_view"

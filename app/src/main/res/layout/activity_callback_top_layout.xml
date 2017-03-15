@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_product_list"
+        layout="@layout/activity_callback_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -19,15 +19,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_product_list"
-        app:menu="@menu/activity_product_list_drawer" />
+        app:headerLayout="@layout/global_nav_header"
+        app:menu="@menu/global_drawer" />
 
-    <LinearLayout
-        android:id="@+id/product_list_right_drawer"
-        android:orientation="vertical"
-        android:layout_width="260dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:clickable="true"
-        android:onClick="onCloseClicked" />
 </android.support.v4.widget.DrawerLayout>

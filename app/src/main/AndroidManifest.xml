@@ -4,16 +4,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-feature
-        android:name="android.software.leanback"
-        android:required="false" />
+
 
     <application
         android:name=".AromatequeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AromatequeTheme.NoActionBar">
         <activity
             android:name=".activity.ActivityProductInfo"
@@ -34,9 +32,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -46,9 +42,17 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ActivityCart"
-            android:label="@string/cart"
             android:configChanges="keyboardHidden|orientation"
+            android:label="@string/cart"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ActivityInfo"
+            android:label="@string/title_activity_info"
+            android:theme="@style/AromatequeTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ActivityCallback"
+            android:label="@string/title_activity_callback"
+            android:theme="@style/AromatequeTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -110,13 +110,16 @@ public class FilterFragment extends Fragment {
         ((AdapterFilter) parameterRecyclerView.getAdapter()).clearActiveValuesLayout();
         parameterRecyclerView.setAdapter(null);
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState");
         AdapterFilter adapter = (AdapterFilter) parameterRecyclerView.getAdapter();
-        outState.putParcelableArrayList("active_filter_parameter_values", adapter.getActiveFilterParameterValues());
-        outState.putParcelableArrayList("filter_adapter_list", adapter.getFilterAdapterList());
+        if (adapter != null) {
+            outState.putParcelableArrayList("active_filter_parameter_values", adapter.getActiveFilterParameterValues());
+            outState.putParcelableArrayList("filter_adapter_list", adapter.getFilterAdapterList());
+        }
 
     }
 }

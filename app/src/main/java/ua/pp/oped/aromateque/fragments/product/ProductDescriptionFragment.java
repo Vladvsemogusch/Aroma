@@ -21,7 +21,6 @@ public class ProductDescriptionFragment extends Fragment {
     public static ProductDescriptionFragment newInstance(HashMap<String, String> attributes) {
         Bundle args = new Bundle();
         args.putSerializable("attributes", attributes);
-
         ProductDescriptionFragment fragment = new ProductDescriptionFragment();
         fragment.setArguments(args);
         return fragment;
@@ -45,7 +44,6 @@ public class ProductDescriptionFragment extends Fragment {
         String brandImgUrl = attributes.get("brand_img_url");
         brandImgUrl = brandImgUrl.replace("\\", "/");
         // DEBUG
-//        brandImgUrl = brandImgUrl.replace("http://localhost", BASE_URL);
         ImageLoaderWrapper.loadImage(getContext(), imgBrand, brandImgUrl);
         txtDescriptionTitle.setText(attributes.get("name"));
 //        txtDescriptionTitle.setText(String.format(getResources().getString(R.string.description_title), attributes.get("name")));

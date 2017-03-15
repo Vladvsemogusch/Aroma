@@ -174,6 +174,9 @@ public class AdapterFilter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 boolean handled = false;
                 String fromPrice;
                 String toPrice;
+                if (textView.getText() == "") {
+                    return true;
+                }
                 int enteredFromPrice = (int) Float.parseFloat(viewHolder.etFrom.getText().toString());
                 int enteredToPrice = (int) Float.parseFloat(viewHolder.etTo.getText().toString());
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {

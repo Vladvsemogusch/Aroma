@@ -4,17 +4,15 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,8 +25,8 @@ import java.util.ArrayList;
 import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterFilter;
 import ua.pp.oped.aromateque.AdapterProductList;
-import ua.pp.oped.aromateque.CalligraphyActivity;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragments.productlist.FilterFragment;
 import ua.pp.oped.aromateque.fragments.productlist.SortFragment;
@@ -38,8 +36,7 @@ import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.EmptyRecycleViewAdapter;
 import ua.pp.oped.aromateque.utility.Utility;
 
-public class ActivityProductList extends CalligraphyActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ActivityProductList extends SearchAppbarActivity {
     private static final String TAG = "ActivityProductList";
     public static final int SORT_TYPE_EXPENSIVE_FIRST = 199;
     public static final int SORT_TYPE_CHEAP_FIRST = 753;
@@ -60,12 +57,11 @@ public class ActivityProductList extends CalligraphyActivity
     private SortFragment sortFragment;
     private FilterFragment filterFragment;
     private DatabaseHelper dbHelper;
-    TextView cartCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_list);
+        setContentView(R.layout.activity_product_list_top_layout);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         dbHelper = DatabaseHelper.getInstance(this);
@@ -81,16 +77,8 @@ public class ActivityProductList extends CalligraphyActivity
                 onListTypeClicked(listTypeSetting);
             }
         });
-
         getSupportActionBar().setTitle(currentCategory.getName());
-        // Drawer setup
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
         cartCounter = (TextView) findViewById(R.id.cart_counter);
         sortTypeSmall = (TextView) findViewById(R.id.txt_sort_type_small);
         filteredAmountSmall = (TextView) findViewById(R.id.txt_filtered_amount_small);
@@ -112,7 +100,7 @@ public class ActivityProductList extends CalligraphyActivity
             public void onClick(View view) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 if (filterFragment.isAdded()) {
-                    //Log.d(TAG,"fragmentManager.getBackStackEntryCount() "+fragmentManager.getBackStackEntryCount());
+                    //Log.d(TAG,"fragmentManager.getBackStackEntryCount() " + fragmentManager.getBackStackEntryCount());
                     filterFragment.prepareForRemoval();
                     if (fragmentManager.getBackStackEntryCount() > 0) {
                         fragmentManager.popBackStack();
@@ -212,45 +200,6 @@ public class ActivityProductList extends CalligraphyActivity
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
     public void onListTypeClicked(View view) {
         // Saving here because onListTypeClicked(int viewId) called on startup, don't need to save there
         onListTypeClicked((Integer) view.getTag());
@@ -327,18 +276,18 @@ public class ActivityProductList extends CalligraphyActivity
         EventBus.getDefault().unregister(this);
     }
 
-    public void onCartClicked(View v) {
-        Intent intent = new Intent(this, ActivityCart.class);
-        this.startActivity(intent);
-    }
 
     public void onAddToCartClicked(View v) {
         int productId = (int) v.getTag();
+
+        Timber.d("ADD TO CART CLICKED");
         if (!dbHelper.isInCart(productId)) {
             dbHelper.addToCart(productId);
-            setupCart();
-            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.icon_cart_black));
+            updateCartCounter();
             ((AdapterProductList) productListRecyclerView.getAdapter()).updateCartItems(productId);
+            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.icon_cart_black));
+            Animation addToCartAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate_cart);
+            v.startAnimation(addToCartAnimation);
             Timber.d("Added to cart");
         } else {
             Intent intent = new Intent(this, ActivityCart.class);
@@ -348,22 +297,15 @@ public class ActivityProductList extends CalligraphyActivity
         //TODO Visuals
     }
 
-    private void setupCart() {
-        int cartQty = DatabaseHelper.getInstance(this).getCartQty();
-        if (cartQty == 0) {
-            cartCounter.setVisibility(View.GONE);
-        } else {
-            cartCounter.setText(String.valueOf(cartQty));
-        }
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        setupCart();
         productListRecyclerView.getAdapter().notifyDataSetChanged();
         if (productListRecyclerView.getAdapter() instanceof AdapterProductList) {
             ((AdapterProductList) productListRecyclerView.getAdapter()).updateCartItems();
         }
     }
+
+
 }
