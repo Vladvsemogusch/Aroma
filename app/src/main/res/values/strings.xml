@@ -19,7 +19,7 @@
     <string name="buy">КУПИТЬ</string>
     <string name="rating_20">НЕ ОЧЕНЬ</string>
     <string name="rating_40">ТАК СЕБЕ</string>
-    <string name="rating_60">НЕ ПЛОХОЙ</string>
+    <string name="rating_60">НЕПЛОХОЙ</string>
     <string name="rating_80">ПОНРАВИЛСЯ</string>
     <string name="rating_100">В ВОСТОРГЕ</string>
     <string name="no_reviews">Отзывы отсутствуют.</string>
@@ -55,15 +55,20 @@
     <string name="info">Информация</string>
     <string name="title_activity_info">Информация</string>
     <string name="title_activity_callback">Обратная связь</string>
+    <string name="title_activity_make_review">Отзыв</string>
     <string name="about">О компании</string>
     <string name="our_stores">Наши магазины</string>
     <string name="payment_and_delivery">Оплата и доставка</string>
     <string name="q_a">Вопрос - ответ</string>
     <string name="call">Позвонить</string>
     <string name="send_email">Отправить письмо</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="make_review">НАПИСАТЬ ОТЗЫВ</string>
+    <string name="no_email_clients">Не найдены приложения для отправки электронной почты.</string>
+    <string name="review_1">Ваши впечатления</string>
+    <string name="name">Имя</string>
+    <string name="email">E-mail</string>
+    <string name="review_2">Опишите свое мнение</string>
+    <string name="send">ОТПРАВИТЬ</string>
 
 
 </resources>

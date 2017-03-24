@@ -30,7 +30,7 @@ import ua.pp.oped.aromateque.utility.EndlessRecyclerViewScrollListener;
 import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 
 public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int TYPE_HEADER = 0;
+    public static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_FOOTER = 2;
     private static final int TYPE_CHILD_ITEM = 3;
@@ -166,96 +166,68 @@ public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void fillHeader(HeaderViewHolder headerViewHolder) {
         final ViewPager viewpagerBanners = headerViewHolder.viewpager;
-        class ImgPagerAdapter extends PagerAdapter {
-            private List<String> productImgUrlList;
-
-            private ImgPagerAdapter() {
-                productImgUrlList = new ArrayList<>();
-                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/m/f/mfk.jpg");
-                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/e/t/etro_shanthung.jpg");
-                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/j/h/jhg1.jpg");
-                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/4/-/4-01.jpg");
-                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/m/h/mh_1.jpg");
-                productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/f/i/file_5.jpg");
-            }
-
-            @Override
-            public int getCount() {
-                return productImgUrlList.size();
-            }
-
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return view == object;
-            }
-
-            @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-                ImageView imgView = (ImageView) layoutInflater.inflate(R.layout.banner_item, container, false);
-                ImageLoaderWrapper.loadImage(context, imgView, productImgUrlList.get(position));
-                container.addView(imgView);
-                return imgView;
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView((ImageView) object);
-            }
+        if (headerViewHolder.imgPagerAdapter == null) {
+            headerViewHolder.imgPagerAdapter = new ImgPagerAdapter();
+            viewpagerBanners.setAdapter(headerViewHolder.imgPagerAdapter);
         }
-        viewpagerBanners.setAdapter(new ImgPagerAdapter());
         CirclePageIndicator viewPagerIndicator = headerViewHolder.circlePageIndicator;
         viewPagerIndicator.setViewPager(viewpagerBanners);
-
-        HorizontalGridView bestsellersView = headerViewHolder.bestsellersView;
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        bestsellersView.setLayoutManager(layoutManager);
-        ArrayList<ShortProduct> bestsellersList = new ArrayList<>();
-        final ShortProduct prod = new ShortProduct();
-        prod.setBrand("Comme des Garcons Accessories");
-        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
-        prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
-        prod.setName("Silver Wallet");
-        //prod.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
-        prod.setOldPrice("13210");
-        prod.setPrice("12310");
-        final ShortProduct prod2 = new ShortProduct();
-        prod2.setBrand("Sensai");
-        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
-        prod2.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
-        prod2.setName("SILKY DESIGN ROUGE");
-        //prod2.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
-        prod2.setOldPrice("13210");
-        prod2.setPrice("12310");
-        final ShortProduct prod3 = new ShortProduct();
-        prod3.setBrand("Sensai");
-        //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
-        prod3.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
-        prod3.setName("BODY FIRMING EMULSION CELLULAR PERFORMANCE");
-        prod3.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
-        prod3.setOldPrice("13210");
-        prod3.setPrice("12310");
-        prod.setId(1425);
-        prod2.setId(3519);
-        prod3.setId(3518);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod3);
+        if (headerViewHolder.layoutManager == null) {
+            headerViewHolder.layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            headerViewHolder.bestsellersView.setLayoutManager(headerViewHolder.layoutManager);
+        }
+        if (headerViewHolder.bestsellersList == null) {
+            headerViewHolder.bestsellersList = new ArrayList<>();
+            ShortProduct prod = new ShortProduct();
+            prod.setBrand("Comme des Garcons Accessories");
+            //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+            prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+            prod.setName("Silver Wallet");
+            //prod.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
+            prod.setOldPrice("13210");
+            prod.setPrice("12310");
+            ShortProduct prod2 = new ShortProduct();
+            prod2.setBrand("Sensai");
+            //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+            prod2.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+            prod2.setName("SILKY DESIGN ROUGE");
+            //prod2.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
+            prod2.setOldPrice("13210");
+            prod2.setPrice("12310");
+            ShortProduct prod3 = new ShortProduct();
+            prod3.setBrand("Sensai");
+            //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
+            prod3.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/small_image/124x222/9df78eab33525d08d6e5fb8d27136e95/b/o/bohemes-50ml.jpg");
+            prod3.setName("BODY FIRMING EMULSION CELLULAR PERFORMANCE");
+            prod3.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
+            prod3.setOldPrice("13210");
+            prod3.setPrice("12310");
+            prod.setId(1331);
+            prod2.setId(3519);
+            prod3.setId(3518);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod2);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod2);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod2);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod2);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod2);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod2);
+            headerViewHolder.bestsellersList.add(prod);
+            headerViewHolder.bestsellersList.add(prod3);
+        }
         //final Bitmap filledHeart = IconSheet.getBitmap(132, 108, 45, 41);
-        final AdapterBestsellersView adapter = new AdapterBestsellersView(bestsellersList, context);
-        bestsellersView.setAdapter(adapter);
-        bestsellersView.scrollToPosition(3);
-        bestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager, adapter));
+        if (headerViewHolder.adapterBestsellersView == null) {
+            headerViewHolder.adapterBestsellersView = new AdapterBestsellersView(headerViewHolder.bestsellersList, context);
+            headerViewHolder.bestsellersView.setAdapter(headerViewHolder.adapterBestsellersView);
+            headerViewHolder.bestsellersView.addOnScrollListener(new EndlessRecyclerViewScrollListener(headerViewHolder.layoutManager, headerViewHolder.adapterBestsellersView));
+        }
+//        headerViewHolder.bestsellersView.scrollToPosition(3);
+
     }
 
     private class MainItemViewHolder extends RecyclerView.ViewHolder {
@@ -273,6 +245,10 @@ public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        ImgPagerAdapter imgPagerAdapter;
+        LinearLayoutManager layoutManager;
+        AdapterBestsellersView adapterBestsellersView;
+        ArrayList<ShortProduct> bestsellersList;
         ViewPager viewpager;
         CirclePageIndicator circlePageIndicator;
         HorizontalGridView bestsellersView;
@@ -306,6 +282,43 @@ public class AdapterCategoryView extends RecyclerView.Adapter<RecyclerView.ViewH
             super(itemView);
             childLayout = (RelativeLayout) itemView.findViewById(R.id.child_layout);
             txtCategoryName = (TextView) itemView.findViewById(R.id.txt_category);
+        }
+    }
+
+    private class ImgPagerAdapter extends PagerAdapter {
+        private List<String> productImgUrlList;
+
+        private ImgPagerAdapter() {
+            productImgUrlList = new ArrayList<>();
+            productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/m/f/mfk.jpg");
+            productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/e/t/etro_shanthung.jpg");
+            productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/j/h/jhg1.jpg");
+            productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/4/-/4-01.jpg");
+            productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/m/h/mh_1.jpg");
+            productImgUrlList.add("http://aromateque.com.ua/media/adminforms/homepage_slider_b1/cache/1/cache/5e06319eda06f020e43594a9c230972d/f/i/file_5.jpg");
+        }
+
+        @Override
+        public int getCount() {
+            return productImgUrlList.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            ImageView imgView = (ImageView) layoutInflater.inflate(R.layout.banner_item, container, false);
+            ImageLoaderWrapper.loadImage(context, imgView, productImgUrlList.get(position));
+            container.addView(imgView);
+            return imgView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((ImageView) object);
         }
     }
 }

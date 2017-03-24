@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.base_activities;
+package ua.pp.oped.aromateque.base_activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +28,7 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
     protected EditTextBackEvent edittextSearch;
     protected ImageButton btnSearch;
     protected InputMethodManager inputMethodManager;
+    protected boolean singleEditText = true;
 
 
     @Override
@@ -43,10 +44,9 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
         edittextSearch = (EditTextBackEvent) findViewById(R.id.edittext_search);
         edittextSearch.setOnEditTextImeBackListener(new EditTextBackEvent.EditTextImeBackListener() {
             @Override
-            public void onImeBack(EditTextBackEvent ctrl, String text) {
-                Timber.d("onImeBack()");
-                if (ctrl.isFocused()) {
-                    ctrl.clearFocus();
+            public void onImeBack(EditTextBackEvent editText, String text) {
+                if (editText.isFocused()) {
+                    editText.clearFocus();
                 }
             }
         });
@@ -71,9 +71,9 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
         edittextSearch.setOnEditorActionListener(onEditorActionListener);
         edittextSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
+            public void onFocusChange(View view, boolean hasFocus) {
                 Timber.d("onFocusChange()");
-                if (!view.isFocused()) {
+                if (!hasFocus) {
                     Timber.d("!view.isFocused(), closing keyboard");
                     inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
@@ -94,17 +94,23 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (v instanceof EditText) {
-                Rect outRect = new Rect();
-                v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
-                    v.clearFocus();
+        if (singleEditText) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                View v = getCurrentFocus();
+                if (v instanceof EditText) {
+                    Rect outRect = new Rect();
+                    v.getGlobalVisibleRect(outRect);
+                    if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                        v.clearFocus();
+                    }
                 }
             }
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    public void setSingleEditText(boolean singleEditText) {
+        this.singleEditText = singleEditText;
     }
 
     protected void updateCartCounter() {
@@ -132,5 +138,6 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
         Timber.d("onResume()");
         updateCartCounter();
     }
+
 
 }

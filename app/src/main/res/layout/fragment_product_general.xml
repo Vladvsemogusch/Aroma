@@ -14,7 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/text_side_margin"
+        android:layout_marginEnd="@dimen/text_side_margin">
 
         <FrameLayout
             android:layout_width="250dp"
@@ -55,8 +57,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/review_date"
-            android:textSize="17sp" />
+            android:textColor="@color/dark_gray"
+            android:textSize="17sp"
+            android:background="@color/beige_light" />
 
         <TextView
             android:id="@+id/product_discounted_price"
@@ -65,7 +68,8 @@
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:background="@color/beige_light" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -169,7 +173,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="9dp"
-            android:orientation="horizontal">
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:orientation="horizontal"
+            android:background="@color/beige_light">
 
             <LinearLayout
                 android:id="@+id/container_top_notes_list"
@@ -203,7 +210,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#F0F0F0" />
+                android:background="@color/colorAccent" />
 
             <LinearLayout
                 android:id="@+id/container_middle_notes_list"
@@ -233,7 +240,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#F0F0F0" />
+                android:background="@color/colorAccent" />
 
             <LinearLayout
                 android:id="@+id/container_base_notes_list"
@@ -276,9 +283,7 @@
             android:id="@+id/txt_short_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp" />
+            android:layout_marginBottom="3dp" />
 
         <View
             android:layout_width="0dp"

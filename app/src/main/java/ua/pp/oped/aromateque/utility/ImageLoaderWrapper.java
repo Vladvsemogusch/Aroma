@@ -24,7 +24,7 @@ public class ImageLoaderWrapper {
         final ImageView.ScaleType curScaleType = imageView.getScaleType();
         imageView.setScaleType(ImageView.ScaleType.CENTER);
         Bitmap bitmapLoading = BitmapFactory.decodeResource(resources, R.drawable.loading_spinner_better2);
-        bitmapLoading = Bitmap.createScaledBitmap(bitmapLoading, Utility.dpToPx(45), Utility.dpToPx(45), false);
+        bitmapLoading = Bitmap.createScaledBitmap(bitmapLoading, Utility.dpToPx(resources, 45), Utility.dpToPx(resources, 45), false);
         Drawable loadingDrawable = new BitmapDrawable(resources, bitmapLoading);
         Animation animation = new RotateAnimation(0.0f, 360.0f, Animation.RELATIVE_TO_SELF,
                 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);

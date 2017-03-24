@@ -11,7 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,11 +23,11 @@ import retrofit2.Response;
 import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
+import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
-import ua.pp.oped.aromateque.fragments.product.ProductDescriptionFragment;
-import ua.pp.oped.aromateque.fragments.product.ProductGeneralFragment;
-import ua.pp.oped.aromateque.fragments.product.ProductReviewsFragment;
+import ua.pp.oped.aromateque.fragment.product.ProductDescriptionFragment;
+import ua.pp.oped.aromateque.fragment.product.ProductGeneralFragment;
+import ua.pp.oped.aromateque.fragment.product.ProductReviewsFragment;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.LongProduct;
 import ua.pp.oped.aromateque.model.RawLongProduct;
@@ -37,7 +37,6 @@ import ua.pp.oped.aromateque.utility.RetryableCallback;
 
 public class ActivityProductInfo extends SearchAppbarActivity {
     private int productId;
-    private Toolbar toolbar;
     private MagentoRestService api;
     private LongProduct product;
     private Category categoryAll;
@@ -59,6 +58,7 @@ public class ActivityProductInfo extends SearchAppbarActivity {
         }
         productId = getIntent().getIntExtra("product_id", -1);
         setupFooter();
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //Working with RestAPI
         api = AromatequeApplication.getApiMagento();
 
@@ -76,7 +76,7 @@ public class ActivityProductInfo extends SearchAppbarActivity {
                 }
 
                 public void onFinalFailure(Call<RawLongProduct> call, Throwable t) {
-                    Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
+                    Snackbar.make(drawerLayout, t.toString(), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             });
@@ -96,12 +96,16 @@ public class ActivityProductInfo extends SearchAppbarActivity {
             }
 
             public void onFinalFailure(Call<Category> call, Throwable t) {
-                Snackbar.make(toolbar, t.toString(), Snackbar.LENGTH_LONG)
+                Snackbar.make(drawerLayout, t.toString(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
 
+    }
+
+    protected int getLayoutId() {
+        return R.layout.activity_product_info_top_layout;
     }
 
     private void setupFooter() {
@@ -129,26 +133,6 @@ public class ActivityProductInfo extends SearchAppbarActivity {
         btnToCart.setImageBitmap(BitmapFactory.decodeResource(res, R.drawable.cart));
     }
 
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (drawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        drawerToggle.syncState();
-//    }
-//
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        drawerToggle.onConfigurationChanged(newConfig);
-//    }
 
     //Dealing with Navigation Drawer content
 //    void fillDrawer() {

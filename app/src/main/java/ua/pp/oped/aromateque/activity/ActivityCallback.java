@@ -3,7 +3,6 @@ package ua.pp.oped.aromateque.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,7 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
+import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.utility.Constants;
 
 
@@ -23,8 +22,6 @@ public class ActivityCallback extends SearchAppbarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         ListView infoListView = (ListView) findViewById(R.id.info_listview);
         final String[] titles = {getResources().getString(R.string.call),
                 getResources().getString(R.string.send_email)};
@@ -69,7 +66,7 @@ public class ActivityCallback extends SearchAppbarActivity {
                 Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.no_email_clients), Toast.LENGTH_SHORT).show();
         }
     }
 

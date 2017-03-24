@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txt_no_reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="@string/no_reviews" />
+
+    <ListView
+        android:id="@+id/reviews_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_no_reviews"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:weightSum="1">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <Button
+            android:id="@+id/btn_make_review"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_gravity="end"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/border_shape"
+            android:text="@string/make_review"
+            android:textColor="@color/colorAccent"
+            android:textSize="17sp" />
+    </LinearLayout>
+</RelativeLayout>

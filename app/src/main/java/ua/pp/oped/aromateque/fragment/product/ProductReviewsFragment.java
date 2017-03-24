@@ -1,7 +1,8 @@
-package ua.pp.oped.aromateque.fragments.product;
+package ua.pp.oped.aromateque.fragment.product;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.activity.ActivityMakeReview;
 import ua.pp.oped.aromateque.model.Review;
 
 public class ProductReviewsFragment extends Fragment {
@@ -73,19 +76,26 @@ public class ProductReviewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.product_reviews, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_reviews, container, false);
         ListView reviewsListview = (ListView) view.findViewById(R.id.reviews_listview);
         TextView noReviews = (TextView) view.findViewById(R.id.txt_no_reviews);
         if (reviews.size() != 0) {
             noReviews.setVisibility(View.GONE);
         }
         reviewsListview.setAdapter(new ReviewArrayAdapter(getContext(), reviews));
+        Button btnMakeReview = (Button) view.findViewById(R.id.btn_make_review);
+        btnMakeReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ActivityMakeReview.class);
+                startActivity(intent);
+            }
+        });
         return view;
-
     }
 }
 
-class ReviewArrayAdapter extends ArrayAdapter<String> {
+class ReviewArrayAdapter extends ArrayAdapter<Review> {
     private final Context context;
     private final ArrayList<Review> reviews;
     private final Resources res;

@@ -16,12 +16,11 @@ import timber.log.Timber;
 import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.CalligraphyActivity;
+import ua.pp.oped.aromateque.base_activity.CalligraphyActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.IconSheet;
 import ua.pp.oped.aromateque.utility.RetryableCallback;
-import ua.pp.oped.aromateque.utility.Utility;
 
 import static ua.pp.oped.aromateque.utility.Constants.BASE_URL;
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
@@ -36,8 +35,6 @@ public class ActivityLaunch extends CalligraphyActivity {
         setContentView(R.layout.activity_launch);
         // Initialize IconSheet
         IconSheet.initialize(BitmapFactory.decodeResource(getResources(), R.drawable.icon_sheet));
-        // Initialize Utility
-        Utility.initialize(getResources());
         // Initialize ImageLoader
         Picasso.Builder picassoBuilder = new Picasso.Builder(this);
         picassoBuilder.requestTransformer(new Picasso.RequestTransformer() {
@@ -139,7 +136,7 @@ public class ActivityLaunch extends CalligraphyActivity {
     }
 
     private void startNextActivity() {
-        startActivity(new Intent(this, ActivityMainPage.class));
+        startActivity(new Intent(this, ActivityMakeReview.class));
         finish();
     }
 

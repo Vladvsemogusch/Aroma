@@ -17,11 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Utility {
-    private static Resources resources;
 
-    public static void initialize(Resources res) {
-        resources = res;
-    }
 
     public static Spanned compatFromHtml(String input) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -66,8 +62,8 @@ public class Utility {
     }
 
 
-    public static int dpToPx(int dp) {
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+    public static int dpToPx(Resources res, int dp) {
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, res.getDisplayMetrics());
         return Math.round(px);
     }
 

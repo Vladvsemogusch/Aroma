@@ -152,7 +152,8 @@
             android:gravity="center"
             android:onClick="onCloseClicked"
             android:text="@string/close"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/apply"
@@ -163,6 +164,7 @@
             android:gravity="center"
             android:onClick="onCloseClicked"
             android:text="@string/apply"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
     </LinearLayout>
 </RelativeLayout>

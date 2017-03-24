@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.fragments.product;
+package ua.pp.oped.aromateque.fragment.product;
 
 
 import android.os.Bundle;
@@ -37,7 +37,7 @@ public class ProductDescriptionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root;
-        root = inflater.inflate(R.layout.product_description, container, false);
+        root = inflater.inflate(R.layout.fragment_product_description, container, false);
         TextView txtDescriptionTitle = (TextView) root.findViewById(R.id.txt_description_title);
         TextView txtDescription = (TextView) root.findViewById(R.id.txt_description);
         ImageView imgBrand = (ImageView) root.findViewById(R.id.img_brand);

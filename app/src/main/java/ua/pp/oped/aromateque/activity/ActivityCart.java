@@ -3,6 +3,8 @@ package ua.pp.oped.aromateque.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -16,7 +18,7 @@ import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterCartList;
 import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.GlobalDrawerActivity;
+import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.CartItem;
 import ua.pp.oped.aromateque.model.LongProduct;
@@ -24,7 +26,7 @@ import ua.pp.oped.aromateque.model.RawLongProduct;
 import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.RetryableCallback;
 
-public class ActivityCart extends GlobalDrawerActivity {
+public class ActivityCart extends SearchAppbarActivity {
     private ArrayList<CartItem> cartItems;
     private TextView totalPrice;
 
@@ -35,7 +37,8 @@ public class ActivityCart extends GlobalDrawerActivity {
         totalPrice = (TextView) findViewById(R.id.price_total);
         final RecyclerView cartList = (RecyclerView) findViewById(R.id.cart_list);
         cartList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-
+        FrameLayout cartBtnWrapper = (FrameLayout) findViewById(R.id.cart_btn_wrapper);
+        cartBtnWrapper.setVisibility(View.GONE);
         // In case responses will be received in random order we need to ensure needed order is retained
         cartItems = db.getCart();
         for (int i = 0; i < cartItems.size(); i++) {

@@ -14,7 +14,7 @@ import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterCategoryView;
 import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
+import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
@@ -49,7 +49,7 @@ public class ActivityMainPage extends SearchAppbarActivity {
         recyclerviewCategories.setLayoutManager(layoutManager);
         //recyclerviewCategories.setAdapter(new EmptyRecycleViewAdapter());
         // Because no heavy duty on this list disable removing offscreen views
-        recyclerviewCategories.setItemViewCacheSize(10);
+//        recyclerviewCategories.setItemViewCacheSize(10);
         //Get categories from DB and put to new adapter
         categoryAll = DatabaseHelper.getInstance(this).deserializeCategory(CATEGORY_ALL_ID);
         recyclerviewCategories.setAdapter(new AdapterCategoryView(this, categoryAll.getChildren(), recyclerviewCategories));

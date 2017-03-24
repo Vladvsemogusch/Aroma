@@ -13,14 +13,13 @@
         android:id="@+id/txt_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="5dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/text_side_margin"
+        android:layout_marginStart="@dimen/text_side_margin"
         android:paddingBottom="7dp"
         android:paddingTop="7dp"
-        android:layout_alignParentStart="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:textSize="15sp"
-        android:layout_centerVertical="true" />
+        android:textSize="15sp" />
 
 </RelativeLayout>
 

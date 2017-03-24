@@ -9,6 +9,126 @@
 
     <include layout="@layout/global_appbar" />
 
-    <include layout="@layout/content_product_list" />
+    <LinearLayout
+        android:id="@+id/content_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="ua.pp.oped.aromateque.activity.ActivityProductList"
+        tools:showIn="@layout/activity_product_list_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/product_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/main" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <RelativeLayout
+                android:id="@+id/sort_by_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:clickable="true"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/sort_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/sort_button_accent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/sort_image"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_sort_by"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center"
+                        android:text="@string/sort_title"
+                        android:textAllCaps="true" />
+
+                    <TextView
+                        android:id="@+id/txt_sort_type_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/not_selected"
+                        android:textAllCaps="true"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/main" />
+
+            <RelativeLayout
+                android:id="@+id/filter_by_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:clickable="true"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/filter_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/filter_button_accent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/filter_by"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center"
+                        android:text="@string/filter"
+                        android:textAllCaps="true" />
+
+                    <TextView
+                        android:id="@+id/txt_filtered_amount_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/not_selected"
+                        android:textAllCaps="true"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
 
 </LinearLayout>

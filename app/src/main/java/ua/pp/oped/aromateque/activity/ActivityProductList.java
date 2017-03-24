@@ -1,14 +1,13 @@
 package ua.pp.oped.aromateque.activity;
 
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -26,10 +25,10 @@ import timber.log.Timber;
 import ua.pp.oped.aromateque.AdapterFilter;
 import ua.pp.oped.aromateque.AdapterProductList;
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
+import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
-import ua.pp.oped.aromateque.fragments.productlist.FilterFragment;
-import ua.pp.oped.aromateque.fragments.productlist.SortFragment;
+import ua.pp.oped.aromateque.fragment.productlist.FilterFragment;
+import ua.pp.oped.aromateque.fragment.productlist.SortFragment;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.model.FilterParameterValue;
 import ua.pp.oped.aromateque.model.ShortProduct;
@@ -50,10 +49,10 @@ public class ActivityProductList extends SearchAppbarActivity {
     private RecyclerView productListRecyclerView;
     private GridLayoutManager gridLayoutManager;
     private ArrayList<ShortProduct> bestsellersList;
-    private DrawerLayout drawer;
     private TextView sortTypeSmall;
     private TextView filteredAmountSmall;
     private SharedPreferences settings;
+    private FragmentManager fragmentManager;
     private SortFragment sortFragment;
     private FilterFragment filterFragment;
     private DatabaseHelper dbHelper;
@@ -61,9 +60,6 @@ public class ActivityProductList extends SearchAppbarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_list_top_layout);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         dbHelper = DatabaseHelper.getInstance(this);
         int currentCategoryId = getIntent().getIntExtra("category_id", 16); //TODO change after REST implemented
         Category currentCategory = dbHelper.deserializeCategory(currentCategoryId);
@@ -92,7 +88,7 @@ public class ActivityProductList extends SearchAppbarActivity {
         final LinearLayout rightDrawerLayout = (LinearLayout) findViewById(R.id.product_list_right_drawer);
         bestsellersList = new ArrayList<>();
         fillProductList();
-        final android.app.FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager = getFragmentManager();
         sortFragment = new SortFragment();
         filterFragment = new FilterFragment();
         sortByButton.setOnClickListener(new View.OnClickListener() {
@@ -137,9 +133,15 @@ public class ActivityProductList extends SearchAppbarActivity {
                     transaction.commit();
                 }
                 drawer.openDrawer(GravityCompat.END);
-
             }
         });
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.product_list_right_drawer, filterFragment);
+        transaction.commit();
+    }
+
+    protected int getLayoutId() {
+        return R.layout.activity_product_list_top_layout;
     }
 
     private void fillProductList() {
@@ -190,10 +192,14 @@ public class ActivityProductList extends SearchAppbarActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START) || drawer.isDrawerOpen(GravityCompat.END)) {
             drawer.closeDrawers();
         } else {
+            //Disregard fragment backstack and close activity
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(0);
+                fragmentManager.popBackStackImmediate(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
             super.onBackPressed();
             overridePendingTransition(R.anim.left_to_center, R.anim.center_to_right);
         }

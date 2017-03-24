@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
-
     <application
         android:name=".AromatequeApplication"
         android:allowBackup="true"
@@ -16,10 +14,12 @@
         <activity
             android:name=".activity.ActivityProductInfo"
             android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ActivityMainPage"
             android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ActivityCategoryLevel3"
@@ -32,6 +32,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -44,15 +45,23 @@
             android:name=".activity.ActivityCart"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/cart"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ActivityInfo"
             android:label="@string/title_activity_info"
+            android:launchMode="singleTask"
             android:theme="@style/AromatequeTheme.NoActionBar" />
         <activity
             android:name=".activity.ActivityCallback"
             android:label="@string/title_activity_callback"
-            android:theme="@style/AromatequeTheme.NoActionBar"></activity>
+            android:launchMode="singleTask"
+            android:theme="@style/AromatequeTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ActivityMakeReview"
+            android:label="@string/title_activity_make_review"
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.ActivityCheckout"></activity>
     </application>
 
 </manifest>

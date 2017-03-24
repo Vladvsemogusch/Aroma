@@ -38,7 +38,7 @@ public class EditTextBackEvent extends AppCompatEditText {
     }
 
     public interface EditTextImeBackListener {
-        public abstract void onImeBack(EditTextBackEvent ctrl, String text);
+        void onImeBack(EditTextBackEvent editText, String text);
     }
 
 }

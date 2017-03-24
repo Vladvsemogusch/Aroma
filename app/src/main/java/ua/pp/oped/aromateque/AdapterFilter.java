@@ -43,6 +43,7 @@ public class AdapterFilter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     final static private int headerOffset = 1;
     private ParameterValueViewOnClickListener parameterValueViewOnClickListener;
     private Context context;
+    private InputMethodManager inputMethodManager;
 
     public AdapterFilter(Context context, List<EntityIdName> filterParameters, RecyclerView recyclerView) {
         layoutInflater = LayoutInflater.from(context);
@@ -54,6 +55,7 @@ public class AdapterFilter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         activeValueViewRows = new ArrayList<>();
         activeValueViewRows.add(new ArrayList<View>());
         parameterValueViewOnClickListener = new ParameterValueViewOnClickListener();
+        inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
 
@@ -168,18 +170,41 @@ public class AdapterFilter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         };
         viewHolder.priceRangeBar.setOnRangeSeekBarChangeListener(onRangeSeekBarChangeListener);
+
+        class CustomOnFocusChangeListener implements View.OnFocusChangeListener {
+            boolean nextClicked = false;
+
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    ((EditText) view).setText("");
+                }
+                if (!hasFocus) {
+                    if (!nextClicked) {
+                        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        nextClicked = false;
+                    }
+                }
+            }
+        }
+
+
+        final CustomOnFocusChangeListener onFocusChangeListener = new CustomOnFocusChangeListener();
+        viewHolder.etFrom.setOnFocusChangeListener(onFocusChangeListener);
+        viewHolder.etTo.setOnFocusChangeListener(onFocusChangeListener);
         TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 boolean handled = false;
                 String fromPrice;
                 String toPrice;
-                if (textView.getText() == "") {
+                if (textView.getText().toString().equals("")) {
                     return true;
                 }
                 int enteredFromPrice = (int) Float.parseFloat(viewHolder.etFrom.getText().toString());
                 int enteredToPrice = (int) Float.parseFloat(viewHolder.etTo.getText().toString());
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    onFocusChangeListener.nextClicked = true;
                     if (enteredFromPrice < minPrice) {
                         enteredFromPrice = minPrice;
                     } else if (enteredFromPrice > maxPrice) {
@@ -215,16 +240,6 @@ public class AdapterFilter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         };
         viewHolder.etFrom.setOnEditorActionListener(editorActionListener);
         viewHolder.etTo.setOnEditorActionListener(editorActionListener);
-        View.OnFocusChangeListener onFocusChangeListener = new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    ((EditText) view).setText("");
-                }
-            }
-        };
-        viewHolder.etFrom.setOnFocusChangeListener(onFocusChangeListener);
-        viewHolder.etTo.setOnFocusChangeListener(onFocusChangeListener);
 
     }
 

@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.fragments.productlist;
+package ua.pp.oped.aromateque.fragment.productlist;
 
 import android.app.Fragment;
 import android.content.Context;

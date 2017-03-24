@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.fragments.product;
+package ua.pp.oped.aromateque.fragment.product;
 
 
 import android.content.Context;
@@ -59,7 +59,7 @@ public class ProductGeneralFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
-        view = inflater.inflate(R.layout.product_general, container, false);
+        view = inflater.inflate(R.layout.fragment_product_general, container, false);
         Resources res = getResources();
         ScrollView productScrollviewMain = (ScrollView) view.findViewById(R.id.product_scrollview_main);
         productScrollviewMain.setForegroundGravity(Gravity.END);

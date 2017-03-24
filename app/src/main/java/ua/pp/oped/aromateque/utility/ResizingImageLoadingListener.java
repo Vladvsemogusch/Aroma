@@ -35,7 +35,8 @@ public class ResizingImageLoadingListener implements ImageLoadingListener {
         if (newHeight == 0) {
             layoutParams.height = (int) Math.round(layoutParams.height * 1);
         } else {
-            layoutParams.height = Utility.dpToPx(newHeight);
+            //Not using this class
+//            layoutParams.height = Utility.dpToPx(newHeight);
         }
         viewToResize.setLayoutParams(layoutParams);
         Log.d("IMAGEVIEW", "Reduced size of ImageView");

@@ -1,4 +1,4 @@
-package ua.pp.oped.aromateque.base_activities;
+package ua.pp.oped.aromateque.base_activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,8 +21,8 @@ import ua.pp.oped.aromateque.activity.ActivityInfo;
 import ua.pp.oped.aromateque.activity.ActivityMainPage;
 
 public class GlobalDrawerActivity extends CalligraphyActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawer;
-    private CustomToggle toggle;
+    protected DrawerLayout drawer;
+    protected CustomToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

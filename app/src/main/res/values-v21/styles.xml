@@ -3,7 +3,7 @@
 
     <style name="AromatequeTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimaryAromateque</item>
-        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColor">@color/main</item>

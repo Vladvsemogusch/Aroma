@@ -72,18 +72,26 @@ public class AdapterQA extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof MainItemViewHolder) {
+            final MainItemViewHolder mainItemViewHolder = (MainItemViewHolder) viewHolder;
             InfoMainItem currentInfoItem = (InfoMainItem) adapterList.get(position);
+            if (adapterList.size() > position + 1 && adapterList.get(position + 1) instanceof InfoChildItem) {
+                mainItemViewHolder.setExtended(true);
+                mainItemViewHolder.imgArrow.setRotation(180);
+            } else {
+                mainItemViewHolder.setExtended(false);
+                mainItemViewHolder.imgArrow.setRotation(0);
+            }
             final String question = currentInfoItem.getText();
             final InfoItem answerInfoItem = questionAnswerMap.get(currentInfoItem);
-            ((MainItemViewHolder) viewHolder).txtCategoryName.setText(question);
-            ((MainItemViewHolder) viewHolder).mainItemLayout.setOnClickListener(new View.OnClickListener() {
+            mainItemViewHolder.txtCategoryName.setText(question);
+            mainItemViewHolder.mainItemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     final int positionInAdapter = viewHolder.getAdapterPosition();
-                    if (!((MainItemViewHolder) viewHolder).isExtended) {
+                    if (!mainItemViewHolder.isExtended()) {
                         adapterList.add(positionInAdapter + 1, answerInfoItem);
                         AdapterQA.this.notifyItemRangeInserted(positionInAdapter + 1, 1);
-                        ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", 0, -180f)
+                        ObjectAnimator.ofFloat(mainItemViewHolder.imgArrow, "rotation", 0, -180f)
                                 .setDuration(400)
                                 .start();
                         //Smooth scroll to last of just added child categories
@@ -94,14 +102,14 @@ public class AdapterQA extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         }, recyclerView.getItemAnimator().getRemoveDuration());
                         //recyclerView.smoothScrollToPosition(viewHolder.getAdapterPosition() + category.getChildrenIds().size());
-                        ((MainItemViewHolder) viewHolder).isExtended = true;
+                        mainItemViewHolder.setExtended(true);
                     } else {
                         adapterList.subList(positionInAdapter + 1, positionInAdapter + 2).clear();
                         AdapterQA.this.notifyItemRangeRemoved(positionInAdapter + 1, 1);
-                        ObjectAnimator.ofFloat(((MainItemViewHolder) viewHolder).imgArrow, "rotation", -180f, 0)
+                        ObjectAnimator.ofFloat(mainItemViewHolder.imgArrow, "rotation", -180f, 0)
                                 .setDuration(400)
                                 .start();
-                        ((MainItemViewHolder) viewHolder).isExtended = false;
+                        mainItemViewHolder.setExtended(false);
                     }
                 }
             });
@@ -130,13 +138,21 @@ public class AdapterQA extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView txtCategoryName;
         ImageView imgArrow;
         RelativeLayout mainItemLayout;
-        boolean isExtended = false;
+        private boolean isExtended;
 
         MainItemViewHolder(View itemView) {
             super(itemView);
             txtCategoryName = (TextView) itemView.findViewById(R.id.txt_category);
             imgArrow = (ImageView) itemView.findViewById(R.id.category_list_arrow);
             mainItemLayout = (RelativeLayout) itemView.findViewById(R.id.category_mainitem_layout);
+        }
+
+        boolean isExtended() {
+            return isExtended;
+        }
+
+        void setExtended(boolean extended) {
+            isExtended = extended;
         }
     }
 

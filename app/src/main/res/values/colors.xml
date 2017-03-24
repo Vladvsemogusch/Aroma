@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#624a2d</color>
     <color name="beige">#B28A5A</color>
+    <color name="beige_light">#e2c9ab</color>
     <color name="white">#ffffff</color>
     <color name="transparent_white">#AAffffff</color>
     <color name="secondaryProgress">#DCC9A7</color>

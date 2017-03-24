@@ -10,11 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import ua.pp.oped.aromateque.R;
-import ua.pp.oped.aromateque.base_activities.SearchAppbarActivity;
-import ua.pp.oped.aromateque.fragments.info.About;
-import ua.pp.oped.aromateque.fragments.info.OurStores;
-import ua.pp.oped.aromateque.fragments.info.PaymentAndDelivery;
-import ua.pp.oped.aromateque.fragments.info.QuestionAnswer;
+import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
+import ua.pp.oped.aromateque.fragment.info.About;
+import ua.pp.oped.aromateque.fragment.info.OurStores;
+import ua.pp.oped.aromateque.fragment.info.PaymentAndDelivery;
+import ua.pp.oped.aromateque.fragment.info.QuestionAnswer;
 
 
 public class ActivityInfo extends SearchAppbarActivity {
