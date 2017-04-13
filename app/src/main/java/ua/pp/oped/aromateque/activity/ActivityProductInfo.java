@@ -21,8 +21,8 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Response;
 import ua.pp.oped.aromateque.AromatequeApplication;
-import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.api.MagentoAPI;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragment.product.ProductDescriptionFragment;
@@ -37,7 +37,7 @@ import ua.pp.oped.aromateque.utility.RetryableCallback;
 
 public class ActivityProductInfo extends SearchAppbarActivity {
     private int productId;
-    private MagentoRestService api;
+    private MagentoAPI api;
     private LongProduct product;
     private Category categoryAll;
     private Category curCategory;
@@ -60,7 +60,7 @@ public class ActivityProductInfo extends SearchAppbarActivity {
         setupFooter();
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //Working with RestAPI
-        api = AromatequeApplication.getApiMagento();
+        api = AromatequeApplication.getMagentoAPI();
 
         if (!dbHelper.productExists(productId)) {
             api.getProduct(productId).enqueue(new RetryableCallback<RawLongProduct>() {

@@ -3,13 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryAromateque">#000000</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#624a2d</color>
+    <color name="colorAccent">#684d2d</color>
+    <color name="colorAccent60opacity">#99624a2d</color>
     <color name="beige">#B28A5A</color>
-    <color name="beige_light">#e2c9ab</color>
+    <color name="beige_light">#fff1df</color>
     <color name="white">#ffffff</color>
     <color name="transparent_white">#AAffffff</color>
     <color name="secondaryProgress">#DCC9A7</color>
     <color name="black">#000000</color>
+    <color name="transparent_black">#99000000</color>
     <color name="review_date">#B8B1A5</color>
     <color name="dark_brown">#524739</color>
     <color name="creme">#F5ECDD</color>
@@ -18,6 +20,8 @@
     <color name="gray">#DCDCDC</color>
     <color name="dark_gray">#858585</color>
     <color name="main">#524739</color>
+    <color name="error_red">#e11724</color>
+    <color name="red">#e11724</color>
 
 
 </resources>

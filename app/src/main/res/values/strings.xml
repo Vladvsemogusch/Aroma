@@ -56,6 +56,7 @@
     <string name="title_activity_info">Информация</string>
     <string name="title_activity_callback">Обратная связь</string>
     <string name="title_activity_make_review">Отзыв</string>
+    <string name="title_activity_checkout_main">Оформление заказа</string>
     <string name="about">О компании</string>
     <string name="our_stores">Наши магазины</string>
     <string name="payment_and_delivery">Оплата и доставка</string>
@@ -64,11 +65,36 @@
     <string name="send_email">Отправить письмо</string>
     <string name="make_review">НАПИСАТЬ ОТЗЫВ</string>
     <string name="no_email_clients">Не найдены приложения для отправки электронной почты.</string>
-    <string name="review_1">Ваши впечатления</string>
-    <string name="name">Имя</string>
+    <string name="review_1">Ваши впечатления*</string>
+    <string name="name_surname">Имя и Фамилия*</string>
     <string name="email">E-mail</string>
-    <string name="review_2">Опишите свое мнение</string>
+    <string name="review_2">Опишите свое мнение*</string>
     <string name="send">ОТПРАВИТЬ</string>
+    <string name="review_no_rating">ВЫБЕРИТЕ ОЦЕНКУ</string>
+    <string name="review_no_review">ВВЕДИТЕ ОТЗЫВ</string>
+    <string name="review_no_name">ВВЕДИТЕ ИМЯ</string>
+    <string name="required_fields">*Обязательные поля</string>
+    <string name="bad_email">ОШИБКА В EMAIL</string>
+
+    <string name="phone_num">Номер телефона*</string>
+    <string name="email_obligatory">E-mail*</string>
+    <string name="city_obligatory">Выберите город*</string>
+    <string name="checkout_no_city">ВЫБЕРИТЕ ГОРОД</string>
+    <string name="checkout_no_name">ВВЕДИТЕ ИМЯ</string>
+    <string name="checkout_no_phone">ВВЕДИТЕ ТЕЛЕФОН</string>
+    <string name="checkout_no_email">ВВЕДИТЕ EMAIL</string>
+    <string name="no_email">ВВЕДИТЕ EMAIL</string>
+    <string name="title_activity_checkout_city">ActivityCheckoutCity</string>
+    <string name="enter_city">Введите город для доставки</string>
+    <string name="choose_city">Выберите город</string>
+    <string name="choose_delivery">Выбор доставки</string>
+    <string name="delivery_type">Способ доставки</string>
+    <string name="deliver_type_the_one">Новая Почта, самовывоз из отделения</string>
+    <string name="nova_poshta_departments">Отделение Новой Почты</string>
+    <string name="warehouse_placeholder">Выберите отделение</string>
+    <string name="choose_department">Выберите отделение</string>
+    <string name="enter_warehouse">Поиск отделения</string>
+    <string name="city_first">Сначала выберите город</string>
 
 
 </resources>

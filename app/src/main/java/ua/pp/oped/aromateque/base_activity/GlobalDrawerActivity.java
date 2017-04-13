@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import timber.log.Timber;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.activity.ActivityCallback;
 import ua.pp.oped.aromateque.activity.ActivityCart;
@@ -23,6 +24,7 @@ import ua.pp.oped.aromateque.activity.ActivityMainPage;
 public class GlobalDrawerActivity extends CalligraphyActivity implements NavigationView.OnNavigationItemSelectedListener {
     protected DrawerLayout drawer;
     protected CustomToggle toggle;
+    protected NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,22 +36,9 @@ public class GlobalDrawerActivity extends CalligraphyActivity implements Navigat
         toggle = new CustomToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        switch (getLayoutId()) {
-            case R.layout.activity_main_page_top_layout:
-                navigationView.setCheckedItem(R.id.nav_main_page);
-                break;
-            case R.layout.activity_cart_top_layout:
-                navigationView.setCheckedItem(R.id.nav_cart);
-                break;
-            case R.layout.activity_callback_top_layout:
-                navigationView.setCheckedItem(R.id.nav_callback);
-                break;
-            case R.layout.activity_info_top_layout:
-                navigationView.setCheckedItem(R.id.nav_info);
-                break;
-        }
+        updateSelectedItem();
     }
 
     //Stub; must be overridden
@@ -57,6 +46,27 @@ public class GlobalDrawerActivity extends CalligraphyActivity implements Navigat
         return -1;
     }
 
+
+    private void updateSelectedItem() {
+        switch (getLayoutId()) {
+            case R.layout.activity_main_page_top_layout:
+                navigationView.setCheckedItem(R.id.nav_main_page);
+                Timber.d("navigationView.setCheckedItem(R.id.nav_main_page);");
+                break;
+            case R.layout.activity_cart_top_layout:
+                navigationView.setCheckedItem(R.id.nav_cart);
+                Timber.d("navigationView.setCheckedItem(R.id.nav_cart);");
+                break;
+            case R.layout.activity_callback_top_layout:
+                navigationView.setCheckedItem(R.id.nav_callback);
+                Timber.d("navigationView.setCheckedItem(R.id.nav_callback);");
+                break;
+            case R.layout.activity_info_top_layout:
+                navigationView.setCheckedItem(R.id.nav_info);
+                Timber.d("navigationView.setCheckedItem(R.id.nav_info);");
+                break;
+        }
+    }
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         toggle.setPendingMenuItem(item);
         drawer.closeDrawer(GravityCompat.START);
@@ -145,4 +155,9 @@ public class GlobalDrawerActivity extends CalligraphyActivity implements Navigat
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateSelectedItem();
+    }
 }

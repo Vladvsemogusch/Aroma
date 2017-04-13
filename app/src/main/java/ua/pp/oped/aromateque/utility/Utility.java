@@ -2,6 +2,7 @@ package ua.pp.oped.aromateque.utility;
 
 
 import android.content.res.AssetManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -61,6 +62,13 @@ public class Utility {
         }
     }
 
+    public static ColorStateList compatGetColorStateList(Resources res, int colorStateListId) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return res.getColorStateList(colorStateListId, null);
+        } else {
+            return res.getColorStateList(colorStateListId);
+        }
+    }
 
     public static int dpToPx(Resources res, int dp) {
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, res.getDisplayMetrics());
@@ -105,5 +113,6 @@ public class Utility {
         }
         return stringBuilder.toString();
     }
+
 
 }

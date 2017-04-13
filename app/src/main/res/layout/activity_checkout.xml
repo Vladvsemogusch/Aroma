@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ua.pp.oped.aromateque.activity.ActivityCheckout">
+    tools:context="ua.pp.oped.aromateque.activity.ActivityCheckoutMain">
 
 </android.support.constraint.ConstraintLayout>

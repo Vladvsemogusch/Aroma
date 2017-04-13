@@ -3,6 +3,7 @@ package ua.pp.oped.aromateque.activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -15,6 +16,7 @@ import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.model.Rating;
 import ua.pp.oped.aromateque.utility.EditTextBackEvent;
+import ua.pp.oped.aromateque.utility.TextValidation;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
@@ -43,7 +45,7 @@ public class ActivityMakeReview extends SearchAppbarActivity {
         ratingItems.add(findViewById(R.id.rating_item_60));
         ratingItems.add(findViewById(R.id.rating_item_40));
         ratingItems.add(findViewById(R.id.rating_item_20));
-        View.OnClickListener listener = new View.OnClickListener() {
+        class CustomOnClickListener implements View.OnClickListener {
             RadioButton lastClicked;
 
             @Override
@@ -57,7 +59,8 @@ public class ActivityMakeReview extends SearchAppbarActivity {
                     lastClicked = radioButton;
                 }
             }
-        };
+        }
+        final CustomOnClickListener listener = new CustomOnClickListener();
         for (int i = 0; i < ratingItems.size(); i++) {
             View ratingItem = ratingItems.get(i);
             RatingBar ratingBar = (RatingBar) ratingItem.findViewById(R.id.rating_bar);
@@ -70,6 +73,11 @@ public class ActivityMakeReview extends SearchAppbarActivity {
         final EditTextBackEvent editTextReviewText = (EditTextBackEvent) findViewById(R.id.review_text);
         final EditTextBackEvent editTextReviewName = (EditTextBackEvent) findViewById(R.id.review_name);
         final EditTextBackEvent editTextReviewEmail = (EditTextBackEvent) findViewById(R.id.review_email);
+        final TextView txtErrorNoRating = (TextView) findViewById(R.id.txt_review_no_rating);
+        final TextView txtErrorNoReview = (TextView) findViewById(R.id.txt_review_no_review);
+        final TextView txtErrorNoName = (TextView) findViewById(R.id.txt_review_no_name);
+        final TextView txtErrorBadEmail = (TextView) findViewById(R.id.txt_review_bad_email);
+        Button btnReviewSubmit = (Button) findViewById(R.id.review_submit);
 //        editTextreviewText.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -120,6 +128,41 @@ public class ActivityMakeReview extends SearchAppbarActivity {
         editTextReviewEmail.setOnEditorActionListener(onEditorActionListener);
         editTextReviewName.setOnEditorActionListener(onEditorActionListener);
         editTextReviewText.setOnEditorActionListener(onEditorActionListener);
+        btnReviewSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean success = true;
+                if (TextValidation.validateEmail(editTextReviewEmail.getText().toString())) {
+                    txtErrorBadEmail.setVisibility(View.GONE);
+                } else {
+                    txtErrorBadEmail.setVisibility(View.VISIBLE);
+                    success = false;
+                }
+                if (listener.lastClicked == null) {
+                    txtErrorNoRating.setVisibility(View.VISIBLE);
+                    success = false;
+                } else {
+                    txtErrorNoRating.setVisibility(View.GONE);
+                }
+                if (editTextReviewText.getText().toString().equals("")) {
+                    txtErrorNoReview.setVisibility(View.VISIBLE);
+                    success = false;
+                } else {
+                    txtErrorNoReview.setVisibility(View.GONE);
+                }
+                if (editTextReviewName.getText().toString().equals("")) {
+                    txtErrorNoName.setVisibility(View.VISIBLE);
+                    success = false;
+                } else {
+                    txtErrorNoName.setVisibility(View.GONE);
+                }
+                if (!success) {
+                    return;
+                }
+
+                //TODO REST-READY Submit review.
+            }
+        });
     }
 
 

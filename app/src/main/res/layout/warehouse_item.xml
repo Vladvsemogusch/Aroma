@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lyt_warehouse"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="onCityClicked"
+    android:orientation="vertical"
+    android:paddingBottom="6dp"
+    android:paddingEnd="@dimen/text_side_margin"
+    android:paddingStart="@dimen/text_side_margin"
+    android:paddingTop="6dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginBottom="5dp"
+        fontPath="fonts/OpenSans-Semibold.ttf" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp" />
+</LinearLayout>

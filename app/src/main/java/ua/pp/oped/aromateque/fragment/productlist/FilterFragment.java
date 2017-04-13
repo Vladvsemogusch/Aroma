@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import ua.pp.oped.aromateque.AdapterFilter;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.adapter.AdapterFilter;
 import ua.pp.oped.aromateque.model.EntityIdName;
 import ua.pp.oped.aromateque.model.FilterParameter;
 import ua.pp.oped.aromateque.model.PriceFilterParameterValue;

@@ -60,6 +60,7 @@
             android:background="@color/colorAccent"
             android:text="@string/to_checkout"
             android:textColor="@color/white"
+            android:onClick="onCheckoutClicked"
             android:textSize="17sp" />
 
     </RelativeLayout>

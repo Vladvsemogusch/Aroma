@@ -25,7 +25,7 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH;
 public class SearchAppbarActivity extends GlobalDrawerActivity {
     protected TextView cartCounter;
     protected String title;
-    protected EditTextBackEvent edittextSearch;
+    protected EditTextBackEvent etSearch;
     protected ImageButton btnSearch;
     protected InputMethodManager inputMethodManager;
     protected boolean singleEditText = true;
@@ -41,8 +41,8 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
     private void setupSearch() {
         inputMethodManager = (InputMethodManager) this
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        edittextSearch = (EditTextBackEvent) findViewById(R.id.edittext_search);
-        edittextSearch.setOnEditTextImeBackListener(new EditTextBackEvent.EditTextImeBackListener() {
+        etSearch = (EditTextBackEvent) findViewById(R.id.edittext_search);
+        etSearch.setOnEditTextImeBackListener(new EditTextBackEvent.EditTextImeBackListener() {
             @Override
             public void onImeBack(EditTextBackEvent editText, String text) {
                 if (editText.isFocused()) {
@@ -68,8 +68,8 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
                 return false;
             }
         };
-        edittextSearch.setOnEditorActionListener(onEditorActionListener);
-        edittextSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        etSearch.setOnEditorActionListener(onEditorActionListener);
+        etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 Timber.d("onFocusChange()");
@@ -86,9 +86,9 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
     public void onSearchClicked(View view) {
         view.setVisibility(GONE);
         getSupportActionBar().setTitle("");
-        edittextSearch.setVisibility(View.VISIBLE);
-        edittextSearch.requestFocus();
-        inputMethodManager.showSoftInput(edittextSearch, InputMethodManager.HIDE_NOT_ALWAYS);
+        etSearch.setVisibility(View.VISIBLE);
+        etSearch.requestFocus();
+        inputMethodManager.showSoftInput(etSearch, InputMethodManager.HIDE_NOT_ALWAYS);
 
     }
 
@@ -137,6 +137,13 @@ public class SearchAppbarActivity extends GlobalDrawerActivity {
         super.onResume();
         Timber.d("onResume()");
         updateCartCounter();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        inputMethodManager.hideSoftInputFromWindow(cartCounter.getWindowToken(), 0);
+        //TODO not on every pause
     }
 
 

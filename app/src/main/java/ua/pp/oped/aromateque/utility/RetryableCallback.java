@@ -1,17 +1,15 @@
 package ua.pp.oped.aromateque.utility;
 
-import android.util.Log;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
 
 
 public abstract class RetryableCallback<T> implements Callback<T> {
-    private static final String TAG = "RetryableCallback";
     private int retryCount = 0;
     private int maxRetries = 3;
-    private static final int MAX_RETRIES = 100;
+    private static final int MAX_RETRIES = 3;
     private static final int WAIT_TIME = 1000;
 
     public RetryableCallback() {
@@ -26,7 +24,8 @@ public abstract class RetryableCallback<T> implements Callback<T> {
     public synchronized void onResponse(Call<T> call, Response<T> response) {
         if (!response.isSuccessful()) {
             if (retryCount++ < maxRetries) {
-                Log.v(TAG, "Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
+                Timber.d("Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
+                Timber.d(response.errorBody().toString());
                 call.clone().enqueue(this);
             } else {
                 onFinalResponse(call, response);
@@ -40,7 +39,7 @@ public abstract class RetryableCallback<T> implements Callback<T> {
     public synchronized void onFailure(Call<T> call, Throwable t) {
         t.printStackTrace();
         if (retryCount++ < maxRetries) {
-            Log.v(TAG, "Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
+            Timber.d("Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
             call.clone().enqueue(this);
         } else
             onFinalFailure(call, t);

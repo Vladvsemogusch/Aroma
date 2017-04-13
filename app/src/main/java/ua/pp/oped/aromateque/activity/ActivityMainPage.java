@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import timber.log.Timber;
-import ua.pp.oped.aromateque.AdapterCategoryView;
-import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.adapter.AdapterCategoryView;
+import ua.pp.oped.aromateque.api.MagentoAPI;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
@@ -23,7 +23,7 @@ import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
 public class ActivityMainPage extends SearchAppbarActivity {
     private Category categoryAll;
-    private MagentoRestService api;
+    private MagentoAPI api;
     private boolean isAnimationRunning;
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerviewCategories;
@@ -36,7 +36,7 @@ public class ActivityMainPage extends SearchAppbarActivity {
                 (Context.LAYOUT_INFLATER_SERVICE);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Initialize recycleview early with empty adapter to avoid errors About absent adapter.
+        //Initialize recycleview early with empty ua.pp.oped.aromateque.adapter to avoid errors About absent ua.pp.oped.aromateque.adapter.
         recyclerviewCategories = (RecyclerView) findViewById(R.id.categories_main_recyclerview);
         final LinearLayoutManagerSmoothScrollEdition layoutManager = new LinearLayoutManagerSmoothScrollEdition(this, RecyclerView.VERTICAL, false);
         layoutManager.setSmoothScroller(new LinearSmoothScroller(this) {
@@ -50,7 +50,7 @@ public class ActivityMainPage extends SearchAppbarActivity {
         //recyclerviewCategories.setAdapter(new EmptyRecycleViewAdapter());
         // Because no heavy duty on this list disable removing offscreen views
 //        recyclerviewCategories.setItemViewCacheSize(10);
-        //Get categories from DB and put to new adapter
+        //Get categories from DB and put to new ua.pp.oped.aromateque.adapter
         categoryAll = DatabaseHelper.getInstance(this).deserializeCategory(CATEGORY_ALL_ID);
         recyclerviewCategories.setAdapter(new AdapterCategoryView(this, categoryAll.getChildren(), recyclerviewCategories));
         //recyclerviewCategories.smoothScrollToPosition(5);

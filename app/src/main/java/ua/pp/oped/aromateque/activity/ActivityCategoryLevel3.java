@@ -11,8 +11,8 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 
 import timber.log.Timber;
-import ua.pp.oped.aromateque.AdapterSubCategoryView;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.adapter.AdapterSubCategoryView;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;

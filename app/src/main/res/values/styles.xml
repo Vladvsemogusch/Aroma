@@ -32,8 +32,11 @@
         <item name="centered">true</item>
     </style>
 
-    <style name="customRatingBar" parent="android:style/Widget.Material.RatingBar.Small" />
-
+    <style name="customRatingBar" parent="@android:style/Widget.DeviceDefault.Light.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/star</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxHeight">16dp</item>
+    </style>
 
     <style name="TextAppearance.Notes" parent="android:TextAppearance">
         <item name="fontPath">fonts/Georgia-Italic.ttf</item>
@@ -47,6 +50,9 @@
         <item name="fontPath">fonts/Georgia-Italic.ttf</item>
     </style>
 
+    <style name="MainText" parent="android:TextAppearance">
+        <item name="android:textSize">15sp</item>
+    </style>
 
     <style name="FilterPriceText" parent="android:TextAppearance">
         <item name="android:textSize">14sp</item>

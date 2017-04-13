@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import ua.pp.oped.aromateque.AdapterBestsellersView;
+import ua.pp.oped.aromateque.adapter.AdapterBestsellersView;
 
 public class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 

@@ -33,7 +33,8 @@
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/icon_cart" />
+                android:src="@drawable/ico_cart_empty"
+                android:tint="@color/white" />
 
             <TextView
                 android:id="@+id/cart_counter"

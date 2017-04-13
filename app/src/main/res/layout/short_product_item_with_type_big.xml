@@ -75,7 +75,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:foregroundGravity="center"
-            android:src="@drawable/icon_cart"
             android:background="@android:color/transparent"
             android:tint="@color/black"
             android:scaleType="fitCenter"

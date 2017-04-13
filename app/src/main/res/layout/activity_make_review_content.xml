@@ -27,6 +27,16 @@
                 android:text="@string/review_1"
                 android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/txt_review_no_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/review_no_rating"
+                android:textColor="@color/error_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,6 +74,18 @@
                 android:text="@string/review_2"
                 android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/txt_review_no_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/review_no_review"
+                android:textColor="@color/error_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <ua.pp.oped.aromateque.utility.EditTextBackEvent
                 android:id="@+id/review_text"
                 android:layout_width="match_parent"
@@ -79,8 +101,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:text="@string/name"
+                android:text="@string/name_surname"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_review_no_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/review_no_name"
+                android:textColor="@color/error_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <ua.pp.oped.aromateque.utility.EditTextBackEvent
                 android:id="@+id/review_name"
@@ -109,6 +143,26 @@
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress"
                 android:maxLines="2" />
+
+            <TextView
+                android:id="@+id/txt_review_bad_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/bad_email"
+                android:textColor="@color/error_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/required_fields"
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/review_submit"

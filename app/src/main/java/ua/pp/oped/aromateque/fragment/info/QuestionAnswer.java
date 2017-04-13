@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ua.pp.oped.aromateque.AdapterQA;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.adapter.AdapterQA;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 
 public class QuestionAnswer extends Fragment {

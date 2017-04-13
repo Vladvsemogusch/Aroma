@@ -97,10 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="2dp"
                     android:numStars="5"
-                    android:progressBackgroundTint="@color/secondaryProgress"
-                    android:progressTint="@color/colorAccent"
                     android:rating="0"
-                    android:secondaryProgressTint="@color/secondaryProgress"
                     android:stepSize="0.1" />
 
                 <TextView
@@ -283,6 +280,7 @@
             android:id="@+id/txt_short_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="@style/MainText"
             android:layout_marginBottom="3dp" />
 
         <View

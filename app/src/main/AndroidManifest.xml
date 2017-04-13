@@ -61,7 +61,26 @@
             android:name=".activity.ActivityMakeReview"
             android:label="@string/title_activity_make_review"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.ActivityCheckout"></activity>
+        <activity
+            android:name=".activity.ActivityCheckoutMain"
+            android:label="@string/title_activity_checkout_main"
+            android:launchMode="singleTask"
+            android:parentActivityName=".activity.ActivityCart" />
+        <activity
+            android:name=".activity.ActivityCheckoutCity"
+            android:label="@string/choose_city"
+            android:parentActivityName=".activity.ActivityCheckoutMain"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.ActivityCheckoutWarehouse"
+            android:label="@string/choose_department"
+            android:parentActivityName=".activity.ActivityCheckoutMain"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.ActivityCheckoutDelivery"
+            android:label="@string/choose_delivery"
+            android:parentActivityName=".activity.ActivityCheckoutMain" />
+        <activity android:name=".activity.ActivityCheckoutOverview"></activity>
     </application>
 
 </manifest>

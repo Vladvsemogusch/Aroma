@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lyt_warehouse"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="onCityClicked"
+    android:orientation="vertical"
+    android:paddingBottom="3dp"
+    android:paddingEnd="@dimen/text_side_margin"
+    android:paddingStart="@dimen/text_side_margin"
+    android:paddingTop="3dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/t_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/t_region"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_gray" />
+
+    <TextView
+        android:id="@+id/t_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_gray" />
+
+</LinearLayout>

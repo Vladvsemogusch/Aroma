@@ -14,8 +14,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 import timber.log.Timber;
 import ua.pp.oped.aromateque.AromatequeApplication;
-import ua.pp.oped.aromateque.MagentoRestService;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.api.MagentoAPI;
 import ua.pp.oped.aromateque.base_activity.CalligraphyActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
@@ -43,9 +43,7 @@ public class ActivityLaunch extends CalligraphyActivity {
                 String url = request.uri.toString();
                 url = url.replace("http://localhost/", BASE_URL);
                 Request.Builder builder = request.buildUpon();
-
-                Request modifiedRequest = builder.setUri(Uri.parse(url)).build();
-                return modifiedRequest;
+                return builder.setUri(Uri.parse(url)).build();
             }
         });
 //        picassoBuilder.loggingEnabled(true);
@@ -111,7 +109,7 @@ public class ActivityLaunch extends CalligraphyActivity {
         CustomImageLoader.getInstance().init(config);
 */
         if (!DatabaseHelper.getInstance(this).categoriesSerialized()) {
-            final MagentoRestService api = AromatequeApplication.getApiMagento();
+            final MagentoAPI api = AromatequeApplication.getMagentoAPI();
             api.getCategoryWithChildren(CATEGORY_ALL_ID).enqueue(new RetryableCallback<Category>() {
                 public void onFinalResponse(Call<Category> call, Response<Category> response) {
                     try {
@@ -136,7 +134,7 @@ public class ActivityLaunch extends CalligraphyActivity {
     }
 
     private void startNextActivity() {
-        startActivity(new Intent(this, ActivityMakeReview.class));
+        startActivity(new Intent(this, ActivityCheckoutMain.class));
         finish();
     }
 

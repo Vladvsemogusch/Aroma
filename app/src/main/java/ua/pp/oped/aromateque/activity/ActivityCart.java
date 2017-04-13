@@ -1,5 +1,6 @@
 package ua.pp.oped.aromateque.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +16,9 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Response;
 import timber.log.Timber;
-import ua.pp.oped.aromateque.AdapterCartList;
 import ua.pp.oped.aromateque.AromatequeApplication;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.adapter.AdapterCartList;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.CartItem;
@@ -50,11 +51,11 @@ public class ActivityCart extends SearchAppbarActivity {
                 cartItem.setCartPrice(cartPrice);
                 if (i == cartItems.size() - 1 && isDataReady(cartItems)) {
                     cartList.setAdapter(new AdapterCartList(ActivityCart.this, cartItems));
-                    Timber.d("Successfully set adapter to cart list");
+                    Timber.d("Successfully set ua.pp.oped.aromateque.adapter to cart list");
                     updateTotalPrice();
                 }
             } else {
-                AromatequeApplication.getApiMagento().getProduct(productId).enqueue(new RetryableCallback<RawLongProduct>() {
+                AromatequeApplication.getMagentoAPI().getProduct(productId).enqueue(new RetryableCallback<RawLongProduct>() {
 
                     @Override
                     public void onFinalResponse(Call call, Response response) {
@@ -68,7 +69,7 @@ public class ActivityCart extends SearchAppbarActivity {
                         // Check if all data has been received
                         if (isDataReady(cartItems)) {
                             cartList.setAdapter(new AdapterCartList(ActivityCart.this, cartItems));
-                            Timber.d("Successfully set adapter to cart list");
+                            Timber.d("Successfully set ua.pp.oped.aromateque.adapter to cart list");
                             updateTotalPrice();
                         }
                     }
@@ -126,6 +127,10 @@ public class ActivityCart extends SearchAppbarActivity {
     }
 
 
+    public void onCheckoutClicked(View view) {
+        Intent intent = new Intent(this, ActivityCheckoutMain.class);
+        startActivity(intent);
+    }
 }
 
 

@@ -2,7 +2,6 @@ package ua.pp.oped.aromateque.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -22,9 +21,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 
 import timber.log.Timber;
-import ua.pp.oped.aromateque.AdapterFilter;
-import ua.pp.oped.aromateque.AdapterProductList;
 import ua.pp.oped.aromateque.R;
+import ua.pp.oped.aromateque.adapter.AdapterFilter;
+import ua.pp.oped.aromateque.adapter.AdapterProductList;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.fragment.productlist.FilterFragment;
@@ -291,14 +290,16 @@ public class ActivityProductList extends SearchAppbarActivity {
             dbHelper.addToCart(productId);
             updateCartCounter();
             ((AdapterProductList) productListRecyclerView.getAdapter()).updateCartItems(productId);
-            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.icon_cart_black));
+            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.ico_cart_full));
             Animation addToCartAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate_cart);
             v.startAnimation(addToCartAnimation);
             Timber.d("Added to cart");
         } else {
-            Intent intent = new Intent(this, ActivityCart.class);
-            this.startActivity(intent);
-            Log.d(TAG, "Already in cart product id: " + productId);
+            dbHelper.removeFromCart(productId);
+            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.ico_cart_empty));
+//            Intent intent = new Intent(this, ActivityCart.class);
+//            this.startActivity(intent);
+//            Log.d(TAG, "Already in cart product id: " + productId);
         }
         //TODO Visuals
     }

@@ -16,32 +16,23 @@
         android:id="@+id/reviews_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_no_reviews"
-        android:layout_marginEnd="5dp"
-        android:layout_marginStart="5dp" />
+        android:layout_below="@+id/txt_no_reviews" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btn_make_review"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:weightSum="1">
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="@dimen/text_side_margin"
+        android:background="@drawable/border_shape"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:text="@string/make_review"
+        android:textColor="@color/colorAccent"
+        android:textSize="17sp" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.5" />
 
-        <Button
-            android:id="@+id/btn_make_review"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="end"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/border_shape"
-            android:text="@string/make_review"
-            android:textColor="@color/colorAccent"
-            android:textSize="17sp" />
-    </LinearLayout>
 </RelativeLayout>
