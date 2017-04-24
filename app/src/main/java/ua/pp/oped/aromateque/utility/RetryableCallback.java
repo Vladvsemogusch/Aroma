@@ -1,5 +1,7 @@
 package ua.pp.oped.aromateque.utility;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -9,7 +11,7 @@ import timber.log.Timber;
 public abstract class RetryableCallback<T> implements Callback<T> {
     private int retryCount = 0;
     private int maxRetries = 3;
-    private static final int MAX_RETRIES = 3;
+    private static final int MAX_RETRIES = 50;
     private static final int WAIT_TIME = 1000;
 
     public RetryableCallback() {
@@ -25,10 +27,12 @@ public abstract class RetryableCallback<T> implements Callback<T> {
         if (!response.isSuccessful()) {
             if (retryCount++ < maxRetries) {
                 Timber.d("Retrying API Call -  (" + retryCount + " / " + maxRetries + ")");
-                Timber.d(response.errorBody().toString());
+                try {
+                    Timber.d(response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 call.clone().enqueue(this);
-            } else {
-                onFinalResponse(call, response);
             }
         } else {
             onFinalResponse(call, response);

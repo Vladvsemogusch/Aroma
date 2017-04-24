@@ -15,6 +15,8 @@
     <string name="product_description">Описание</string>
     <string name="product_reviews">Отзывы</string>
     <string name="product_price">%1$s грн</string>
+    <string name="price">%1$s грн</string>
+    <string name="product_qty">%1$s шт</string>
     <string name="short_description_title">Краткое описание</string>
     <string name="buy">КУПИТЬ</string>
     <string name="rating_20">НЕ ОЧЕНЬ</string>
@@ -74,8 +76,7 @@
     <string name="review_no_review">ВВЕДИТЕ ОТЗЫВ</string>
     <string name="review_no_name">ВВЕДИТЕ ИМЯ</string>
     <string name="required_fields">*Обязательные поля</string>
-    <string name="bad_email">ОШИБКА В EMAIL</string>
-
+    <string name="bad_email">EMAIL ВВЕДЕН НЕВЕРНО</string>
     <string name="phone_num">Номер телефона*</string>
     <string name="email_obligatory">E-mail*</string>
     <string name="city_obligatory">Выберите город*</string>
@@ -95,6 +96,30 @@
     <string name="choose_department">Выберите отделение</string>
     <string name="enter_warehouse">Поиск отделения</string>
     <string name="city_first">Сначала выберите город</string>
+    <string name="checkout">Оформление заказа</string>
+    <string name="order">ЗАКАЗ</string>
+    <string name="nova_poshta_warehouse">Отделение Новой Почты</string>
+    <string name="delivery_price">Стоимость доставки</string>
+    <string name="delivery_type_chosen">Новая Почта, самовывоз из отделения</string>
+    <string name="payment_method">Способ оплаты</string>
+    <string name="gift_wrap">Подарочная упаковка</string>
+    <string name="dont_call">Не звонить без необходимости</string>
+    <string name="order_comment">Комментарий к заказу</string>
+    <string name="checkout_pay_title">СУММА ЗАКАЗА</string>
+    <string name="checkout_pay">Сумма к оплате:</string>
+    <string name="use_certificate">Оплатить сертификатом</string>
+    <string name="finalize_order">ПОДТВЕРДИТЬ ЗАКАЗ</string>
+    <string name="warehouse_number_with_city">%1$s, %2$s</string>
+    <string name="free">Бесплатно</string>
+    <string name="delivery_estimate">от 40 грн</string>
+    <string name="subscribe">Хочу узнавать о новинках и акциях</string>
+    <string name="ok">Выбрать</string>
+    <string name="ok_2">Выбрать</string>
+    <string name="cancel">Отменить</string>
+    <string name="ok_order_comment">Подвердить</string>
+    <string name="enter_certificate">Введите номер сертификата</string>
+    <string name="favorites">Избранное</string>
+    <string name="no_settlement_found">Не найдено населенного пункта отвечающего вашему запросу</string>
 
 
 </resources>

@@ -18,21 +18,23 @@ import java.util.List;
 
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.activity.ActivityProductInfo;
+import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.ShortProduct;
-import ua.pp.oped.aromateque.utility.IconSheet;
 import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
+import ua.pp.oped.aromateque.utility.Utility;
 
 public class AdapterBestsellersView extends RecyclerView.Adapter<AdapterBestsellersView.ViewHolder> {
 
     public List<ShortProduct> products;
     private Resources resources;
     private Context context;
+    private DatabaseHelper db;
 
     public AdapterBestsellersView(List<ShortProduct> products, Context context) {
         this.products = products;
         this.resources = context.getResources();
         this.context = context;
-
+        db = DatabaseHelper.getInstance(context);
 
     }
 
@@ -57,7 +59,12 @@ public class AdapterBestsellersView extends RecyclerView.Adapter<AdapterBestsell
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
         ImageLoaderWrapper.loadImage(context, viewHolder.image, product.getImageUrl());
-        viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
+        if (db.isInFavorites(product.getId())) {
+            viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.heart_beige));
+        } else {
+            viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.heart_empty_beige));
+        }
+        viewHolder.toFavorites.setTag(product.getId());
         viewHolder.buy.setTag(product.getId());
         /*viewHolder.buy.setOnClickListener(new View.OnClickListener() {
             @Override

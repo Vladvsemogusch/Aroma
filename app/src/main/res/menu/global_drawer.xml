@@ -11,6 +11,10 @@
             android:icon="@drawable/ico_cart_empty"
             android:title="@string/cart" />
         <item
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/heart_black"
+            android:title="@string/favorites" />
+        <item
             android:id="@+id/nav_callback"
             android:icon="@drawable/ico_mail"
             android:title="@string/callback" />

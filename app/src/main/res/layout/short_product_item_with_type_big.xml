@@ -74,19 +74,20 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:foregroundGravity="center"
             android:background="@android:color/transparent"
-            android:tint="@color/black"
+            android:foregroundGravity="center"
+            android:onClick="onAddToCartClicked"
             android:scaleType="fitCenter"
-            android:onClick="onAddToCartClicked" />
+            android:tint="@color/black" />
 
         <ImageButton
             android:id="@+id/to_favorites"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:foregroundGravity="center"
             android:background="@android:color/transparent"
+            android:foregroundGravity="center"
+            android:onClick="onAddToFavoritesClicked"
             android:padding="3dp"
             android:scaleType="fitCenter" />
     </LinearLayout>

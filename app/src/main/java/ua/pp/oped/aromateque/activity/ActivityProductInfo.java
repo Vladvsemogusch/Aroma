@@ -81,7 +81,7 @@ public class ActivityProductInfo extends SearchAppbarActivity {
                 }
             });
         } else {
-            product = dbHelper.deserializeProduct(productId);
+            product = dbHelper.deserializeLongProduct(productId);
             fillProductInfo();
         }
         dbHelper.close();

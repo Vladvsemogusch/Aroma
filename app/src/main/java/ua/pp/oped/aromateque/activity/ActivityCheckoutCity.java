@@ -1,5 +1,7 @@
 package ua.pp.oped.aromateque.activity;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -32,11 +34,14 @@ import ua.pp.oped.aromateque.utility.AnimationHelper;
 import ua.pp.oped.aromateque.utility.EditTextBackEvent;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 import ua.pp.oped.aromateque.utility.RetryableCallback;
+import ua.pp.oped.aromateque.utility.Utility;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 public class ActivityCheckoutCity extends CalligraphyActivity {
+    View loadingSpinner;
     View loadingMask;
+    ValueAnimator colorAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,12 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final EditTextBackEvent etCity = (EditTextBackEvent) findViewById(R.id.et_city);
         final RecyclerView recyclerCities = (RecyclerView) findViewById(R.id.recycler_cities);
+        final TextView noSettlementFound = (TextView) findViewById(R.id.no_settlement_found);
         loadingMask = findViewById(R.id.loading_mask);
+        loadingSpinner = findViewById(R.id.loading_spinner);
+        int colorFrom = Utility.compatGetColor(getResources(), android.R.color.transparent);
+        int colorTo = Utility.compatGetColor(getResources(), R.color.transparent_black);
+        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         final InputMethodManager inputMethodManager = (InputMethodManager) this
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         // Some strange bug
@@ -75,21 +85,25 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
             @Override
             public void onFinalResponse(Call<SettlementResponse> call, Response<SettlementResponse> response) {
                 List<SearchSettlementResponse.SearchSettlementItem> getSettlementItemsDefault = response.body().getSearchSettlements();
+                noSettlementFound.setVisibility(View.GONE);
                 recyclerCities.setAdapter(new AdapterCity(ActivityCheckoutCity.this, getSettlementItemsDefault));
-                loadingMask.clearAnimation();
-                loadingMask.setVisibility(View.GONE);
+                hideLoading();
             }
 
             @Override
             public void onFinalFailure(Call<SettlementResponse> call, Throwable t) {
-                loadingMask.clearAnimation();
-                loadingMask.setVisibility(View.GONE);
+                hideLoading();
             }
         };
         final RetryableCallback<SearchSettlementResponse> getSettlementsCallback = new RetryableCallback<SearchSettlementResponse>() {
             @Override
             public void onFinalResponse(Call<SearchSettlementResponse> call, Response<SearchSettlementResponse> response) {
-                List<SearchSettlementResponse.SearchSettlementItem> searchSettlementItems = response.body().getCities();
+                List<SearchSettlementResponse.SearchSettlementItem> searchSettlementItems = response.body().getSettlements();
+                if (searchSettlementItems == null) {
+                    noSettlementFound.setVisibility(View.VISIBLE);
+                    Timber.d("No settlements found.");
+                    return;
+                }
                 //Preprocess city items [adapting to api designers]
                 for (int i = searchSettlementItems.size() - 1; i >= 0; i--) {
                     if (searchSettlementItems.get(i).getWarehouses() == 0) {
@@ -110,17 +124,16 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
                         searchSettlementItems.get(i).setArea(area + " обл.");
                     }
                 }
+                noSettlementFound.setVisibility(View.GONE);
                 recyclerCities.setAdapter(new AdapterCity(ActivityCheckoutCity.this, searchSettlementItems));
-                loadingMask.clearAnimation();
-                loadingMask.setVisibility(View.GONE);
+                hideLoading();
 //                String cityName = response.body().getSettlements().get(0).getDescriptionRu();
 //                etCity.setTag(cityName);
             }
 
             @Override
             public void onFinalFailure(Call<SearchSettlementResponse> call, Throwable t) {
-                loadingMask.clearAnimation();
-                loadingMask.setVisibility(View.GONE);
+                hideLoading();
                 t.printStackTrace();
             }
         };
@@ -130,8 +143,7 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
                 if (i == IME_ACTION_DONE) {
                     if (textView.getText().length() == 0) {
                         novaPoshtaAPI.getSettlements(new SettlementPost("")).enqueue(getDefaultSettlementsCallback);
-                        loadingMask.startAnimation(AnimationHelper.getDefaultRotateAnimation());
-                        loadingMask.setVisibility(View.VISIBLE);
+                        showLoading();
                         textView.clearFocus();
                         return true;
                     }
@@ -140,8 +152,7 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
                     }
                     SearchSettlementPost searchSettlementPost = new SearchSettlementPost(textView.getText().toString());
                     novaPoshtaAPI.searchSettlements(searchSettlementPost).enqueue(getSettlementsCallback);
-                    loadingMask.startAnimation(AnimationHelper.getDefaultRotateAnimation());
-                    loadingMask.setVisibility(View.VISIBLE);
+                    showLoading();
 
                     textView.clearFocus();
                     return true;
@@ -151,8 +162,7 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
         };
         etCity.setOnEditorActionListener(onEditorActionListener);
         recyclerCities.setLayoutManager(new LinearLayoutManagerSmoothScrollEdition(this, LinearLayoutManager.VERTICAL, false));
-        loadingMask.startAnimation(AnimationHelper.getDefaultRotateAnimation());
-        loadingMask.setVisibility(View.VISIBLE);
+        showLoading();
         novaPoshtaAPI.getSettlements(new SettlementPost("")).enqueue(getDefaultSettlementsCallback);
 
     }
@@ -183,5 +193,28 @@ public class ActivityCheckoutCity extends CalligraphyActivity {
         intent.putExtra("area_name", areaName);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void showLoading() {
+        loadingSpinner.startAnimation(AnimationHelper.getDefaultRotateAnimation());
+        loadingSpinner.setVisibility(View.VISIBLE);
+        colorAnimation.setDuration(180);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                loadingMask.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
+
+    }
+
+    private void hideLoading() {
+        loadingSpinner.clearAnimation();
+        loadingSpinner.setVisibility(View.GONE);
+        colorAnimation.cancel();
+        loadingMask.setBackgroundColor(Utility.compatGetColor(getResources(), android.R.color.transparent));
     }
 }

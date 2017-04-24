@@ -101,6 +101,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
+                    android:onClick="onAddToFavoritesClicked"
                     android:padding="5dp"
                     android:scaleType="fitCenter" />
             </LinearLayout>

@@ -12,5 +12,6 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="title2">16sp</dimen>
     <dimen name="error_text_size">12sp</dimen>
-
+    <dimen name="divider_margin">8dp</dimen>
+    <dimen name="divider_height">0.5dp</dimen>
 </resources>

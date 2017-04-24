@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -59,6 +60,13 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
         tvWarehouseAddress = (TextView) findViewById(R.id.checkout_department_address);
         tvWarehousePlaceholder = (TextView) findViewById(R.id.checkout_department_placeholder);
         Button btnReviewSubmit = (Button) findViewById(R.id.checkout_submit);
+        CheckedTextView dontCall = (CheckedTextView) findViewById(R.id.dont_call);
+        dontCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((CheckedTextView) view).toggle();
+            }
+        });
         lytChooseCity = findViewById(R.id.lyt_choose_city);
         lytChooseCityTextHolder = findViewById(R.id.checkout_choose_city_text_holder);
         lytChooseDepartment = findViewById(R.id.lyt_choose_department);
@@ -109,12 +117,13 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
         btnReviewSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int colorRedError = Utility.compatGetColor(getResources(), R.color.error_red);
                 boolean success = true;
                 if (TextValidation.validateEmail(etEmail.getText().toString())) {
                     tvErrorNoEmail.setVisibility(View.GONE);
                     etEmail.getBackground().clearColorFilter();
                 } else {
-                    etEmail.getBackground().setColorFilter(Utility.compatGetColor(getResources(), R.color.error_red), PorterDuff.Mode.SRC_ATOP);
+                    etEmail.getBackground().setColorFilter(colorRedError, PorterDuff.Mode.SRC_ATOP);
                     if (etEmail.getText().toString().equals("")) {
                         tvErrorNoEmail.setText(getResources().getString(R.string.no_email));
                     } else {
@@ -124,7 +133,7 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
                     success = false;
                 }
                 if (etNameSurname.getText().toString().equals("")) {
-                    etNameSurname.getBackground().setColorFilter(Utility.compatGetColor(getResources(), R.color.error_red), PorterDuff.Mode.SRC_ATOP);
+                    etNameSurname.getBackground().setColorFilter(colorRedError, PorterDuff.Mode.SRC_ATOP);
                     tvErrorNoName.setVisibility(View.VISIBLE);
                     success = false;
                 } else {
@@ -132,7 +141,7 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
                     tvErrorNoName.setVisibility(View.GONE);
                 }
                 if (etPhone.getText().toString().equals("")) {
-                    etPhone.getBackground().setColorFilter(Utility.compatGetColor(getResources(), R.color.error_red), PorterDuff.Mode.SRC_ATOP);
+                    etPhone.getBackground().setColorFilter(colorRedError, PorterDuff.Mode.SRC_ATOP);
                     tvErrorNoPhone.setVisibility(View.VISIBLE);
                     success = false;
                 } else {
@@ -141,7 +150,7 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
                 }
                 // If placeholder is visible than city isn't chosen => show error text.
                 if (tvCityPlaceHolder.getVisibility() == View.VISIBLE) {
-                    cityDivider.setBackgroundColor(Utility.compatGetColor(getResources(), R.color.error_red));
+                    cityDivider.setBackgroundColor(colorRedError);
                     tvErrorNoCity.setVisibility(View.VISIBLE);
                 } else {
                     cityDivider.setBackgroundColor(Utility.compatGetColor(getResources(), R.color.colorAccent));
@@ -152,13 +161,14 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
                         tvWarehousePlaceholder.setTextColor(Utility.compatGetColor(getResources(), R.color.error_red));
                     }
                     success = false;
-                } else {
-
                 }
                 if (!success) {
                     return;
                 }
                 Intent intent = new Intent(ActivityCheckoutMain.this, ActivityCheckoutOverview.class);
+                intent.putExtra("city", tvCityName.getText());
+                intent.putExtra("warehouse_number", tvWarehouseNumber.getText());
+                intent.putExtra("warehouse_address", tvWarehouseAddress.getText());
                 startActivity(intent);
                 //TODO REST-READY Submit checkout.
             }
@@ -191,6 +201,8 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
         if (resultCode != RESULT_OK) {
             return;
         }
+        // 1 - Choose city
+        // 2 - Choose warehouse
         if (requestCode == 1) {
             String cityName = data.getStringExtra("city_name");
             String regionName = data.getStringExtra("region_name");
@@ -216,6 +228,8 @@ public class ActivityCheckoutMain extends CalligraphyActivity {
                 tvWarehousePlaceholder.setText(getResources().getString(R.string.warehouse_placeholder));
                 tvWarehousePlaceholder.setTextColor(Utility.compatGetColor(getResources(), R.color.dark_gray));
             }
+
+            cityDivider.setBackgroundColor(Utility.compatGetColor(getResources(), R.color.black));
         }
         if (requestCode == 2) {
             String warehouseNumber = data.getStringExtra("warehouse_number");

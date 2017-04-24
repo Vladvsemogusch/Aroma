@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/activity_checkout_overview_top">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="8dp"
+            android:text="@string/order"
+            android:textSize="@dimen/title2"
+            tools:text="@string/order" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cart_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/delivery_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="0dp"
+            android:text="@string/delivery_type"
+            android:textSize="@dimen/title2" />
+
+        <TextView
+            android:id="@+id/delivery_type_choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/divider_margin"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="8dp"
+            android:text="@string/delivery_type_chosen"
+            android:textSize="15sp" />
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <TextView
+            android:id="@+id/warehouse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="@dimen/divider_margin"
+            android:text="@string/nova_poshta_warehouse"
+            android:textSize="@dimen/title2" />
+
+        <TextView
+            android:id="@+id/warehouse_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="8dp"
+            android:textSize="@dimen/title2" />
+
+        <TextView
+            android:id="@+id/warehouse_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/divider_margin"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="5dp" />
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <TextView
+            android:id="@+id/tv_delivery_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="@dimen/divider_margin"
+            android:text="@string/delivery_price"
+            android:textSize="@dimen/title2" />
+
+        <TextView
+            android:id="@+id/delivery_price_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/divider_margin"
+            android:layout_marginStart="@dimen/text_side_margin"
+            android:layout_marginTop="8dp" />
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <RelativeLayout
+            android:id="@+id/lyt_payment_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/text_side_margin"
+                android:src="@drawable/arrow_right_thin" />
+
+            <TextView
+                android:id="@+id/payment_method"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_side_margin"
+                android:layout_marginTop="@dimen/divider_margin"
+                android:text="@string/payment_method"
+                android:textSize="@dimen/title2" />
+
+            <TextView
+                android:id="@+id/payment_method_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/payment_method"
+                android:layout_marginBottom="@dimen/divider_margin"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/cash"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/divider_gift_wrap"
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <CheckedTextView
+            android:id="@+id/gift_wrap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/listChoiceBackgroundIndicator"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:paddingBottom="9dp"
+            android:paddingTop="9dp"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/text_side_margin"
+            android:paddingStart="@dimen/text_side_margin"
+            android:text="@string/gift_wrap"
+            android:textSize="@dimen/title2" />
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <RelativeLayout
+            android:id="@+id/lyt_order_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/order_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/divider_margin"
+                android:layout_marginStart="@dimen/text_side_margin"
+                android:layout_marginTop="@dimen/divider_margin"
+                android:text="@string/order_comment"
+                android:textSize="@dimen/title2" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/text_side_margin"
+                android:src="@drawable/arrow_right_thin" />
+        </RelativeLayout>
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <RelativeLayout
+            android:id="@+id/lyt_certificate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/certificate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/divider_margin"
+                android:layout_marginStart="@dimen/text_side_margin"
+                android:layout_marginTop="@dimen/divider_margin"
+                android:text="@string/use_certificate"
+                android:textSize="@dimen/title2" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/text_side_margin"
+                android:src="@drawable/arrow_right_thin" />
+        </RelativeLayout>
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <CheckedTextView
+            android:id="@+id/subscribe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/divider_margin"
+            android:paddingTop="@dimen/divider_margin"
+            android:background="?android:attr/listChoiceBackgroundIndicator"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/text_side_margin"
+            android:paddingStart="@dimen/text_side_margin"
+            android:text="@string/subscribe"
+            android:textSize="@dimen/title2" />
+
+        <View
+            style="@style/CheckoutDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
+
+        <TextView
+            android:id="@+id/tv_checkout_pay_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text="@string/checkout_pay_title"
+            android:textSize="@dimen/title2" />
+
+        <RelativeLayout
+            android:id="@+id/lyt_checkout_pay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/checkout_pay_title2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_side_margin"
+                android:text="@string/checkout_pay"
+                android:textSize="@dimen/title2" />
+
+
+            <TextView
+                android:id="@+id/checkout_pay_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/text_side_margin"
+                android:textSize="17sp" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/checkout_submit"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="18dp"
+            android:background="@color/colorAccent"
+            android:text="@string/finalize_order"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</ScrollView>

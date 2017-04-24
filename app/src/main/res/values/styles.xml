@@ -32,10 +32,18 @@
         <item name="centered">true</item>
     </style>
 
-    <style name="customRatingBar" parent="@android:style/Widget.DeviceDefault.Light.RatingBar.Small">
+    <style name="CustomRatingBar" parent="@android:style/Widget.DeviceDefault.Light.RatingBar.Small">
         <item name="android:progressDrawable">@drawable/star</item>
         <item name="android:minHeight">16dp</item>
         <item name="android:maxHeight">16dp</item>
+    </style>
+
+    <style name="CheckoutDivider">
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:layout_marginStart">@dimen/divider_margin</item>
+        <item name="android:layout_marginEnd">@dimen/divider_margin</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
     </style>
 
     <style name="TextAppearance.Notes" parent="android:TextAppearance">

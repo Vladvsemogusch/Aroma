@@ -9,25 +9,24 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 
 import timber.log.Timber;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.adapter.AdapterCategoryView;
-import ua.pp.oped.aromateque.api.MagentoAPI;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
+import ua.pp.oped.aromateque.utility.Utility;
 
 import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
 public class ActivityMainPage extends SearchAppbarActivity {
     private Category categoryAll;
-    private MagentoAPI api;
-    private boolean isAnimationRunning;
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerviewCategories;
-    private String title;
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +35,7 @@ public class ActivityMainPage extends SearchAppbarActivity {
                 (Context.LAYOUT_INFLATER_SERVICE);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        db = DatabaseHelper.getInstance(this);
         //Initialize recycleview early with empty ua.pp.oped.aromateque.adapter to avoid errors About absent ua.pp.oped.aromateque.adapter.
         recyclerviewCategories = (RecyclerView) findViewById(R.id.categories_main_recyclerview);
         final LinearLayoutManagerSmoothScrollEdition layoutManager = new LinearLayoutManagerSmoothScrollEdition(this, RecyclerView.VERTICAL, false);
@@ -78,6 +78,19 @@ public class ActivityMainPage extends SearchAppbarActivity {
         }
         onCartClicked(null);
     }
+
+    public void onAddToFavoritesClicked(View v) {
+        int productId = (int) v.getTag();
+        if (db.isInFavorites(productId)) {
+            db.removeFavorite(productId);
+            ((ImageButton) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.heart_empty_beige));
+        } else {
+            db.addFavorite(productId);
+            ((ImageButton) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.heart_beige));
+        }
+    }
+
+
 
     private void fillCategories() {
 

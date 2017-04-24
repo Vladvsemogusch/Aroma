@@ -10,6 +10,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -24,7 +25,7 @@ import static ua.pp.oped.aromateque.utility.Constants.CATEGORY_ALL_ID;
 
 public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
     private static final String TAG = "DATABASE_HELPER";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "aromateque.db";
     private static DatabaseHelper instance;
 
@@ -102,7 +103,7 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
 
     }
 
-    public LongProduct deserializeProduct(int id) {
+    public LongProduct deserializeLongProduct(int id) {
         LongProduct product = new LongProduct();
         HashMap<String, String> attributes = new HashMap<>();
         ArrayList<String> imageUrls = new ArrayList<>();
@@ -297,7 +298,7 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         }
     }
 
-    public ArrayList<CartItem> getCart() {
+    public List<CartItem> getCart() {
         Cursor c = getReadableDatabase().query("cart", null, null, null, null, null, "id ASC");
         if (c.getCount() == 0) {
             Log.d(TAG, "getCart() cursor empty");
@@ -343,5 +344,44 @@ public class DatabaseHelper extends SQLiteAssetHelper { // TODO data lifetime
         }
         c.close();
         return totalQty;
+    }
+
+    public void addFavorite(int id) {
+        ContentValues values = new ContentValues();
+        values.put("product_id", id);
+        getWritableDatabase().insert("favorites", null, values);
+        Log.d(TAG, "Added to favorites product id: " + id);
+    }
+
+    public void removeFavorite(int id) {
+        String[] args = {String.valueOf(id)};
+        getWritableDatabase().delete("favorites", "product_id=?", args);
+        Log.d(TAG, "Removed from favorites product id: " + id);
+    }
+
+    public List<ShortProduct> getFavorites() {
+        Cursor c = getReadableDatabase().query("favorites", null, null, null, null, null, "id ASC");
+        if (c.getCount() == 0) {
+            Log.d(TAG, "getFavorites() cursor empty");
+        }
+        List<ShortProduct> favorites = new ArrayList<>();
+        while (c.moveToNext()) {
+            // 0 - id, 1 - product_id
+            ShortProduct favoriteProduct = deserializeShortProduct(c.getInt(1));
+            favorites.add(favoriteProduct);
+            Log.d(TAG, "Retrieved cart item from db and put at position: " + (favorites.indexOf(favoriteProduct)) + " ;product id: " + c.getInt(1));
+        }
+        Timber.d("Favorites size: " + String.valueOf(favorites.size()));
+        c.close();
+        return favorites;
+    }
+
+    public boolean isInFavorites(int productId) {
+        String[] columns = {"product_id"};
+        String[] args = {String.valueOf(productId)};
+        Cursor c = getReadableDatabase().query("favorites", columns, "product_id = ?", args, null, null, null);
+        boolean isInCart = c.getCount() != 0;
+        c.close();
+        return isInCart;
     }
 }

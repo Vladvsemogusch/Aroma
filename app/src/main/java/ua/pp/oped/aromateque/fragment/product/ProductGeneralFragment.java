@@ -50,7 +50,7 @@ public class ProductGeneralFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
-        LongProduct product = dbHelper.deserializeProduct(getArguments().getInt("id"));
+        LongProduct product = dbHelper.deserializeLongProduct(getArguments().getInt("id"));
         attributes = product.getAttributes();
         imageUrls = product.getImageUrls();
     }

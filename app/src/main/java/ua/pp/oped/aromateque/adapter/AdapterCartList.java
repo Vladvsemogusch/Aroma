@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
@@ -24,10 +24,10 @@ import ua.pp.oped.aromateque.utility.ImageLoaderWrapper;
 public class AdapterCartList extends RecyclerView.Adapter {
     private Resources resources;
     private Context context;
-    private ArrayList<CartItem> cartItems;
+    private List<CartItem> cartItems;
     private DatabaseHelper db;
 
-    public AdapterCartList(Context context, ArrayList<CartItem> cartItems) {
+    public AdapterCartList(Context context, List<CartItem> cartItems) {
         this.resources = context.getResources();
         this.context = context;
         this.cartItems = cartItems;

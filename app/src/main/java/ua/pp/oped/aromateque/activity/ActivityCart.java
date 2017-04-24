@@ -11,7 +11,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -28,7 +28,7 @@ import ua.pp.oped.aromateque.model.ShortProduct;
 import ua.pp.oped.aromateque.utility.RetryableCallback;
 
 public class ActivityCart extends SearchAppbarActivity {
-    private ArrayList<CartItem> cartItems;
+    private List<CartItem> cartItems;
     private TextView totalPrice;
 
     @Override
@@ -90,7 +90,7 @@ public class ActivityCart extends SearchAppbarActivity {
         return R.layout.activity_cart_top_layout;
     }
 
-    private boolean isDataReady(ArrayList<CartItem> cartItems) {
+    private boolean isDataReady(List<CartItem> cartItems) {
         for (int i = 0; i < cartItems.size(); i++) {
             if (cartItems.get(i).getProduct() == null) {
                 return false;

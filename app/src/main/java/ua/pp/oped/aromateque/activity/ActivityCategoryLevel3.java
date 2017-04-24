@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -16,13 +17,14 @@ import ua.pp.oped.aromateque.adapter.AdapterSubCategoryView;
 import ua.pp.oped.aromateque.base_activity.SearchAppbarActivity;
 import ua.pp.oped.aromateque.data.db.DatabaseHelper;
 import ua.pp.oped.aromateque.model.Category;
+import ua.pp.oped.aromateque.utility.Utility;
 
 
 public class ActivityCategoryLevel3 extends SearchAppbarActivity {
-    private static final String TAG = "ActivityCategoryLevel3";
     private RecyclerView recyclerviewLevel3Categories;
     private ArrayList<Category> categories;
     private Resources res;
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class ActivityCategoryLevel3 extends SearchAppbarActivity {
         final Category mainCategory = DatabaseHelper.getInstance(this).deserializeCategory(mainCategoryId);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mainCategory.getName());
+        db = DatabaseHelper.getInstance(this);
         recyclerviewLevel3Categories = (RecyclerView) findViewById(R.id.subcategories_recyclerview);
         recyclerviewLevel3Categories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerviewLevel3Categories.setAdapter(new AdapterSubCategoryView(ActivityCategoryLevel3.this, mainCategory, true));
@@ -86,5 +89,14 @@ public class ActivityCategoryLevel3 extends SearchAppbarActivity {
         onCartClicked(null);
     }
 
-
+    public void onAddToFavoritesClicked(View v) {
+        int productId = (int) v.getTag();
+        if (db.isInFavorites(productId)) {
+            db.removeFavorite(productId);
+            ((ImageButton) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.heart_empty_beige));
+        } else {
+            db.addFavorite(productId);
+            ((ImageButton) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.heart_beige));
+        }
+    }
 }

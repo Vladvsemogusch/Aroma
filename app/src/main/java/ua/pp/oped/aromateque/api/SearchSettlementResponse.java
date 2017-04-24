@@ -12,7 +12,10 @@ public class SearchSettlementResponse {
         return success;
     }
 
-    public List<SearchSettlementItem> getCities() {
+    public List<SearchSettlementItem> getSettlements() {
+        if (data.isEmpty()) {
+            return null;
+        }
         return data.get(0).Addresses;
     }
 

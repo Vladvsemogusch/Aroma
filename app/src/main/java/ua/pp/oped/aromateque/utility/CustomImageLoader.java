@@ -26,7 +26,7 @@ public class CustomImageLoader extends ImageLoader {
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-                .showImageOnLoading(R.drawable.loading)
+                .showImageOnLoading(R.drawable.loading_spinner_better2)
                 .build();
         Timber.d("Before: " + uri);
         uri = uri.replace("http://localhost/", BASE_URL);

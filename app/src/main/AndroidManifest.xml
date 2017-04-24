@@ -80,7 +80,14 @@
             android:name=".activity.ActivityCheckoutDelivery"
             android:label="@string/choose_delivery"
             android:parentActivityName=".activity.ActivityCheckoutMain" />
-        <activity android:name=".activity.ActivityCheckoutOverview"></activity>
+        <activity
+            android:name=".activity.ActivityCheckoutOverview"
+            android:label="@string/checkout"
+            android:parentActivityName=".activity.ActivityCheckoutMain" />
+        <activity
+            android:name=".activity.ActivityFavorites"
+            android:label="@string/favorites" />
+        <activity android:name=".activity.ActivityCheckoutSuccess"></activity>
     </application>
 
 </manifest>

@@ -79,6 +79,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorAccent"
             android:padding="8dp"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:onClick="onAddToFavoritesClicked" />
     </LinearLayout>
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 import ua.pp.oped.aromateque.R;
@@ -47,24 +49,25 @@ public class ActivityProductList extends SearchAppbarActivity {
     private static final int DEFAULT_LIST_TYPE = LIST_TYPE_WIDE;
     private RecyclerView productListRecyclerView;
     private GridLayoutManager gridLayoutManager;
-    private ArrayList<ShortProduct> bestsellersList;
+    private List<ShortProduct> shortProducts;
     private TextView sortTypeSmall;
     private TextView filteredAmountSmall;
     private SharedPreferences settings;
     private FragmentManager fragmentManager;
     private SortFragment sortFragment;
     private FilterFragment filterFragment;
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = DatabaseHelper.getInstance(this);
+        db = DatabaseHelper.getInstance(this);
         int currentCategoryId = getIntent().getIntExtra("category_id", 16); //TODO change after REST implemented
-        Category currentCategory = dbHelper.deserializeCategory(currentCategoryId);
+        Category currentCategory = db.deserializeCategory(currentCategoryId);
         settings = getPreferences(MODE_PRIVATE);
         final int sortTypeSetting = settings.getInt("sort_type", DEFAULT_SORT_TYPE);
         final int listTypeSetting = settings.getInt("list_type", DEFAULT_LIST_TYPE);
+        getSupportActionBar().setTitle(currentCategory.getName());
         new android.os.Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -72,21 +75,19 @@ public class ActivityProductList extends SearchAppbarActivity {
                 onListTypeClicked(listTypeSetting);
             }
         });
-        getSupportActionBar().setTitle(currentCategory.getName());
-
         cartCounter = (TextView) findViewById(R.id.cart_counter);
         sortTypeSmall = (TextView) findViewById(R.id.txt_sort_type_small);
         filteredAmountSmall = (TextView) findViewById(R.id.txt_filtered_amount_small);
         productListRecyclerView = (RecyclerView) findViewById(R.id.product_list_recycler_view);
-        gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
+        gridLayoutManager = new GridLayoutManager(this, 1, RecyclerView.VERTICAL, false);
         productListRecyclerView.setLayoutManager(gridLayoutManager);
         productListRecyclerView.setAdapter(new EmptyRecycleViewAdapter());
         productListRecyclerView.setItemViewCacheSize(7);
         View sortByButton = findViewById(R.id.sort_by_button);
         final View filterByButton = findViewById(R.id.filter_by_button);
         final LinearLayout rightDrawerLayout = (LinearLayout) findViewById(R.id.product_list_right_drawer);
-        bestsellersList = new ArrayList<>();
-        fillProductList();
+        shortProducts = fillProductList();
+        // Setup right drawer
         fragmentManager = getFragmentManager();
         sortFragment = new SortFragment();
         filterFragment = new FilterFragment();
@@ -143,7 +144,8 @@ public class ActivityProductList extends SearchAppbarActivity {
         return R.layout.activity_product_list_top_layout;
     }
 
-    private void fillProductList() {
+    private List<ShortProduct> fillProductList() {
+        List<ShortProduct> productList = new ArrayList<>();
         final ShortProduct prod = new ShortProduct();
         prod.setBrand("Comme des Garcons Accessories");
         //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
@@ -160,19 +162,19 @@ public class ActivityProductList extends SearchAppbarActivity {
         prod2.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
         prod2.setOldPrice("13210");
         prod2.setPrice("12310");
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
-        bestsellersList.add(prod2);
-        bestsellersList.add(prod);
+        productList.add(prod);
+        productList.add(prod2);
+        productList.add(prod);
+        productList.add(prod2);
+        productList.add(prod);
+        productList.add(prod2);
+        productList.add(prod);
+        productList.add(prod2);
+        productList.add(prod);
+        productList.add(prod2);
+        productList.add(prod);
+        productList.add(prod2);
+        productList.add(prod);
         final ShortProduct prod3 = new ShortProduct();
         prod3.setBrand("Sensai");
         //prod.setImageUrl("http://aromateque.com.ua/media/catalog/product/cache/1/thumbnail/630x/602f0fa2c1f0d1ba5e241f914e856ff9/s/a/sa0110gsilv.jpg");
@@ -181,12 +183,12 @@ public class ActivityProductList extends SearchAppbarActivity {
         prod3.setTypeAndVolume("набор \"двойное увлажнение\", 60мл+50мл+30мл+30мл");
         prod3.setOldPrice("13210");
         prod3.setPrice("12310");
-        bestsellersList.add(prod3);
+        productList.add(prod3);
         prod.setId(1425);
         prod2.setId(3519);
         prod3.setId(3518);
-        //productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, this, R.layout.short_product_item_with_type));
-
+        //productListRecyclerView.setAdapter(new AdapterProductList(shortProducts, this, R.layout.short_product_item_with_type));
+        return productList;
     }
 
     @Override
@@ -216,15 +218,15 @@ public class ActivityProductList extends SearchAppbarActivity {
     public void onListTypeClicked(int listType) {
         switch (listType) {
             case LIST_TYPE_GRID:
-                productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, ActivityProductList.this, R.layout.short_product_item_with_type));
+                productListRecyclerView.setAdapter(new AdapterProductList(shortProducts, ActivityProductList.this, R.layout.short_product_item_with_type));
                 gridLayoutManager.setSpanCount(2);
                 break;
             case LIST_TYPE_BIG:
                 gridLayoutManager.setSpanCount(1);
-                productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, ActivityProductList.this, R.layout.short_product_item_with_type_big));
+                productListRecyclerView.setAdapter(new AdapterProductList(shortProducts, ActivityProductList.this, R.layout.short_product_item_with_type_big));
                 break;
             case LIST_TYPE_WIDE:
-                productListRecyclerView.setAdapter(new AdapterProductList(bestsellersList, ActivityProductList.this, R.layout.short_product_item_with_type_wide));
+                productListRecyclerView.setAdapter(new AdapterProductList(shortProducts, ActivityProductList.this, R.layout.short_product_item_with_type_wide));
                 gridLayoutManager.setSpanCount(1);
                 break;
 
@@ -286,8 +288,8 @@ public class ActivityProductList extends SearchAppbarActivity {
         int productId = (int) v.getTag();
 
         Timber.d("ADD TO CART CLICKED");
-        if (!dbHelper.isInCart(productId)) {
-            dbHelper.addToCart(productId);
+        if (!db.isInCart(productId)) {
+            db.addToCart(productId);
             updateCartCounter();
             ((AdapterProductList) productListRecyclerView.getAdapter()).updateCartItems(productId);
             ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.ico_cart_full));
@@ -295,7 +297,7 @@ public class ActivityProductList extends SearchAppbarActivity {
             v.startAnimation(addToCartAnimation);
             Timber.d("Added to cart");
         } else {
-            dbHelper.removeFromCart(productId);
+            db.removeFromCart(productId);
             ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.ico_cart_empty));
 //            Intent intent = new Intent(this, ActivityCart.class);
 //            this.startActivity(intent);
@@ -314,5 +316,15 @@ public class ActivityProductList extends SearchAppbarActivity {
         }
     }
 
+    public void onAddToFavoritesClicked(View v) {
+        int productId = (int) v.getTag();
+        if (db.isInFavorites(productId)) {
+            db.removeFavorite(productId);
+            ((ImageButton) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.heart_empty_beige));
+        } else {
+            db.addFavorite(productId);
+            ((ImageButton) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.heart_beige));
+        }
+    }
 
 }

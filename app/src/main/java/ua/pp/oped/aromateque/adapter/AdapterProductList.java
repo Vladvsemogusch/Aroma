@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ua.pp.oped.aromateque.R;
@@ -31,13 +30,15 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
     private int itemLayoutId;
     private LayoutInflater layoutInflater;
     private Context context;
-    private ArrayList<CartItem> cartItems;
+    private List<CartItem> cartItems;
+    private DatabaseHelper db;
 
     public AdapterProductList(List<ShortProduct> products, Context context, int itemLayoutId) {
         this.products = products;
         this.resources = context.getResources();
         this.itemLayoutId = itemLayoutId;
         this.context = context;
+        db = DatabaseHelper.getInstance(context);
         updateCartItems();
     }
 
@@ -65,7 +66,6 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
         }
         viewHolder.price.setText(String.format(resources.getString(R.string.product_price), product.getPrice()));
         ImageLoaderWrapper.loadImage(context, viewHolder.image, product.getImageUrl());
-        viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(context.getResources(), R.drawable.icon_heart));
         //viewHolder.toFavorites.setImageBitmap(IconSheet.getBitmap(128, 64, 45, 41)); //TODO toFavorites mechanic
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +89,13 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
         } else {
             viewHolder.toCart.setImageDrawable(Utility.compatGetDrawable(context.getResources(), R.drawable.ico_cart_empty));
         }
+
+        if (db.isInFavorites(product.getId())) {
+            viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.heart_beige));
+        } else {
+            viewHolder.toFavorites.setImageDrawable(Utility.compatGetDrawable(resources, R.drawable.heart_empty_beige));
+        }
+        viewHolder.toFavorites.setTag(product.getId());
     }
 
     @Override

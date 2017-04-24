@@ -134,7 +134,7 @@ public class ActivityLaunch extends CalligraphyActivity {
     }
 
     private void startNextActivity() {
-        startActivity(new Intent(this, ActivityCheckoutMain.class));
+        startActivity(new Intent(this, ActivityCheckoutSuccess.class));
         finish();
     }
 

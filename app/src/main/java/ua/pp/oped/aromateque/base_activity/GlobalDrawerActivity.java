@@ -18,6 +18,7 @@ import timber.log.Timber;
 import ua.pp.oped.aromateque.R;
 import ua.pp.oped.aromateque.activity.ActivityCallback;
 import ua.pp.oped.aromateque.activity.ActivityCart;
+import ua.pp.oped.aromateque.activity.ActivityFavorites;
 import ua.pp.oped.aromateque.activity.ActivityInfo;
 import ua.pp.oped.aromateque.activity.ActivityMainPage;
 
@@ -65,22 +66,27 @@ public class GlobalDrawerActivity extends CalligraphyActivity implements Navigat
                 navigationView.setCheckedItem(R.id.nav_info);
                 Timber.d("navigationView.setCheckedItem(R.id.nav_info);");
                 break;
+            case R.layout.activity_favorites_top:
+                navigationView.setCheckedItem(R.id.nav_favorites);
+                Timber.d("navigationView.setCheckedItem(R.id.nav_favorites);");
+                break;
         }
     }
+
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         toggle.setPendingMenuItem(item);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    class CustomToggle extends ActionBarDrawerToggle {
+    private class CustomToggle extends ActionBarDrawerToggle {
         private MenuItem pendingMenuItem;
 
-        public CustomToggle(Activity activity, DrawerLayout drawerLayout, Toolbar toolbar, @StringRes int openDrawerContentDescRes, @StringRes int closeDrawerContentDescRes) {
+        CustomToggle(Activity activity, DrawerLayout drawerLayout, Toolbar toolbar, @StringRes int openDrawerContentDescRes, @StringRes int closeDrawerContentDescRes) {
             super(activity, drawerLayout, toolbar, openDrawerContentDescRes, closeDrawerContentDescRes);
         }
 
-        public void setPendingMenuItem(MenuItem pendingMenuItem) {
+        void setPendingMenuItem(MenuItem pendingMenuItem) {
             this.pendingMenuItem = pendingMenuItem;
         }
 
@@ -114,6 +120,10 @@ public class GlobalDrawerActivity extends CalligraphyActivity implements Navigat
                 case R.id.nav_info:
                     if (!(GlobalDrawerActivity.this instanceof ActivityInfo)) {
                         intent = new Intent(GlobalDrawerActivity.this, ActivityInfo.class);
+                    }
+                case R.id.nav_favorites:
+                    if (!(GlobalDrawerActivity.this instanceof ActivityFavorites)) {
+                        intent = new Intent(GlobalDrawerActivity.this, ActivityFavorites.class);
                     }
                     break;
             }

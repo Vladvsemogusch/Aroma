@@ -1,5 +1,7 @@
 package ua.pp.oped.aromateque.activity;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -30,11 +32,14 @@ import ua.pp.oped.aromateque.utility.AnimationHelper;
 import ua.pp.oped.aromateque.utility.EditTextBackEvent;
 import ua.pp.oped.aromateque.utility.LinearLayoutManagerSmoothScrollEdition;
 import ua.pp.oped.aromateque.utility.RetryableCallback;
+import ua.pp.oped.aromateque.utility.Utility;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 public class ActivityCheckoutWarehouse extends CalligraphyActivity {
-    View loaderSpinner;
+    View loadingSpinner;
+    View loadingMask;
+    ValueAnimator colorAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +50,11 @@ public class ActivityCheckoutWarehouse extends CalligraphyActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final EditTextBackEvent etWarehouse = (EditTextBackEvent) findViewById(R.id.et_city);
         final RecyclerView recyclerWarehouses = (RecyclerView) findViewById(R.id.recycler_cities);
-        loaderSpinner = findViewById(R.id.loading_mask);
+        loadingSpinner = findViewById(R.id.loading_spinner);
+        loadingMask = findViewById(R.id.loading_mask);
+        int colorFrom = Utility.compatGetColor(getResources(), android.R.color.transparent);
+        int colorTo = Utility.compatGetColor(getResources(), R.color.transparent_black);
+        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         final InputMethodManager inputMethodManager = (InputMethodManager) this
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         final String cityName = getIntent().getStringExtra("city_name");
@@ -74,14 +83,12 @@ public class ActivityCheckoutWarehouse extends CalligraphyActivity {
             public void onFinalResponse(Call<WarehouseResponse> call, Response<WarehouseResponse> response) {
                 List<WarehouseResponse.WarehouseItem> defaultWarehouseItems = response.body().getData();
                 recyclerWarehouses.setAdapter(new AdapterWarehouse(ActivityCheckoutWarehouse.this, defaultWarehouseItems));
-                loaderSpinner.clearAnimation();
-                loaderSpinner.setVisibility(View.GONE);
+                hideLoading();
             }
 
             @Override
             public void onFinalFailure(Call<WarehouseResponse> call, Throwable t) {
-                loaderSpinner.clearAnimation();
-                loaderSpinner.setVisibility(View.GONE);
+                hideLoading();
             }
         };
         final RetryableCallback<WarehouseResponse> getWarehousesCallback = new RetryableCallback<WarehouseResponse>() {
@@ -89,16 +96,14 @@ public class ActivityCheckoutWarehouse extends CalligraphyActivity {
             public void onFinalResponse(Call<WarehouseResponse> call, Response<WarehouseResponse> response) {
                 List<WarehouseResponse.WarehouseItem> warehouseItems = response.body().getData();
                 recyclerWarehouses.setAdapter(new AdapterWarehouse(ActivityCheckoutWarehouse.this, warehouseItems));
-                loaderSpinner.clearAnimation();
-                loaderSpinner.setVisibility(View.GONE);
+                hideLoading();
 //                String cityName = response.body().getSettlements().get(0).getDescriptionRu();
 //                etCity.setTag(cityName);
             }
 
             @Override
             public void onFinalFailure(Call<WarehouseResponse> call, Throwable t) {
-                loaderSpinner.clearAnimation();
-                loaderSpinner.setVisibility(View.GONE);
+                hideLoading();
                 t.printStackTrace();
             }
         };
@@ -108,15 +113,12 @@ public class ActivityCheckoutWarehouse extends CalligraphyActivity {
                 if (i == IME_ACTION_DONE) {
                     if (textView.getText().length() == 0) {
                         novaPoshtaAPI.getWarehouses(new WarehousePost(cityName, "")).enqueue(getDefaultWarehousesCallback);
-                        loaderSpinner.startAnimation(AnimationHelper.getDefaultRotateAnimation());
-                        loaderSpinner.setVisibility(View.VISIBLE);
+                        showLoading();
                         textView.clearFocus();
                         return true;
                     }
                     novaPoshtaAPI.getWarehouses(new WarehousePost(cityName, textView.getText().toString())).enqueue(getWarehousesCallback);
-                    loaderSpinner.startAnimation(AnimationHelper.getDefaultRotateAnimation());
-                    loaderSpinner.setVisibility(View.VISIBLE);
-
+                    showLoading();
                     textView.clearFocus();
                     return true;
                 }
@@ -125,9 +127,7 @@ public class ActivityCheckoutWarehouse extends CalligraphyActivity {
         };
         etWarehouse.setOnEditorActionListener(onEditorActionListener);
         recyclerWarehouses.setLayoutManager(new LinearLayoutManagerSmoothScrollEdition(this, LinearLayoutManager.VERTICAL, false));
-        loaderSpinner.startAnimation(AnimationHelper.getDefaultRotateAnimation());
-        loaderSpinner.setVisibility(View.VISIBLE);
-
+        showLoading();
         novaPoshtaAPI.getWarehouses(new WarehousePost(cityName, "")).enqueue(getDefaultWarehousesCallback);
 
     }
@@ -157,4 +157,28 @@ public class ActivityCheckoutWarehouse extends CalligraphyActivity {
         setResult(RESULT_OK, intent);
         finish();
     }
+
+    private void showLoading() {
+        loadingSpinner.startAnimation(AnimationHelper.getDefaultRotateAnimation());
+        loadingSpinner.setVisibility(View.VISIBLE);
+        colorAnimation.setDuration(180);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                loadingMask.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
+
+    }
+
+    private void hideLoading() {
+        loadingSpinner.clearAnimation();
+        loadingSpinner.setVisibility(View.GONE);
+        colorAnimation.cancel();
+        loadingMask.setBackgroundColor(Utility.compatGetColor(getResources(), android.R.color.transparent));
+    }
 }
+

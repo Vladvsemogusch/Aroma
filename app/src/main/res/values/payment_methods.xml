@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="payment_methods">
+        <item>@string/cash</item>
+        <item>@string/card</item>
+    </string-array>
+    <string name="cash">Наличный расчет</string>
+    <string name="card">Оплата на карту</string>
+</resources>

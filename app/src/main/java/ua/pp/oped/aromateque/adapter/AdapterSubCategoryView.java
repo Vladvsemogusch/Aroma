@@ -77,9 +77,10 @@ public class AdapterSubCategoryView extends RecyclerView.Adapter<RecyclerView.Vi
         if (viewHolder instanceof MainItemViewHolder) {
             //  Offset because of header
             final Category category = categories.get(position - 1);
-            ((MainItemViewHolder) viewHolder).category_id = category.getId();
-            ((MainItemViewHolder) viewHolder).txtCategoryName.setText(category.getName());
-            ((MainItemViewHolder) viewHolder).txtCategoryName.setOnClickListener(new View.OnClickListener() {
+            MainItemViewHolder mainItemViewHolder = ((MainItemViewHolder) viewHolder);
+            mainItemViewHolder.category_id = category.getId();
+            mainItemViewHolder.txtCategoryName.setText(category.getName());
+            mainItemViewHolder.txtCategoryName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ActivityProductList.class);

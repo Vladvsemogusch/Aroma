@@ -164,6 +164,7 @@
                 android:inputType="phone"
                 android:maxLines="2" />
 
+
             <TextView
                 android:id="@+id/txt_checkout_no_phone"
                 android:layout_width="wrap_content"
@@ -174,11 +175,24 @@
                 android:textSize="@dimen/error_text_size"
                 android:visibility="gone" />
 
+            <CheckedTextView
+                android:id="@+id/dont_call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/text_side_margin"
+                android:layout_marginStart="@dimen/text_side_margin"
+                android:background="?android:attr/listChoiceBackgroundIndicator"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="false"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:scrollbarSize="15sp"
+                android:text="@string/dont_call" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/text_side_margin"
-                android:layout_marginTop="5dp"
                 android:text="@string/email_obligatory"
                 android:textSize="@dimen/title2" />
 
@@ -187,7 +201,7 @@
                 android:id="@+id/checkout_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/text_side_margin"
+                android:paddingEnd="@dimen/text_side_margin"
                 android:layout_marginStart="@dimen/text_side_margin"
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress"
@@ -220,9 +234,9 @@
                 android:layout_marginTop="5dp"
                 android:checked="true"
                 android:text="@string/deliver_type_the_one"
+                android:textSize="15sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
-                android:textSize="15sp" />
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <TextView
                 android:id="@+id/textView4"
