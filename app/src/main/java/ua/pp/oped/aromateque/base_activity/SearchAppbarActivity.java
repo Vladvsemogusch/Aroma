@@ -24,7 +24,6 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH;
 
 public class SearchAppbarActivity extends GlobalDrawerActivity {
     protected TextView cartCounter;
-    protected String title;
     protected EditTextBackEvent etSearch;
     protected ImageButton btnSearch;
     protected InputMethodManager inputMethodManager;

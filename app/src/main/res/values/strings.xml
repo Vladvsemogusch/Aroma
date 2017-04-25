@@ -115,11 +115,17 @@
     <string name="subscribe">Хочу узнавать о новинках и акциях</string>
     <string name="ok">Выбрать</string>
     <string name="ok_2">Выбрать</string>
+    <string name="ok_very">ОТЛИЧНО</string>
     <string name="cancel">Отменить</string>
     <string name="ok_order_comment">Подвердить</string>
     <string name="enter_certificate">Введите номер сертификата</string>
     <string name="favorites">Избранное</string>
     <string name="no_settlement_found">Не найдено населенного пункта отвечающего вашему запросу</string>
+    <string name="order_success_1">Ваш заказ принят, спасибо!</string>
+    <string name="manager_will_call">В ближайшее время с вами свяжется наш менеджер.</string>
+    <string name="manager_will_call_at_monday">Наш менеджер перезвонит вам утром ближайшего понедельника.</string>
+    <string name="order_number">№ %1$s</string>
+    <string name="order_sum">Итого к оплате:</string>
 
 
 </resources>
