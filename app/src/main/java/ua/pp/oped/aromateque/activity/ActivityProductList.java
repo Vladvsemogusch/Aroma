@@ -2,6 +2,7 @@ package ua.pp.oped.aromateque.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -297,11 +298,11 @@ public class ActivityProductList extends SearchAppbarActivity {
             v.startAnimation(addToCartAnimation);
             Timber.d("Added to cart");
         } else {
-            db.removeFromCart(productId);
-            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.ico_cart_empty));
-//            Intent intent = new Intent(this, ActivityCart.class);
-//            this.startActivity(intent);
-//            Log.d(TAG, "Already in cart product id: " + productId);
+//            db.removeFromCart(productId);
+//            ((ImageView) v).setImageDrawable(Utility.compatGetDrawable(getResources(), R.drawable.ico_cart_empty));
+            Intent intent = new Intent(this, ActivityCart.class);
+            this.startActivity(intent);
+            Log.d(TAG, "Already in cart product id: " + productId);
         }
         //TODO Visuals
     }

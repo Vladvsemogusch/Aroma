@@ -126,6 +126,7 @@
     <string name="manager_will_call_at_monday">Наш менеджер перезвонит вам утром ближайшего понедельника.</string>
     <string name="order_number">№ %1$s</string>
     <string name="order_sum">Итого к оплате:</string>
+    <string name="cart_price_placeholder">0 грн</string>
 
 
 </resources>
